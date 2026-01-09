@@ -1,3 +1,22 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "mosque-arch",
+      "description": "An arched window of a mosque showing a beautiful interior.",
+      "imageUrl": "https://images.unsplash.com/photo-1667650314052-b0903bd283cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtb3NxdWUlMjBhcmNoaXRlY3R1cmV8ZW58MHx8fHwxNzY3OTM3MDAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mosque architecture"
+    },
+    {
+      "id": "quran-reading",
+      "description": "A person reading the Quran.",
+      "imageUrl": "https://images.unsplash.com/photo-1575645513913-c002ea3b2e01?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxxdXJhbiUyMHJlYWRpbmd8ZW58MHx8fHwxNzY3OTk5MDA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "quran reading"
+    },
+    {
+      "id": "prayer-mat",
+      "description": "A prayer mat on the floor.",
+      "imageUrl": "https://images.unsplash.com/photo-1727024418120-77e4e204d09f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwcmF5ZXIlMjBtYXR8ZW58MHx8fHwxNzY3OTU3MDAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "prayer mat"
+    }
+  ]
 }
