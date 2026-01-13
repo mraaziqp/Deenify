@@ -34,7 +34,7 @@ const prompt = ai.definePrompt({
 
   Adhere to the following guidelines:
   - Only provide answers based on approved Islamic texts.
-  - Avoid complex rulings (Fatwa Firewall).
+  - Avoid complex rulings (Fatwa Firewall). If the user asks about divorce, moon sighting, or inheritance, politely refuse and refer them to a local scholar.
   - Provide sources for your answers.
 
   Question: {{{question}}}
@@ -49,6 +49,16 @@ const askAboutIslamFlow = ai.defineFlow(
     outputSchema: AskAboutIslamOutputSchema,
   },
   async input => {
+    // Fatwa Firewall
+    const highRiskKeywords = ['divorce', 'moon sighting', 'inheritance', 'talaq'];
+    const question = input.question.toLowerCase();
+    if(highRiskKeywords.some(keyword => question.includes(keyword))){
+      return {
+        answer: "This is a complex matter requiring a local scholar. I am not equipped to provide a ruling on this topic. Please find a qualified Imam in your area for guidance.",
+        sources: []
+      }
+    }
+
     const {output} = await prompt(input);
     return output!;
   }

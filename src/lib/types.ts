@@ -49,19 +49,22 @@ export interface StockScreening {
 
 // 'Ilm (Knowledge) Engine Types
 export interface KnowledgeNode {
-  id: string; // e.g., "sabr", "riba", "wudu"
-  title: { en: string; ar: string };
-  type: "concept" | "ruling" | "biography";
-  description: string;
-  related_ayahs: Array<{ surah: number; ayah: number; reason?: string }>;
-  related_hadiths: Array<{ book: "bukhari"; number: number; grade: "sahih" }>;
-  madhab_rulings?: {
-    hanafi: string;
-    shafi: string;
-    maliki: string;
-    hanbali: string;
+  id: string; // e.g., "bukhari_1", "sabr_concept"
+  type: 'hadith' | 'concept' | 'ruling' | 'biography';
+  source_book?: string; // "Sahih al-Bukhari"
+  hadith_number?: number;
+  content: {
+    ar: string;
+    en: string;
   };
+  narrator?: string;
+  metadata: {
+    chapter_id?: number;
+    verified: boolean;
+    tags?: string[];
+  }
 }
+
 
 export interface HadithDocument {
   collection_id: "bukhari" | "muslim";
