@@ -4,24 +4,24 @@
 
 @layer base {
   :root {
-    --background: 180 60% 95.3%;
+    --background: 180 75% 92.5%; /* Light Teal */
     --foreground: 224 71.4% 4.1%;
-    --card: 180 60% 100%;
+    --card: 180 60% 98%;
     --card-foreground: 224 71.4% 4.1%;
     --popover: 180 60% 100%;
     --popover-foreground: 224 71.4% 4.1%;
-    --primary: 180 100% 25.1%;
+    --primary: 180 100% 25.1%; /* Saturated Teal */
     --primary-foreground: 0 0% 98%;
     --secondary: 180 20% 90%;
     --secondary-foreground: 180 100% 25.1%;
-    --muted: 180 20% 92%;
+    --muted: 180 20% 95%;
     --muted-foreground: 224 71.4% 25%;
-    --accent: 207.7 44.2% 49.4%;
+    --accent: 207 44% 49%; /* Steel Blue */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 180 20% 85%;
-    --input: 180 20% 88%;
+    --border: 180 20% 88%;
+    --input: 180 20% 91%;
     --ring: 180 100% 25.1%;
     --radius: 0.5rem;
   }
