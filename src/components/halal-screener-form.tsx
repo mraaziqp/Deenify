@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, AlertTriangle, ShieldAlert } from 'lucide-react';
 
 const FormSchema = z.object({
   ticker: z.string().min(1, 'Ticker is required.').max(10),
@@ -113,10 +113,26 @@ export function HalalScreenerForm() {
                     <ComplianceBadge compliant={result.businessActivityCompliant} />
                 </div>
                 <div className="flex justify-between items-center p-3 bg-muted rounded-md">
-                    <span className="font-medium">Debt Ratio (&lt; 33%)</span>
+                    <span className="font-medium">Interest-Bearing Debt Ratio (&lt; 30%)</span>
                     <ComplianceBadge compliant={result.debtRatioCompliant} />
                 </div>
+                 <div className="flex justify-between items-center p-3 bg-muted rounded-md">
+                    <span className="font-medium">Interest-Bearing Securities Ratio (&lt; 30%)</span>
+                    <ComplianceBadge compliant={result.securitiesRatioCompliant} />
+                </div>
             </div>
+             {result.purificationRequired && (
+              <div className="flex items-start gap-3 text-amber-900 bg-amber-100 p-3 rounded-md border border-amber-200">
+                  <ShieldAlert className="h-5 w-5 mt-0.5 flex-shrink-0"/>
+                  <div>
+                      <h4 className='font-semibold'>Purification Required</h4>
+                      <p className='text-sm'>
+                          This stock is considered Halal, but it has some impure income. To purify your investment, you should donate 
+                          <span className='font-bold'> ${result.purificationAmount?.toFixed(2)}</span> for every share you own annually.
+                      </p>
+                  </div>
+              </div>
+            )}
             <div>
               <h4 className="font-semibold mb-2">Summary:</h4>
               <p className="text-muted-foreground bg-muted p-3 rounded-md">{result.summary}</p>

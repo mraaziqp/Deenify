@@ -46,3 +46,29 @@ export interface StockScreening {
   impureIncomeCompliant: boolean;
   summary: string;
 }
+
+// 'Ilm (Knowledge) Engine Types
+export interface KnowledgeNode {
+  id: string; // e.g., "sabr", "riba", "wudu"
+  title: { en: string; ar: string };
+  type: "concept" | "ruling" | "biography";
+  description: string;
+  related_ayahs: Array<{ surah: number; ayah: number; reason?: string }>;
+  related_hadiths: Array<{ book: "bukhari"; number: number; grade: "sahih" }>;
+  madhab_rulings?: {
+    hanafi: string;
+    shafi: string;
+    maliki: string;
+    hanbali: string;
+  };
+}
+
+export interface HadithDocument {
+  collection_id: "bukhari" | "muslim";
+  hadith_number: number;
+  text_ar: string;
+  text_en: string;
+  chapter_title: string;
+  grade: "Sahih" | "Hasan" | "Da'if";
+  tags: string[]; // ["money", "ethics", "trade"]
+}

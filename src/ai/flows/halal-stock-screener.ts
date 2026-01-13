@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview A stock screener AI agent that determines if a stock complies with Islamic principles.
+ * @fileOverview A stock screener AI agent that determines if a stock complies with Islamic principles based on AAOIFI standards.
  *
  * - halalStockScreener - A function that screens stocks to check business activity and financial ratios.
  * - HalalStockScreenerInput - The input type for the halalStockScreener function.
@@ -22,7 +22,11 @@ const HalalStockScreenerOutputSchema = z.object({
     .boolean()
     .describe('Whether the primary business activity of the company is compliant.'),
   debtRatioCompliant:
-    z.boolean().describe('Whether the debt ratio (debt < 33% of assets) is compliant.'),
+    z.boolean().describe('Whether the debt ratio (Interest-Bearing Debt / Market Cap < 30%) is compliant.'),
+  securitiesRatioCompliant:
+    z.boolean().describe('Whether the securities ratio (Interest-Bearing Securities / Market Cap < 30%) is compliant.'),
+  purificationRequired: z.boolean().describe('Whether purification of impure income is required.'),
+  purificationAmount: z.number().optional().describe('The amount of impure income to be purified.'),
   summary: z.string().describe('A summary of the analysis, including reasons for the determination.'),
 });
 export type HalalStockScreenerOutput = z.infer<typeof HalalStockScreenerOutputSchema>;
@@ -35,47 +39,67 @@ export async function halalStockScreener(input: HalalStockScreenerInput): Promis
 
 const getStockFinancials = ai.defineTool({
   name: 'getStockFinancials',
-  description: 'Returns the financial data of a stock, including debt and assets.',
+  description: 'Returns the financial data of a stock, including debt, assets, and market capitalization.',
   inputSchema: z.object({
     ticker: z.string().describe('The ticker symbol of the stock.'),
   }),
   outputSchema: z.object({
-    debt: z.number().describe('Total debt of the company.'),
-    assets: z.number().describe('Total assets of the company.'),
+    interestBearingDebt: z.number().describe('Total interest-bearing debt of the company.'),
+    interestBearingSecurities: z.number().describe('Total interest-bearing securities of the company.'),
+    marketCap: z.number().describe('Total market capitalization of the company.'),
+    impureIncome: z.number().describe('Total impure income of the company.'),
+    revenue: z.number().describe('Total revenue of the company.'),
   }),
   async (input) => {
-    // Placeholder implementation - replace with actual data retrieval
-    // In a real application, this would fetch data from a financial API
+    // Placeholder implementation - replace with actual financial data API
     console.log(`Fetching financial data for ${input.ticker}`);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const marketCap = Math.random() * 500e9 + 50e9; // 50B to 550B
     return {
-      debt: Math.random() * 1000000000, // Example debt
-      assets: Math.random() * 3000000000, // Example assets
+      interestBearingDebt: marketCap * (Math.random() * 0.6), // 0-60% of market cap
+      interestBearingSecurities: marketCap * (Math.random() * 0.6), // 0-60% of market cap
+      marketCap: marketCap,
+      revenue: marketCap * (Math.random() * 0.5 + 0.1), // 10-60% of market cap
+      impureIncome: marketCap * (Math.random() * 0.1), // 0-10% of market cap
     };
   },
 });
 
 const getBusinessActivity = ai.defineTool({
   name: 'getBusinessActivity',
-  description: 'Returns the primary business activity of a company.',
+  description: 'Returns the primary business activity sector of a company.',
   inputSchema: z.object({
     ticker: z.string().describe('The ticker symbol of the stock.'),
   }),
-  outputSchema: z.string().describe('The primary business activity of the company.'),
-  async (input) => {
-    // Placeholder implementation - replace with actual data retrieval
-    // In a real application, this would fetch data from a business data API
-    console.log(`Fetching business activity for ${input.ticker}`);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call delay
-    const activities = [
-      'Software Development',
-      'Islamic Banking',
-      'Conventional Banking',
-      'Alcohol Production',
-      'Defense',
+  outputSchema: z.enum([
+      'Technology',
       'Halal Food Production',
+      'Healthcare',
+      'Real Estate',
+      'Alcohol',
+      'Gambling',
+      'Pork',
+      'Conventional Finance',
+      'Defense',
+      'Media',
+  ]),
+  async (input) => {
+    // Placeholder implementation - replace with actual business data API
+    console.log(`Fetching business activity for ${input.ticker}`);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const activities = [
+      'Technology',
+      'Halal Food Production',
+      'Healthcare',
+      'Real Estate',
+      'Alcohol',
+      'Gambling',
+      'Pork',
+      'Conventional Finance',
+      'Defense',
+      'Media',
     ];
-    return activities[Math.floor(Math.random() * activities.length)]; // Return random activity
+    return activities[Math.floor(Math.random() * activities.length)] as any;
   },
 });
 
@@ -84,15 +108,26 @@ const prompt = ai.definePrompt({
   tools: [getStockFinancials, getBusinessActivity],
   input: {schema: HalalStockScreenerInputSchema},
   output: {schema: HalalStockScreenerOutputSchema},
-  prompt: `You are an expert in Islamic finance.  You are responsible for determining if a stock is halal (Sharia-compliant).
+  prompt: `You are an expert in Islamic finance, strictly adhering to AAOIFI Shariah Standard 21. You are responsible for determining if a stock is halal.
 
-To do this, you must first determine the primary business activity of the company.  If the company is involved in any haram (forbidden) activities such as alcohol, gambling, interest-based finance, or weapons manufacturing, then the stock is not halal.
+Ticker: {{{ticker}}}
 
-Second, you must determine if the company's debt ratio is compliant.  The debt ratio is calculated as total debt / total assets.  If the debt ratio is greater than 33%, then the stock is not halal.
+Follow these steps precisely:
+1.  **Core Business Check:** Use the \`getBusinessActivity\` tool. If the sector is Alcohol, Gambling, Pork, Conventional Finance, or Media (impermissible content), the stock is HARAM. Set \`businessActivityCompliant\` to false and conclude the analysis.
 
-Use the getBusinessActivity tool to determine the company's primary business activity, and use the getStockFinancials tool to get the company's financial data.
+2.  **Financial Ratios Check:** If the business is compliant, use the \`getStockFinancials\` tool to fetch financial data.
+    *   **Ratio 1 (Debt):** Calculate (Total Interest-Bearing Debt / Market Cap). It must be LESS THAN 30% (0.30). Set \`debtRatioCompliant\` accordingly.
+    *   **Ratio 2 (Securities):** Calculate (Interest-Bearing Securities / Market Cap). It must be LESS THAN 30% (0.30). Set \`securitiesRatioCompliant\` accordingly.
 
-Ticker: {{{ticker}}}`,
+3.  **Income Purification Check:**
+    *   Calculate (Impure Income / Revenue).
+    *   If this ratio is >= 5% (0.05), the stock is HARAM.
+    *   If the ratio is > 0% AND < 5%, the stock is HALAL, but requires purification. Set \`purificationRequired\` to true and set \`purificationAmount\` to the value of the Impure Income.
+    *   If the ratio is 0%, set \`purificationRequired\` to false.
+
+4.  **Final Verdict & Summary:**
+    *   Set \`isHalal\` to true ONLY if \`businessActivityCompliant\`, \`debtRatioCompliant\`, and \`securitiesRatioCompliant\` are all true, AND the impure income ratio is less than 5%.
+    *   Provide a clear summary explaining each check, the values used, the ratios calculated, and the final verdict. If purification is required, state it clearly.`,
 });
 
 const halalStockScreenerFlow = ai.defineFlow(
