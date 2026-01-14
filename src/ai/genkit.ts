@@ -3,5 +3,6 @@ import {googleAI} from '@genkit-ai/google-genai';
 
 export const ai = genkit({
   plugins: [googleAI()],
-  model: 'googleai/gemini-2.5-flash',
+  // Use Gemini 1.5 Flash as it's fast and capable for RAG.
+  model: 'googleai/gemini-1.5-flash',
 });

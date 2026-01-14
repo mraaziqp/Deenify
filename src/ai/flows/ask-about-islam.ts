@@ -29,12 +29,18 @@ export async function askAboutIslam(input: AskAboutIslamInput): Promise<AskAbout
   return askAboutIslamFlow(input);
 }
 
-const knowledgeRetriever = defineFirestoreRetriever({
+// This defines the retriever for our knowledge base.
+// We are telling Genkit where to look for the data and what field contains the content.
+const hadithKnowledgeRetriever = defineFirestoreRetriever({
     name: 'hadithKnowledgeRetriever',
     collection: 'knowledge_nodes',
     contentField: 'content.en',
 });
 
+
+// This is the prompt that will be sent to the LLM.
+// It includes a system instruction and the user's question.
+// Crucially, it uses a Handlebars helper `retrieve` to perform the RAG lookup.
 const askAboutIslamPrompt = ai.definePrompt({
   name: 'askAboutIslamPrompt',
   input: {schema: AskAboutIslamInputSchema},
@@ -48,6 +54,7 @@ CONTEXT:
 {{/each}}
 `,
   config: {
+    // Safety settings to prevent harmful content, aligned with Islamic values.
     safetySettings: [
       {
         category: 'HARM_CATEGORY_HATE_SPEECH',
@@ -73,6 +80,7 @@ CONTEXT:
   },
 });
 
+// This is the main flow that orchestrates the RAG process.
 const askAboutIslamFlow = ai.defineFlow(
   {
     name: 'askAboutIslamFlow',
@@ -80,20 +88,26 @@ const askAboutIslamFlow = ai.defineFlow(
     outputSchema: AskAboutIslamOutputSchema,
   },
   async (input) => {
+    // Step 1: Retrieval Guardrail
+    // We manually retrieve documents first to check the similarity score.
     const documents = await firestoreVectorRetriever({
       collection: 'knowledge_nodes',
       contentField: 'content.en',
-      vectorField: 'embedding',
+      vectorField: 'embedding', // Assumes embedding field from previous steps
     })(input.question, {k: 3});
 
+    // Filter out documents with a score below our confidence threshold.
     const validDocs = documents.filter(doc => doc.score >= 0.6);
 
+    // If no sufficiently relevant documents are found, return a polite refusal.
     if (validDocs.length === 0) {
         return {
             answer: "I can only answer questions based on the Quran and Sahih Bukhari. I did not find a direct reference for this in my current knowledge base."
         };
     }
     
+    // Step 2: Synthesis
+    // Pass the validated documents as context to the prompt.
     const {output} = await askAboutIslamPrompt(input, {
       context: validDocs.map(d => d.document)
     });
