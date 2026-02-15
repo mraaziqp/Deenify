@@ -14,12 +14,10 @@ import {
   CheckCircle2, 
   Clock, 
   PlayCircle,
-  Star,
-  Users,
-  GraduationCap,
   Lock
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { loadProgress, saveProgress } from '@/lib/achievements';
 
 interface Lesson {
   id: string;
@@ -43,9 +41,6 @@ interface CourseDetail {
   category: string;
   difficulty: string;
   duration: string;
-  instructor?: string;
-  rating?: number;
-  students?: number;
   price?: number;
   enrolled: boolean;
   modules: Module[];
@@ -65,6 +60,14 @@ export default function CourseDetailPage() {
   useEffect(() => {
     loadCourseData();
   }, [courseId]);
+
+  useEffect(() => {
+    if (!course || !course.enrolled || currentLesson) return;
+    const firstLesson = course.modules[0]?.lessons[0];
+    if (firstLesson) {
+      setCurrentLesson(firstLesson);
+    }
+  }, [course, currentLesson]);
 
   const loadCourseData = async () => {
     try {
@@ -267,8 +270,27 @@ Reflect on how you can implement what you've learned today in your life.
     const progress = JSON.parse(localStorage.getItem(`course_${courseId}`) || '{}');
     progress[lessonId] = true;
     localStorage.setItem(`course_${courseId}`, JSON.stringify(progress));
-    
-    toast.success('Lesson completed! 🎉');
+
+    const totalLessons = updatedModules.reduce((sum, m) => sum + m.lessons.length, 0);
+    const completedLessons = updatedModules.reduce(
+      (sum, m) => sum + m.lessons.filter(l => l.completed).length,
+      0
+    );
+
+    if (totalLessons > 0 && completedLessons >= totalLessons) {
+      const completedCourses = JSON.parse(localStorage.getItem('completed_courses') || '[]');
+      if (!completedCourses.includes(courseId)) {
+        completedCourses.push(courseId);
+        localStorage.setItem('completed_courses', JSON.stringify(completedCourses));
+        const progressData = loadProgress();
+        progressData.coursesCompleted = completedCourses.length;
+        saveProgress(progressData);
+        toast.success('Course completed! Allahumma barik.');
+        return;
+      }
+    }
+
+    toast.success('Lesson completed!');
   };
 
   const enrollCourse = () => {
@@ -360,26 +382,10 @@ Reflect on how you can implement what you've learned today in your life.
               <CardDescription className="text-lg">{course.description}</CardDescription>
               
               <div className="flex items-center gap-6 mt-4 text-sm text-muted-foreground">
-                {course.instructor && (
-                  <div className="flex items-center gap-1">
-                    <GraduationCap className="h-4 w-4" />
-                    {course.instructor}
-                  </div>
-                )}
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
                   {course.duration}
                 </div>
-                <div className="flex items-center gap-1">
-                  <Users className="h-4 w-4" />
-                  {course.students?.toLocaleString()} students
-                </div>
-                {course.rating && (
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
-                    {course.rating}
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -428,7 +434,12 @@ Reflect on how you can implement what you've learned today in your life.
                   </CardContent>
                 </Card>
               ) : (
-                <Accordion type="single" collapsible className="space-y-4">
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="space-y-4"
+                  defaultValue={course.modules[0]?.id}
+                >
                   {course.modules.map((module, moduleIdx) => (
                     <AccordionItem key={module.id} value={module.id}>
                       <Card>
@@ -448,13 +459,21 @@ Reflect on how you can implement what you've learned today in your life.
                             {module.lessons.map((lesson) => (
                               <Card
                                 key={lesson.id}
+                                role="button"
+                                tabIndex={0}
                                 className={`cursor-pointer transition-all hover:shadow-md ${
                                   currentLesson?.id === lesson.id ? 'ring-2 ring-primary' : ''
                                 }`}
                                 onClick={() => setCurrentLesson(lesson)}
+                                onKeyDown={(event) => {
+                                  if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    setCurrentLesson(lesson);
+                                  }
+                                }}
                               >
                                 <CardContent className="p-4">
-                                  <div className="flex items-center justify-between">
+                                  <div className="flex items-center justify-between gap-3">
                                     <div className="flex items-center gap-3">
                                       {lesson.completed ? (
                                         <CheckCircle2 className="h-5 w-5 text-green-500" />
@@ -465,6 +484,29 @@ Reflect on how you can implement what you've learned today in your life.
                                         <p className="font-medium">{lesson.title}</p>
                                         <p className="text-sm text-muted-foreground">{lesson.duration}</p>
                                       </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={(event) => {
+                                          event.stopPropagation();
+                                          setCurrentLesson(lesson);
+                                        }}
+                                      >
+                                        Open
+                                      </Button>
+                                      {!lesson.completed && (
+                                        <Button
+                                          size="sm"
+                                          onClick={(event) => {
+                                            event.stopPropagation();
+                                            markLessonComplete(lesson.id);
+                                          }}
+                                        >
+                                          Mark Complete
+                                        </Button>
+                                      )}
                                     </div>
                                   </div>
                                 </CardContent>

@@ -437,9 +437,19 @@ export async function GET() {
       },
     ];
 
+    const stripCourseMeta = (course: Record<string, unknown>) => {
+      const { rating, students, instructor, ...rest } = course as {
+        rating?: number;
+        students?: number;
+        instructor?: string;
+        [key: string]: unknown;
+      };
+      return rest;
+    };
+
     return NextResponse.json({
-      freeCourses,
-      specializedCourses,
+      freeCourses: freeCourses.map(stripCourseMeta),
+      specializedCourses: specializedCourses.map(stripCourseMeta),
       reflections,
     });
   } catch (error) {

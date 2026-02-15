@@ -16,7 +16,6 @@ import {
   PlayCircle,
   CheckCircle2,
   Lock,
-  Star,
   ShieldCheck,
   UserPlus,
   Wallet,
@@ -174,16 +173,6 @@ export default function LibraryPage() {
             <span className="flex items-center gap-1">
               <PlayCircle className="h-4 w-4" />
               {course.lessons ?? 0} lessons
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between text-sm">
-            <span className="flex items-center gap-1 text-amber-500">
-              <Star className="h-4 w-4 fill-amber-500" />
-              {course.rating ?? '—'}
-            </span>
-            <span className="text-muted-foreground">
-              {course.students?.toLocaleString() ?? '—'} students
             </span>
           </div>
 

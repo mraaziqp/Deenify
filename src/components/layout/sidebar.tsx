@@ -21,6 +21,7 @@ import {
   Apple,
   Trophy,
   MapPin,
+  Compass,
 } from 'lucide-react';
 import { Icons } from '@/components/icons';
 import type { NavLink } from '@/lib/types';
@@ -37,7 +38,8 @@ const mainNavLinks: NavLink[] = [
 
 const toolNavLinks: NavLink[] = [
   { href: '/zakat', label: 'Zakat Calculator', icon: CircleDollarSign },
-  { href: '/halal-food', label: 'Halal Food', icon: Apple },
+  { href: '/hiblah', label: 'Qiblah Compass', icon: Compass },
+  { href: '/qalal-food', label: 'Halal Food', icon: Apple },
   { href: '/quran', label: 'Quran & Recitations', icon: BookOpen },
   { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
   { href: '/masjid', label: 'Masjid Finder', icon: MapPin },

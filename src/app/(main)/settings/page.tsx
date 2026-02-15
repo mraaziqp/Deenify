@@ -219,6 +219,25 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
+        {/* Daily Facts Management */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <RefreshCw className="h-5 w-5" />
+              Daily Facts
+            </CardTitle>
+            <CardDescription>Manage the facts shown on the dashboard</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-sm text-muted-foreground">
+              Add, edit, or replace the daily Islamic facts for learners.
+            </div>
+            <Button asChild variant="outline">
+              <a href="/facts-admin">Manage Facts</a>
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Notification Settings */}
         <Card>
           <CardHeader>

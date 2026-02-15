@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -8,10 +11,10 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Lock, 
-  CircleDollarSign, 
-  BookOpen, 
+import {
+  Lock,
+  CircleDollarSign,
+  BookOpen,
   Sparkles,
   Award,
   Target,
@@ -19,20 +22,20 @@ import {
   Heart,
   BookMarked,
   Apple,
+  Lightbulb,
+  Compass,
 } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { DailyHadithCard } from '@/components/daily-hadith-card';
 import { PrayerTimesCard } from '@/components/prayer-times-card';
+import { loadProgress, saveProgress } from '@/lib/achievements';
 
-// Mock user progress for the "Slow-Drip" feature
-const userProgress = {
-  completedMilestones: ['welcome', 'salah_basics'],
-  currentStreak: 7,
-  totalDaysActive: 42,
-  coursesCompleted: 2,
-  totalCourses: 12,
-  dhikrCount: 1250,
+type DashboardStats = {
+  currentStreak: number;
+  totalDaysActive: number;
+  coursesCompleted: number;
+  totalCourses: number;
+  dhikrCount: number;
 };
 
 const features = [
@@ -62,18 +65,128 @@ const features = [
   },
 ];
 
-export default function DashboardPage() {
-  const isFeatureUnlocked = (milestone: string) =>
-    userProgress.completedMilestones.includes(milestone);
+const selectDailyFact = (facts: string[], dateKey: string) => {
+  if (!facts.length) return '';
+  let hash = 0;
+  for (const char of dateKey) {
+    hash = (hash * 31 + char.charCodeAt(0)) % facts.length;
+  }
+  return facts[hash];
+};
 
-  const progressPercentage = Math.round(
-    (userProgress.coursesCompleted / userProgress.totalCourses) * 100
-  );
+export default function DashboardPage() {
+  const [dailyFact, setDailyFact] = useState("Loading today's fact...");
+  const [stats, setStats] = useState<DashboardStats>({
+    currentStreak: 0,
+    totalDaysActive: 0,
+    coursesCompleted: 0,
+    totalCourses: 0,
+    dhikrCount: 0,
+  });
+
+  useEffect(() => {
+    const initStats = async () => {
+      const progress = loadProgress();
+      const today = new Date();
+      const todayString = today.toDateString();
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+      const yesterdayString = yesterday.toDateString();
+
+      let appStreak = Number(localStorage.getItem('appStreak') || '0');
+
+      if (progress.lastActiveDate !== todayString) {
+        progress.daysActive = (progress.daysActive || 0) + 1;
+        appStreak = progress.lastActiveDate === yesterdayString ? appStreak + 1 : 1;
+        progress.lastActiveDate = todayString;
+        saveProgress(progress);
+        localStorage.setItem('appStreak', appStreak.toString());
+      } else if (progress.daysActive === 0) {
+        progress.daysActive = 1;
+        appStreak = Math.max(appStreak, 1);
+        saveProgress(progress);
+        localStorage.setItem('appStreak', appStreak.toString());
+      }
+
+      const dhikrCount = Number(localStorage.getItem('dhikrCount') || progress.dhikrCount || 0);
+
+      setStats((prev) => ({
+        ...prev,
+        currentStreak: appStreak,
+        totalDaysActive: progress.daysActive || 0,
+        dhikrCount,
+      }));
+
+      try {
+        const response = await fetch('/api/library');
+        if (!response.ok) return;
+        const data = await response.json();
+        const allCourses = [...(data.freeCourses || []), ...(data.specializedCourses || [])];
+
+        const completedCourses = JSON.parse(localStorage.getItem('completed_courses') || '[]');
+        let completedCount = Array.isArray(completedCourses) ? completedCourses.length : 0;
+
+        if (!completedCount) {
+          const enrolled = JSON.parse(localStorage.getItem('enrolled_courses') || '[]');
+          completedCount = enrolled.filter((courseId: string) => {
+            const course = allCourses.find((item: any) => item.id === courseId);
+            if (!course || !course.lessons) return false;
+            const progressData = JSON.parse(localStorage.getItem(`course_${courseId}`) || '{}');
+            const completedLessons = Object.values(progressData).filter(Boolean).length;
+            return completedLessons >= course.lessons;
+          }).length;
+        }
+
+        progress.coursesCompleted = completedCount;
+        saveProgress(progress);
+
+        setStats((prev) => ({
+          ...prev,
+          coursesCompleted: completedCount,
+          totalCourses: allCourses.length,
+        }));
+      } catch (error) {
+        console.error('Failed to load course stats:', error);
+      }
+    };
+
+    const loadDailyFact = async () => {
+      try {
+        const useCustomFacts = localStorage.getItem('useCustomFacts') === 'true';
+        const customFacts = JSON.parse(localStorage.getItem('customFacts') || '[]');
+
+        let facts: string[] = [];
+        if (useCustomFacts && Array.isArray(customFacts) && customFacts.length > 0) {
+          facts = customFacts;
+        } else {
+          const response = await fetch('/api/facts');
+          if (response.ok) {
+            const data = await response.json();
+            facts = data.facts || [];
+          }
+        }
+
+        const dateKey = new Date().toISOString().slice(0, 10);
+        const fact = selectDailyFact(facts, dateKey) || 'Keep learning something beneficial every day.';
+        setDailyFact(fact);
+      } catch (error) {
+        console.error('Failed to load daily fact:', error);
+        setDailyFact('Keep learning something beneficial every day.');
+      }
+    };
+
+    void initStats();
+    void loadDailyFact();
+  }, []);
+
+  const isFeatureUnlocked = (_milestone: string) => true;
+  const progressPercentage = stats.totalCourses
+    ? Math.round((stats.coursesCompleted / stats.totalCourses) * 100)
+    : 0;
 
   return (
     <div className="container mx-auto p-4 sm:p-0">
       <div className="space-y-6">
-        {/* Welcome Card with enhanced visuals */}
         <Card className="shadow-lg border-l-4 border-l-primary bg-gradient-to-r from-primary/5 to-transparent">
           <CardHeader>
             <div className="flex items-start justify-between">
@@ -88,7 +201,7 @@ export default function DashboardPage() {
               </div>
               <Badge variant="secondary" className="text-base px-4 py-2">
                 <Heart className="h-4 w-4 mr-1 fill-red-500 text-red-500" />
-                Level {Math.floor(userProgress.totalDaysActive / 30) + 1}
+                Level {Math.floor(stats.totalDaysActive / 30) + 1}
               </Badge>
             </div>
           </CardHeader>
@@ -99,8 +212,8 @@ export default function DashboardPage() {
                   <Target className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{userProgress.currentStreak}</p>
-                  <p className="text-sm text-muted-foreground">Day Streak 🔥</p>
+                  <p className="text-2xl font-bold">{stats.currentStreak}</p>
+                  <p className="text-sm text-muted-foreground">Day Streak</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-card rounded-lg border">
@@ -108,7 +221,7 @@ export default function DashboardPage() {
                   <BookMarked className="h-6 w-6 text-accent" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{userProgress.coursesCompleted}/{userProgress.totalCourses}</p>
+                  <p className="text-2xl font-bold">{stats.coursesCompleted}/{stats.totalCourses}</p>
                   <p className="text-sm text-muted-foreground">Courses Done</p>
                 </div>
               </div>
@@ -117,7 +230,7 @@ export default function DashboardPage() {
                   <Clock className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{userProgress.totalDaysActive}</p>
+                  <p className="text-2xl font-bold">{stats.totalDaysActive}</p>
                   <p className="text-sm text-muted-foreground">Days Active</p>
                 </div>
               </div>
@@ -125,7 +238,36 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Learning Progress Card */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Compass className="h-5 w-5 text-primary" />
+                Qiblah Compass
+              </CardTitle>
+              <CardDescription>Find the Qiblah direction quickly</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild className="w-full">
+                <Link href="/qiblah">Open Qiblah Compass</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lightbulb className="h-5 w-5 text-primary" />
+                Islamic Fact of the Day
+              </CardTitle>
+              <CardDescription>Small, steady learning every day</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">{dailyFact}</p>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card className="shadow-md">
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -144,13 +286,11 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Daily Wisdom and Prayer Times Grid */}
         <div className="grid gap-6 md:grid-cols-2">
           <DailyHadithCard />
           <PrayerTimesCard />
         </div>
 
-        {/* Features Grid with enhanced cards */}
         <div>
           <h2 className="text-2xl font-bold mb-4">Islamic Tools & Features</h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -189,17 +329,14 @@ export default function DashboardPage() {
                   <CardContent>
                     {unlocked ? (
                       <Button asChild className="w-full">
-                        <Link href={feature.href}>
-                          Access Tool
-                        </Link>
+                        <Link href={feature.href}>Access Tool</Link>
                       </Button>
                     ) : (
                       <div className="text-sm space-y-2">
                         <div className="p-3 bg-muted/50 rounded-lg">
                           <p className="font-semibold text-foreground">How to unlock:</p>
                           <p className="text-muted-foreground mt-1">
-                            Complete the &quot;Intro to Islamic Finance&quot; course in the
-                            Library.
+                            Complete the required learning milestone.
                           </p>
                         </div>
                       </div>
@@ -210,38 +347,6 @@ export default function DashboardPage() {
             })}
           </div>
         </div>
-
-        {/* Daily Ayah Card with enhanced design */}
-        <Card className="shadow-lg overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
-          <CardHeader className="relative">
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-primary" />
-              Daily Ayah
-            </CardTitle>
-            <CardDescription>Reflection for today</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col md:flex-row gap-6 items-center relative">
-            <div className="relative rounded-lg overflow-hidden shadow-md">
-              <Image
-                src="https://picsum.photos/seed/1/600/400"
-                alt="Mosque architecture"
-                width={300}
-                height={200}
-                className="object-cover"
-                data-ai-hint="mosque architecture"
-              />
-            </div>
-            <blockquote className="space-y-4 border-l-4 border-primary pl-6 flex-1">
-              <p className="text-xl italic leading-relaxed">
-                &quot;And He is with you wherever you are. And Allah, of what you do, is Seeing.&quot;
-              </p>
-              <footer className="text-right">
-                <span className="font-semibold text-primary text-lg">Quran 57:4</span>
-              </footer>
-            </blockquote>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
