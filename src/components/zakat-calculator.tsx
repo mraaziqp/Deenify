@@ -19,8 +19,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Calculator } from 'lucide-react';
 
 const ZAKAT_RATE = 0.025; // 2.5%
-const NISAB_GOLD_GRAMS = 85;
-const NISAB_SILVER_GRAMS = 595;
+const NISAB_GOLD_GRAMS = 87.48; // Standard Nisab for gold
+const NISAB_SILVER_GRAMS = 612.36; // Standard Nisab for silver
+// South African Estimates (updated periodically)
+const ESTIMATED_ZAR_GOLD_NISAB = 130000; // ≈ R130,000
+const ESTIMATED_ZAR_SILVER_NISAB = 9500; // ≈ R9,500
 
 const ZakatSchema = z.object({
   goldPricePerGram: z.coerce.number().min(0, 'Must be positive'),
@@ -44,7 +47,7 @@ function CurrencyInput({ field, label, description }: { field: any, label: strin
       <FormLabel>{label}</FormLabel>
       <FormControl>
         <div className="relative">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">$</span>
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground font-semibold">R</span>
           <Input type="number" placeholder="0.00" className="pl-7" {...field} />
         </div>
       </FormControl>
@@ -61,8 +64,8 @@ export function ZakatCalculator() {
   const form = useForm<ZakatFormData>({
     resolver: zodResolver(ZakatSchema),
     defaultValues: {
-      goldPricePerGram: 65, // Placeholder
-      silverPricePerGram: 0.8, // Placeholder
+      goldPricePerGram: 1485, // R1,485 per gram (South African estimate)
+      silverPricePerGram: 15.5, // R15.50 per gram (South African estimate)
       goldGrams: 0,
       silverGrams: 0,
       cashInHand: 0,
@@ -125,16 +128,18 @@ export function ZakatCalculator() {
             <div className="md:col-span-2 grid gap-6">
               <div className="grid md:grid-cols-2 gap-4 p-4 border rounded-lg">
                 <FormItem>
-                  <FormLabel>Gold Price / gram ($)</FormLabel>
+                  <FormLabel>Gold Price / gram (ZAR)</FormLabel>
                   <FormControl>
                     <Input type="number" {...form.register('goldPricePerGram')} />
                   </FormControl>
+                  <FormDescription>Current SA estimate: R1,485/g</FormDescription>
                 </FormItem>
                 <FormItem>
-                  <FormLabel>Silver Price / gram ($)</FormLabel>
+                  <FormLabel>Silver Price / gram (ZAR)</FormLabel>
                   <FormControl>
                     <Input type="number" {...form.register('silverPricePerGram')} />
                   </FormControl>
+                  <FormDescription>Current SA estimate: R15.50/g</FormDescription>
                 </FormItem>
               </div>
 
@@ -176,20 +181,22 @@ export function ZakatCalculator() {
               <div className="p-6 bg-muted rounded-lg space-y-4 sticky top-24">
                 <h3 className="font-semibold text-lg text-center">Your Zakat Summary</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-muted-foreground">Total Assets</span> <span>${totalAssets.toFixed(2)}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Total Liabilities</span> <span>-${totalLiabilities.toFixed(2)}</span></div>
-                  <div className="flex justify-between font-semibold border-t pt-2 mt-2"><span >Net Zakatable Assets</span> <span>${netAssets.toFixed(2)}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Total Assets</span> <span>R{totalAssets.toFixed(2)}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Total Liabilities</span> <span>-R{totalLiabilities.toFixed(2)}</span></div>
+                  <div className="flex justify-between font-semibold border-t pt-2 mt-2"><span >Net Zakatable Assets</span> <span>R{netAssets.toFixed(2)}</span></div>
                 </div>
                 <div className="text-center p-2 bg-background rounded">
-                  <p className="text-xs text-muted-foreground">Nisab Threshold</p>
-                  <p className="font-bold text-primary">${nisab.toFixed(2)}</p>
+                  <p className="text-xs text-muted-foreground">Nisab Threshold (Silver)</p>
+                  <p className="font-bold text-primary">R{nisab.toFixed(2)}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Est. R9,500 - R130,000</p>
                 </div>
                 <Button onClick={calculateZakat} className="w-full">
                   <Calculator className="mr-2 h-4 w-4" /> Calculate Zakat
                 </Button>
                 <div className="text-center p-4 border-t border-dashed mt-4">
-                    <p className="text-muted-foreground">Zakat Due</p>
-                    <p className="text-3xl font-bold text-primary">${zakatDue.toFixed(2)}</p>
+                    <p className="text-muted-foreground">Zakat Due (2.5%)</p>
+                    <p className="text-3xl font-bold text-primary">R{zakatDue.toFixed(2)}</p>
+                    {zakatDue > 0 && <p className="text-xs text-muted-foreground mt-2">May Allah accept your Zakat</p>}
                 </div>
               </div>
             </div>

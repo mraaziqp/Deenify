@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Play, Bookmark, Volume2, BookOpen, Search } from 'lucide-react';
+import { Play, Pause, Bookmark, Volume2, BookOpen, Search, Loader2 } from 'lucide-react';
 
 interface Surah {
   number: number;
@@ -129,6 +129,70 @@ export default function QuranPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTab, setSelectedTab] = useState('surahs');
   const [savedSurahs, setSavedSurahs] = useState<number[]>([]);
+  const [playingSurah, setPlayingSurah] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Get audio URL for a surah (using Al-Afasy recitation from Islamic.Network CDN)
+  const getAudioUrl = (surahNumber: number): string => {
+    // Pad the number if needed (e.g., 1 -> 001)
+    const paddedNumber = surahNumber.toString().padStart(3, '0');
+    return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${paddedNumber}.mp3`;
+  };
+
+  // Play/Pause audio handler
+  const toggleAudio = async (surahNumber: number) => {
+    // If same surah is playing, pause it
+    if (playingSurah === surahNumber && audioRef.current) {
+      audioRef.current.pause();
+      setPlayingSurah(null);
+      return;
+    }
+
+    // Stop any currently playing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+
+    // Start playing new audio
+    setIsLoading(true);
+    const audio = new Audio(getAudioUrl(surahNumber));
+    audioRef.current = audio;
+
+    audio.addEventListener('loadeddata', () => {
+      setIsLoading(false);
+      setPlayingSurah(surahNumber);
+    });
+
+    audio.addEventListener('ended', () => {
+      setPlayingSurah(null);
+    });
+
+    audio.addEventListener('error', () => {
+      setIsLoading(false);
+      setPlayingSurah(null);
+      alert('Failed to load audio. Please try again.');
+    });
+
+    try {
+      await audio.play();
+    } catch (error) {
+      console.error('Audio playback error:', error);
+      setIsLoading(false);
+      setPlayingSurah(null);
+    }
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   const filteredSurahs = surahs.filter(surah =>
     surah.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -257,11 +321,19 @@ export default function QuranPage() {
                     <div className="flex flex-col gap-2 ml-4">
                       <Button
                         size="sm"
-                        variant="default"
-                        className="bg-teal-600 hover:bg-teal-700"
+                        variant={playingSurah === surah.number ? "secondary" : "default"}
+                        className={playingSurah === surah.number ? "" : "bg-teal-600 hover:bg-teal-700"}
+                        onClick={() => toggleAudio(surah.number)}
+                        disabled={isLoading}
                       >
-                        <Play className="h-4 w-4 mr-2" />
-                        Listen
+                        {isLoading && playingSurah === surah.number ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : playingSurah === surah.number ? (
+                          <Pause className="h-4 w-4 mr-2" />
+                        ) : (
+                          <Play className="h-4 w-4 mr-2" />
+                        )}
+                        {playingSurah === surah.number ? 'Pause' : 'Listen'}
                       </Button>
                       <Button
                         size="sm"

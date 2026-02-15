@@ -2,7 +2,7 @@
 
 /**
  * @fileOverview This file defines a Genkit flow for answering questions about Islam.
- * Currently uses direct LLM response. RAG with Firestore will be implemented after database setup.
+ * Enhanced with proper error handling and debugging for production deployment.
  */
 
 import {ai} from '@/ai/genkit';
@@ -19,7 +19,35 @@ const AskAboutIslamOutputSchema = z.object({
 export type AskAboutIslamOutput = z.infer<typeof AskAboutIslamOutputSchema>;
 
 export async function askAboutIslam(input: AskAboutIslamInput): Promise<AskAboutIslamOutput> {
-  return askAboutIslamFlow(input);
+  try {
+    console.log('[askAboutIslam] Starting flow with question:', input.question);
+    
+    // Check API key is available
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
+    if (!apiKey) {
+      console.error('[askAboutIslam] ERROR: No API key found in environment');
+      return {
+        answer: 'I apologize, but I cannot access the AI service at this moment. Please ensure the API configuration is set up correctly, or contact support.'
+      };
+    }
+    
+    console.log('[askAboutIslam] API key found, invoking flow...');
+    const result = await askAboutIslamFlow(input);
+    console.log('[askAboutIslam] Flow completed successfully');
+    return result;
+    
+  } catch (error) {
+    console.error('[askAboutIslam] ERROR occurred:', error);
+    console.error('[askAboutIslam] Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      type: typeof error,
+    });
+    
+    return {
+      answer: 'I apologize, but I encountered an error while processing your question. This could be due to API connectivity issues or service limitations. Please try again in a moment, or rephrase your question. If the problem persists, please contact support.'
+    };
+  }
 }
 
 // This is the prompt that will be sent to the LLM.
@@ -28,7 +56,7 @@ const askAboutIslamPrompt = ai.definePrompt({
   name: 'askAboutIslamPrompt',
   input: {schema: AskAboutIslamInputSchema},
   output: {schema: AskAboutIslamOutputSchema},
-  system: "You are Deenify, a knowledgeable and compassionate Islamic tutor. Answer the user's question about Islam based on your knowledge of Islamic teachings, the Quran, Hadith, and Islamic jurisprudence. Be respectful, accurate, and helpful. Do not issue fatwas, but provide general Islamic knowledge.",
+  system: "You are Deenify, a knowledgeable and compassionate Islamic tutor serving Muslims in South Africa. Answer the user's question about Islam based on your knowledge of Islamic teachings, the Quran, Hadith, and Islamic jurisprudence. Be respectful, accurate, and helpful. Provide references where possible. Do not issue fatwas, but provide general Islamic knowledge and guidance. When discussing financial matters, remember that South Africa uses the Rand (ZAR) currency.",
   prompt: `Question: {{{question}}}
 
 Please provide a thoughtful and accurate Islamic answer to this question.`,

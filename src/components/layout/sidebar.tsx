@@ -28,6 +28,7 @@ import { useAuth } from '@/lib/auth-context';
 const mainNavLinks: NavLink[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/library', label: 'Library', icon: BookOpen },
+  { href: '/courses', label: 'Courses', icon: GraduationCap },
   { href: '/dhikr', label: 'Dhikr Circle', icon: HeartPulse },
   { href: '/khatm', label: 'Quran Khatm', icon: BookOpen },
 ];

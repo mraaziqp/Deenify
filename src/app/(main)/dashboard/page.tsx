@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { DailyHadithCard } from '@/components/daily-hadith-card';
+import { PrayerTimesCard } from '@/components/prayer-times-card';
 
 // Mock user progress for the "Slow-Drip" feature
 const userProgress = {
@@ -141,6 +143,12 @@ export default function DashboardPage() {
             </p>
           </CardContent>
         </Card>
+
+        {/* Daily Wisdom and Prayer Times Grid */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <DailyHadithCard />
+          <PrayerTimesCard />
+        </div>
 
         {/* Features Grid with enhanced cards */}
         <div>
