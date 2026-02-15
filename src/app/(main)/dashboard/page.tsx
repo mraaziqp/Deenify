@@ -38,6 +38,13 @@ type DashboardStats = {
   dhikrCount: number;
 };
 
+type ActivityItem = {
+  id: string;
+  message: string;
+  type: 'lesson' | 'course';
+  timestamp: string;
+};
+
 const features = [
   {
     id: 'zakat',
@@ -83,6 +90,7 @@ export default function DashboardPage() {
     totalCourses: 0,
     dhikrCount: 0,
   });
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
 
   useEffect(() => {
     const initStats = async () => {
@@ -150,6 +158,11 @@ export default function DashboardPage() {
       }
     };
 
+    const loadActivity = () => {
+      const stored = JSON.parse(localStorage.getItem('activityLog') || '[]');
+      setActivity(Array.isArray(stored) ? stored.slice(0, 6) : []);
+    };
+
     const loadDailyFact = async () => {
       try {
         const useCustomFacts = localStorage.getItem('useCustomFacts') === 'true';
@@ -175,8 +188,18 @@ export default function DashboardPage() {
       }
     };
 
-    void initStats();
-    void loadDailyFact();
+    const refreshAll = () => {
+      void initStats();
+      void loadDailyFact();
+      loadActivity();
+    };
+
+    refreshAll();
+    window.addEventListener('progressUpdated', refreshAll);
+
+    return () => {
+      window.removeEventListener('progressUpdated', refreshAll);
+    };
   }, []);
 
   const isFeatureUnlocked = (_milestone: string) => true;
@@ -290,6 +313,34 @@ export default function DashboardPage() {
           <DailyHadithCard />
           <PrayerTimesCard />
         </div>
+
+        <Card className="shadow-md">
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+            <CardDescription>Your latest learning updates</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {activity.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No activity yet. Complete a lesson to get started.</p>
+            ) : (
+              <div className="space-y-3">
+                {activity.map((item) => (
+                  <div key={item.id} className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-medium">{item.message}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(item.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="capitalize">
+                      {item.type}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         <div>
           <h2 className="text-2xl font-bold mb-4">Islamic Tools & Features</h2>

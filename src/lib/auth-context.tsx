@@ -27,6 +27,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const roles: UserRole[] = ['student', 'teacher', 'verifier', 'admin'];
+
     // TODO: Check for existing session (from cookie, localStorage, etc.)
     // For now, simulate checking auth state
     const checkAuth = async () => {
@@ -34,14 +36,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Example: const session = await fetch('/api/auth/session');
         // const data = await session.json();
         // setUser(data.user);
-        
+
         // Mock user for development - remove this in production
         const mockUser: User = {
           id: 'dev-user-1',
           name: 'Abdullah',
           email: 'abdullah@deenify.com',
-          role: 'student', // Change to 'teacher' or 'verifier' to test different views
+          role: 'student',
         };
+
+        const storedRole = typeof window !== 'undefined'
+          ? localStorage.getItem('devRole')
+          : null;
+        if (storedRole && roles.includes(storedRole as UserRole)) {
+          mockUser.role = storedRole as UserRole;
+        }
+
         setUser(mockUser);
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -51,7 +61,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
+    const handleRoleChange = () => {
+      const storedRole = localStorage.getItem('devRole');
+      if (!storedRole || !roles.includes(storedRole as UserRole)) return;
+      setUser((prev) => (prev ? { ...prev, role: storedRole as UserRole } : prev));
+    };
+
     checkAuth();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('devRoleChanged', handleRoleChange);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('devRoleChanged', handleRoleChange);
+      }
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {

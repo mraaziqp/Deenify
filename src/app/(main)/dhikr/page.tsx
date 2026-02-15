@@ -4,15 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { HeartPulse, PlusCircle, MinusCircle, RefreshCw, Users, Target } from "lucide-react";
+import { HeartPulse, PlusCircle, MinusCircle, RefreshCw, Target } from "lucide-react";
 import { useState, useEffect } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { loadProgress, saveProgress } from '@/lib/achievements';
 
 export default function DhikrPage() {
   const [count, setCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [globalCount] = useState(1247830); // Mock global count
+  const [streak, setStreak] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const dailyGoal = 100;
   const progress = Math.min((count / dailyGoal) * 100, 100);
@@ -23,16 +24,33 @@ export default function DhikrPage() {
     const savedDate = localStorage.getItem('dhikrDate');
     const today = new Date().toDateString();
 
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayString = yesterday.toDateString();
+    let storedStreak = Number(localStorage.getItem('dhikrStreak') || '0');
+
     if (savedDate === today && savedCount) {
       setCount(parseInt(savedCount, 10));
     } else {
+      if (savedDate && savedDate !== today) {
+        const previousCount = parseInt(savedCount || '0', 10);
+        if (previousCount > 0) {
+          storedStreak = savedDate === yesterdayString ? storedStreak + 1 : 1;
+        } else {
+          storedStreak = 0;
+        }
+        localStorage.setItem('dhikrStreak', storedStreak.toString());
+      }
+
       // New day - reset count
       localStorage.setItem('dhikrDate', today);
       localStorage.setItem('dhikrCount', '0');
       if (savedDate && savedDate !== today && parseInt(savedCount || '0', 10) > 0) {
-        toast('🌅 New day! Your counter has been reset.', { duration: 3000 });
+        toast('New day! Your counter has been reset.', { duration: 3000 });
       }
     }
+
+    setStreak(Number(localStorage.getItem('dhikrStreak') || storedStreak || 0));
     setIsLoaded(true);
   }, []);
 
@@ -40,6 +58,11 @@ export default function DhikrPage() {
   useEffect(() => {
     if (isLoaded) {
       localStorage.setItem('dhikrCount', count.toString());
+      const progressData = loadProgress();
+      progressData.dhikrCount = count;
+      progressData.dhikrStreak = Number(localStorage.getItem('dhikrStreak') || streak || 0);
+      saveProgress(progressData);
+      window.dispatchEvent(new Event('progressUpdated'));
       
       // Show milestone toasts
       if (count === dailyGoal) {
@@ -101,19 +124,17 @@ export default function DhikrPage() {
         </div>
       </div>
 
-      {/* Global Stats */}
+      {/* Daily Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-full">
-                <Users className="h-5 w-5 text-primary" />
+                <HeartPulse className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-primary">
-                  {globalCount.toLocaleString()}
-                </p>
-                <p className="text-sm text-muted-foreground">Global Dhikr Today</p>
+                <p className="text-2xl font-bold text-primary">{count.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">Your Dhikr Today</p>
               </div>
             </div>
           </CardContent>
@@ -126,10 +147,8 @@ export default function DhikrPage() {
                 <Target className="h-5 w-5 text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-accent">
-                  {count.toLocaleString()}
-                </p>
-                <p className="text-sm text-muted-foreground">Your Count Today</p>
+                <p className="text-2xl font-bold text-accent">{dailyGoal}</p>
+                <p className="text-sm text-muted-foreground">Daily Goal</p>
               </div>
             </div>
           </CardContent>
@@ -142,8 +161,8 @@ export default function DhikrPage() {
                 <HeartPulse className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-primary">45,892</p>
-                <p className="text-sm text-muted-foreground">Active Members</p>
+                <p className="text-2xl font-bold text-primary">{streak}</p>
+                <p className="text-sm text-muted-foreground">Day Streak</p>
               </div>
             </div>
           </CardContent>

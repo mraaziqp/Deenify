@@ -21,10 +21,18 @@ export default function AchievementsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   useEffect(() => {
-    const userProgress = loadProgress();
-    setProgress(userProgress);
-    const userAchievements = checkAchievements(userProgress);
-    setAchievements(userAchievements);
+    const refresh = () => {
+      const userProgress = loadProgress();
+      setProgress(userProgress);
+      const userAchievements = checkAchievements(userProgress);
+      setAchievements(userAchievements);
+    };
+
+    refresh();
+    window.addEventListener('progressUpdated', refresh);
+    return () => {
+      window.removeEventListener('progressUpdated', refresh);
+    };
   }, []);
 
   if (!progress) {

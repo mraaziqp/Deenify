@@ -253,20 +253,30 @@ Reflect on how you can implement what you've learned today in your life.
     ];
   };
 
+  const addActivity = (message: string, type: 'lesson' | 'course') => {
+    const activity = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      message,
+      type,
+      timestamp: new Date().toISOString(),
+    };
+    const existing = JSON.parse(localStorage.getItem('activityLog') || '[]');
+    const updated = [activity, ...(Array.isArray(existing) ? existing : [])].slice(0, 20);
+    localStorage.setItem('activityLog', JSON.stringify(updated));
+  };
+
   const markLessonComplete = (lessonId: string) => {
     if (!course) return;
-    
-    // Update state
+
     const updatedModules = course.modules.map(module => ({
       ...module,
       lessons: module.lessons.map(lesson =>
         lesson.id === lessonId ? { ...lesson, completed: true } : lesson
       ),
     }));
-    
+
     setCourse({ ...course, modules: updatedModules });
-    
-    // Save to localStorage
+
     const progress = JSON.parse(localStorage.getItem(`course_${courseId}`) || '{}');
     progress[lessonId] = true;
     localStorage.setItem(`course_${courseId}`, JSON.stringify(progress));
@@ -285,11 +295,15 @@ Reflect on how you can implement what you've learned today in your life.
         const progressData = loadProgress();
         progressData.coursesCompleted = completedCourses.length;
         saveProgress(progressData);
-        toast.success('Course completed! Allahumma barik.');
+        addActivity(`Completed course: ${course.title}`, 'course');
+        window.dispatchEvent(new Event('progressUpdated'));
+        toast.success('Course completed!');
         return;
       }
     }
 
+    addActivity(`Completed lesson: ${course.title}`, 'lesson');
+    window.dispatchEvent(new Event('progressUpdated'));
     toast.success('Lesson completed!');
   };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +46,8 @@ import {
 export default function SettingsPage() {
   const { user } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
+  const [devRole, setDevRole] = useState('student');
+  const isDev = process.env.NODE_ENV !== 'production';
 
   const [settings, setSettings] = useState({
     // Profile
@@ -69,6 +71,21 @@ export default function SettingsPage() {
     language: 'en',
     theme: 'system' as 'light' | 'dark' | 'system',
   });
+
+  useEffect(() => {
+    if (!isDev) return;
+    const storedRole = localStorage.getItem('devRole');
+    if (storedRole) {
+      setDevRole(storedRole);
+    }
+  }, [isDev]);
+
+  const handleDevRoleChange = (role: string) => {
+    setDevRole(role);
+    localStorage.setItem('devRole', role);
+    window.dispatchEvent(new Event('devRoleChanged'));
+    toast.success(`Role set to ${role}`, { duration: 2000 });
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -237,6 +254,40 @@ export default function SettingsPage() {
             </Button>
           </CardContent>
         </Card>
+
+        {isDev && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ShieldCheck className="h-5 w-5" />
+                Dev Tools
+              </CardTitle>
+              <CardDescription>Testing helpers for role-based access</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <Label htmlFor="dev-role">Impersonate Role</Label>
+                <Select
+                  value={devRole}
+                  onValueChange={handleDevRoleChange}
+                >
+                  <SelectTrigger id="dev-role" className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="student">Student</SelectItem>
+                    <SelectItem value="teacher">Teacher</SelectItem>
+                    <SelectItem value="verifier">Verifier</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground mt-2">
+                  This only affects local testing in this browser.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Notification Settings */}
         <Card>
