@@ -119,10 +119,6 @@ export default function KhatmPage() {
       });
     }
   };
-          : juz
-      )
-    );
-  };
 
   const availableCount = juzData.filter(j => j.status === 'available').length;
   const takenCount = juzData.filter(j => j.status === 'taken').length;
