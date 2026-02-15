@@ -50,7 +50,7 @@ const getStockFinancials = ai.defineTool({
     impureIncome: z.number().describe('Total impure income of the company.'),
     revenue: z.number().describe('Total revenue of the company.'),
   }),
-  async (input) => {
+  handler: async (input) => {
     // Placeholder implementation - replace with actual financial data API
     console.log(`Fetching financial data for ${input.ticker}`);
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -83,7 +83,7 @@ const getBusinessActivity = ai.defineTool({
       'Defense',
       'Media',
   ]),
-  async (input) => {
+  handler: async (input) => {
     // Placeholder implementation - replace with actual business data API
     console.log(`Fetching business activity for ${input.ticker}`);
     await new Promise(resolve => setTimeout(resolve, 1000));

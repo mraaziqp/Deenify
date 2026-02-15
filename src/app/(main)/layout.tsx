@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { AppSidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
+import { DailyReminders } from '@/components/daily-reminders';
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,6 +13,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
+      <DailyReminders />
     </div>
   );
 }

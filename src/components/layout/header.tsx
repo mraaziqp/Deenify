@@ -8,9 +8,8 @@ import {
   HeartHandshake,
   HeartPulse,
   CircleDollarSign,
-  ScrollText,
   BotMessageSquare,
-  TrendingUp,
+  Apple,
   Landmark,
 } from 'lucide-react';
 
@@ -37,9 +36,9 @@ const navLinks: NavLink[] = [
   { type: 'divider' },
   { type: 'title', label: 'Tools' },
   { href: '/zakat', label: 'Zakat Calculator', icon: CircleDollarSign },
-  { href: '/halal-screener', label: 'Halal Screener', icon: TrendingUp },
+  { href: '/halal-food', label: 'Halal Food', icon: Apple },
+  { href: '/quran', label: 'Quran & Recitations', icon: BookOpen },
   { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
-  { href: '/wasiya', label: 'Wasiya Generator', icon: ScrollText },
 ];
 
 export function Header() {

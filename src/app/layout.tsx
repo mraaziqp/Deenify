@@ -3,6 +3,8 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { AuroraBackground } from '@/components/ui/aurora-background';
+import { AuthProvider } from '@/lib/auth-context';
+import { DevRoleSwitcher } from '@/components/dev-role-switcher';
 
 export const metadata: Metadata = {
   title: 'Deenify',
@@ -22,10 +24,13 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn('font-body antialiased')}>
-        <AuroraBackground>
-          {children}
-        </AuroraBackground>
-        <Toaster />
+        <AuthProvider>
+          <AuroraBackground>
+            {children}
+          </AuroraBackground>
+          <Toaster />
+          <DevRoleSwitcher />
+        </AuthProvider>
       </body>
     </html>
   );

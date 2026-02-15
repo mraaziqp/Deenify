@@ -1,19 +1,12 @@
 'use server';
 
 /**
- * @fileOverview This file defines a Genkit flow for answering questions about Islam using Retrieval-Augmented Generation (RAG).
- *
- * - askAboutIslam - A function that processes user questions, retrieves relevant Hadiths, and returns an AI-generated answer.
- * - AskAboutIslamInput - The input type for the askAboutIslam function.
- * - AskAboutIslamOutput - The return type for the askAboutIslam function.
+ * @fileOverview This file defines a Genkit flow for answering questions about Islam.
+ * Currently uses direct LLM response. RAG with Firestore will be implemented after database setup.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {
-  defineFirestoreRetriever,
-  firestoreVectorRetriever,
-} from '@genkit-ai/google-genai';
 
 const AskAboutIslamInputSchema = z.object({
   question: z.string().describe('The question about Islam the user wants to ask.'),
@@ -21,7 +14,7 @@ const AskAboutIslamInputSchema = z.object({
 export type AskAboutIslamInput = z.infer<typeof AskAboutIslamInputSchema>;
 
 const AskAboutIslamOutputSchema = z.object({
-  answer: z.string().describe('The AI-generated answer to the user\'s question, based on retrieved knowledge.'),
+  answer: z.string().describe('The AI-generated answer to the user\'s question.'),
 });
 export type AskAboutIslamOutput = z.infer<typeof AskAboutIslamOutputSchema>;
 
@@ -29,32 +22,18 @@ export async function askAboutIslam(input: AskAboutIslamInput): Promise<AskAbout
   return askAboutIslamFlow(input);
 }
 
-// This defines the retriever for our knowledge base.
-// We are telling Genkit where to look for the data and what field contains the content.
-const hadithKnowledgeRetriever = defineFirestoreRetriever({
-    name: 'hadithKnowledgeRetriever',
-    collection: 'knowledge_nodes',
-    contentField: 'content.en',
-});
-
-
 // This is the prompt that will be sent to the LLM.
-// It includes a system instruction and the user's question.
-// Crucially, it uses a Handlebars helper `retrieve` to perform the RAG lookup.
+// TODO: Implement RAG with Firestore retriever after database setup
 const askAboutIslamPrompt = ai.definePrompt({
   name: 'askAboutIslamPrompt',
   input: {schema: AskAboutIslamInputSchema},
   output: {schema: AskAboutIslamOutputSchema},
-  system: "You are Deenify, a gentle Islamic tutor. Answer the user's question using only the context provided below. Cite the Hadith number if available. Do not give fatwas.",
-  prompt: `QUESTION: {{{question}}}
+  system: "You are Deenify, a knowledgeable and compassionate Islamic tutor. Answer the user's question about Islam based on your knowledge of Islamic teachings, the Quran, Hadith, and Islamic jurisprudence. Be respectful, accurate, and helpful. Do not issue fatwas, but provide general Islamic knowledge.",
+  prompt: `Question: {{{question}}}
 
-CONTEXT:
-{{#each (await retrieve from hadithKnowledgeRetriever with question)}}
-  - {{document.content}} (Sahih al-Bukhari {{document.metadata.hadith_number}})
-{{/each}}
-`,
+Please provide a thoughtful and accurate Islamic answer to this question.`,
   config: {
-    // Safety settings to prevent harmful content, aligned with Islamic values.
+    // Safety settings aligned with Islamic values
     safetySettings: [
       {
         category: 'HARM_CATEGORY_HATE_SPEECH',
@@ -80,7 +59,7 @@ CONTEXT:
   },
 });
 
-// This is the main flow that orchestrates the RAG process.
+// Main flow for answering Islam questions
 const askAboutIslamFlow = ai.defineFlow(
   {
     name: 'askAboutIslamFlow',
@@ -88,30 +67,8 @@ const askAboutIslamFlow = ai.defineFlow(
     outputSchema: AskAboutIslamOutputSchema,
   },
   async (input) => {
-    // Step 1: Retrieval Guardrail
-    // We manually retrieve documents first to check the similarity score.
-    const documents = await firestoreVectorRetriever({
-      collection: 'knowledge_nodes',
-      contentField: 'content.en',
-      vectorField: 'embedding', // Assumes embedding field from previous steps
-    })(input.question, {k: 3});
-
-    // Filter out documents with a score below our confidence threshold.
-    const validDocs = documents.filter(doc => doc.score >= 0.6);
-
-    // If no sufficiently relevant documents are found, return a polite refusal.
-    if (validDocs.length === 0) {
-        return {
-            answer: "I can only answer questions based on the Quran and Sahih Bukhari. I did not find a direct reference for this in my current knowledge base."
-        };
-    }
-    
-    // Step 2: Synthesis
-    // Pass the validated documents as context to the prompt.
-    const {output} = await askAboutIslamPrompt(input, {
-      context: validDocs.map(d => d.document)
-    });
-    
+    // Call the LLM with the prompt
+    const {output} = await askAboutIslamPrompt(input);
     return output!;
   }
 );

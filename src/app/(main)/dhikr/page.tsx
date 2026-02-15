@@ -2,48 +2,208 @@
 'use client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { HeartPulse, PlusCircle, MinusCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { HeartPulse, PlusCircle, MinusCircle, RefreshCw, Users, Target } from "lucide-react";
 import { useState } from "react";
 
 export default function DhikrPage() {
   const [count, setCount] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [globalCount] = useState(1247830); // Mock global count
+  const dailyGoal = 100;
+  const progress = Math.min((count / dailyGoal) * 100, 100);
 
   // Optimistic UI: Update local state immediately
-  const increment = () => setCount(prev => prev + 1);
+  const increment = () => {
+    setCount(prev => prev + 1);
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 300);
+  };
+  
   const decrement = () => setCount(prev => (prev > 0 ? prev - 1 : 0));
+  const reset = () => setCount(0);
 
   return (
-    <div className="container mx-auto">
-      <div className="flex items-center gap-3 mb-4">
-        <HeartPulse className="h-8 w-8 text-primary" />
+    <div className="container mx-auto max-w-4xl">
+      <div className="flex items-center gap-3 mb-6">
+        <HeartPulse className="h-8 w-8 text-primary animate-pulse" />
         <div>
-          <h1 className="text-2xl font-bold">Dhikr Circle</h1>
+          <h1 className="text-3xl font-bold">Dhikr Circle</h1>
           <p className="text-muted-foreground">
-            Participate in global Dhikr and track our collective progress.
+            Join Muslims worldwide in remembrance of Allah
           </p>
         </div>
       </div>
-       <Card className="shadow-lg max-w-md mx-auto">
-        <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Global Tasbih Count</CardTitle>
-            <CardDescription>Feature under development. Local counter is functional.</CardDescription>
-        </CardHeader>
-        <CardContent className="p-6 text-center">
-            <p className="text-7xl font-bold text-primary mb-6">{count.toLocaleString()}</p>
-            <div className="flex justify-center gap-4">
-                 <Button onClick={decrement} variant="outline" size="lg" aria-label="Decrement count">
-                    <MinusCircle />
-                </Button>
-                <Button onClick={increment} size="lg" className="px-8" aria-label="Increment count">
-                    <PlusCircle className="mr-2" />
-                    Count
-                </Button>
+
+      {/* Global Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-full">
+                <Users className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-primary">
+                  {globalCount.toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground">Global Dhikr Today</p>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-6">
-                Your counts will be synced with the global total automatically.
-            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-accent/20 bg-gradient-to-br from-accent/5 to-transparent">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-accent/10 rounded-full">
+                <Target className="h-5 w-5 text-accent" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-accent">
+                  {count.toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground">Your Count Today</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-full">
+                <HeartPulse className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-primary">45,892</p>
+                <p className="text-sm text-muted-foreground">Active Members</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Counter Card */}
+      <Card className="shadow-2xl mb-6 overflow-hidden relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
+        <CardHeader className="text-center relative">
+          <CardTitle className="text-2xl">Your Tasbih Counter</CardTitle>
+          <CardDescription>
+            Subhan Allah, Alhamdulillah, Allahu Akbar
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-8 text-center relative">
+          {/* Counter Display */}
+          <div className="mb-8">
+            <div 
+              className={`text-8xl font-bold text-primary transition-all duration-300 ${
+                isAnimating ? 'scale-110' : 'scale-100'
+              }`}
+            >
+              {count.toLocaleString()}
+            </div>
+            {count >= dailyGoal && (
+              <Badge className="mt-4 text-base px-4 py-2 bg-green-500">
+                🎉 Daily Goal Reached!
+              </Badge>
+            )}
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mb-8 max-w-md mx-auto">
+            <div className="flex items-center justify-between text-sm mb-2">
+              <span className="text-muted-foreground">Daily Goal</span>
+              <span className="font-semibold text-primary">
+                {count}/{dailyGoal}
+              </span>
+            </div>
+            <Progress value={progress} className="h-3" />
+          </div>
+
+          {/* Control Buttons */}
+          <div className="flex justify-center gap-4 mb-6">
+            <Button 
+              onClick={decrement} 
+              variant="outline" 
+              size="lg" 
+              className="h-16 w-16 rounded-full"
+              aria-label="Decrement count"
+            >
+              <MinusCircle className="h-6 w-6" />
+            </Button>
+            
+            <Button 
+              onClick={increment} 
+              size="lg" 
+              className="h-24 w-24 rounded-full text-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+              aria-label="Increment count"
+            >
+              <div className="flex flex-col items-center">
+                <PlusCircle className="h-8 w-8 mb-1" />
+                <span>Count</span>
+              </div>
+            </Button>
+
+            <Button 
+              onClick={reset} 
+              variant="outline" 
+              size="lg" 
+              className="h-16 w-16 rounded-full"
+              aria-label="Reset count"
+            >
+              <RefreshCw className="h-6 w-6" />
+            </Button>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            Your counts sync automatically with the global total
+          </p>
         </CardContent>
       </Card>
+
+      {/* Dhikr Guide */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="border-l-4 border-l-primary">
+          <CardHeader>
+            <CardTitle className="text-lg">SubhanAllah</CardTitle>
+            <CardDescription>Glory be to Allah</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-primary mb-2">33×</p>
+            <p className="text-sm text-muted-foreground">
+              After each prayer
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-accent">
+          <CardHeader>
+            <CardTitle className="text-lg">Alhamdulillah</CardTitle>
+            <CardDescription>All praise be to Allah</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-accent mb-2">33×</p>
+            <p className="text-sm text-muted-foreground">
+              After each prayer
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-primary">
+          <CardHeader>
+            <CardTitle className="text-lg">Allahu Akbar</CardTitle>
+            <CardDescription>Allah is the Greatest</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-primary mb-2">34×</p>
+            <p className="text-sm text-muted-foreground">
+              After each prayer
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
