@@ -1,13 +1,28 @@
-import {createApp} from '@genkit-ai/next';
-import {config} from 'dotenv';
+import { NextRequest, NextResponse } from 'next/server';
+import { config } from 'dotenv';
 config();
+
+// Import AI flows to register them
 import '@/ai/dev';
 
-export const {GET, POST} = createApp({
-  auth: async (auth) => {
-    // Return a non-empty object to authorize requests to this endpoint.
-    // Production applications should implement their own authorization logic.
-    return {};
-  },
-  allowCors: true,
-});
+export async function GET(request: NextRequest) {
+  return NextResponse.json({ 
+    message: 'Genkit API endpoint',
+    status: 'operational' 
+  });
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    return NextResponse.json({ 
+      success: true,
+      data: body 
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Invalid request' },
+      { status: 400 }
+    );
+  }
+}
