@@ -20,7 +20,15 @@ export interface UserProgress {
 }
 
 export const achievementsList: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = [
-  // Dhikr Achievements
+  // Dhikr Achievements (daily counts)
+  {
+    id: 'dhikr_first_33',
+    title: 'First Steps',
+    description: 'Complete 33 Dhikr in a single day (1 Tasbih)',
+    icon: '🌙',
+    category: 'dhikr',
+    requirement: 33,
+  },
   {
     id: 'dhikr_first_100',
     title: 'First Century',
@@ -30,26 +38,26 @@ export const achievementsList: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = 
     requirement: 100,
   },
   {
-    id: 'dhikr_500',
+    id: 'dhikr_300',
     title: 'Devoted Rememberer',
-    description: 'Reach 500 Dhikr in one day',
+    description: 'Reach 300 Dhikr in one day',
     icon: '✨',
     category: 'dhikr',
-    requirement: 500,
+    requirement: 300,
   },
   {
-    id: 'dhikr_1000',
-    title: 'Master of Remembrance',
-    description: 'Complete 1000 Dhikr in one day',
-    icon: '💫',
+    id: 'dhikr_streak_3',
+    title: 'Building Habits',
+    description: 'Maintain a 3-day Dhikr streak',
+    icon: '🔥',
     category: 'dhikr',
-    requirement: 1000,
+    requirement: 3,
   },
   {
     id: 'dhikr_streak_7',
     title: 'Week Warrior',
     description: 'Maintain a 7-day Dhikr streak',
-    icon: '🔥',
+    icon: '⚡',
     category: 'dhikr',
     requirement: 7,
   },
@@ -62,11 +70,19 @@ export const achievementsList: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = 
     requirement: 30,
   },
   
-  // Quran Achievements
+  // Quran Achievements (realistic reading goals)
+  {
+    id: 'quran_pages_5',
+    title: 'First Pages',
+    description: 'Read 5 pages of the Quran',
+    icon: '📗',
+    category: 'quran',
+    requirement: 5,
+  },
   {
     id: 'quran_juz_1',
     title: 'First Juz',
-    description: 'Complete reading your first Juz',
+    description: 'Complete reading your first Juz (20 pages)',
     icon: '📖',
     category: 'quran',
     requirement: 1,
@@ -74,21 +90,29 @@ export const achievementsList: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = 
   {
     id: 'quran_juz_5',
     title: 'Consistent Reader',
-    description: 'Complete 5 Juz',
+    description: 'Complete 5 Juz (100 pages)',
     icon: '📚',
     category: 'quran',
     requirement: 5,
   },
   {
+    id: 'quran_juz_15',
+    title: 'Halfway There',
+    description: 'Complete 15 Juz (half the Quran)',
+    icon: '🌗',
+    category: 'quran',
+    requirement: 15,
+  },
+  {
     id: 'quran_khatm',
     title: 'Khatm Completer',
-    description: 'Complete an entire Quran reading',
+    description: 'Complete an entire Quran reading (30 Juz)',
     icon: '🌙',
     category: 'quran',
     requirement: 30,
   },
   
-  // Khatm Circle Achievements
+  // Khatm Circle Achievements (collaborative reading)
   {
     id: 'khatm_participate',
     title: 'Circle Participant',
@@ -98,12 +122,20 @@ export const achievementsList: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = 
     requirement: 1,
   },
   {
-    id: 'khatm_complete_5',
+    id: 'khatm_complete_3',
     title: 'Dedicated Reciter',
-    description: 'Complete 5 Juz in Khatm circles',
+    description: 'Complete 3 Juz in Khatm circles',
     icon: '⭐',
     category: 'khatm',
-    requirement: 5,
+    requirement: 3,
+  },
+  {
+    id: 'khatm_complete_10',
+    title: 'Circle Champion',
+    description: 'Complete 10 Juz in Khatm circles',
+    icon: '🏅',
+    category: 'khatm',
+    requirement: 10,
   },
   
   // Course Achievements
@@ -116,15 +148,31 @@ export const achievementsList: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = 
     requirement: 1,
   },
   {
-    id: 'course_all',
+    id: 'course_three',
     title: 'Knowledge Seeker',
-    description: 'Complete all available courses',
-    icon: '🏅',
+    description: 'Complete 3 courses',
+    icon: '📚',
     category: 'courses',
     requirement: 3,
   },
+  {
+    id: 'course_five',
+    title: 'Scholar in Training',
+    description: 'Complete 5 courses',
+    icon: '🏅',
+    category: 'courses',
+    requirement: 5,
+  },
   
-  // General Achievements
+  // General Achievements (app usage)
+  {
+    id: 'general_3day_active',
+    title: 'Getting Started',
+    description: 'Use the app for 3 consecutive days',
+    icon: '🌱',
+    category: 'general',
+    requirement: 3,
+  },
   {
     id: 'general_week_active',
     title: 'Consistent User',
@@ -156,28 +204,42 @@ export function checkAchievements(progress: UserProgress): Achievement[] {
     let unlocked = false;
     
     switch (achievement.id) {
+      // Dhikr count achievements
+      case 'dhikr_first_33':
       case 'dhikr_first_100':
-      case 'dhikr_500':
-      case 'dhikr_1000':
+      case 'dhikr_300':
         unlocked = progress.dhikrCount >= achievement.requirement;
         break;
+      // Dhikr streak achievements
+      case 'dhikr_streak_3':
       case 'dhikr_streak_7':
       case 'dhikr_streak_30':
         unlocked = progress.dhikrStreak >= achievement.requirement;
         break;
+      // Quran reading achievements (pages and Juz)
+      case 'quran_pages_5':
+        unlocked = progress.quranPagesRead >= achievement.requirement;
+        break;
       case 'quran_juz_1':
       case 'quran_juz_5':
+      case 'quran_juz_15':
       case 'quran_khatm':
         unlocked = Math.floor(progress.quranPagesRead / 20) >= achievement.requirement;
         break;
+      // Khatm circle achievements
       case 'khatm_participate':
-      case 'khatm_complete_5':
+      case 'khatm_complete_3':
+      case 'khatm_complete_10':
         unlocked = progress.khatmJuzCompleted >= achievement.requirement;
         break;
+      // Course achievements
       case 'course_first':
-      case 'course_all':
+      case 'course_three':
+      case 'course_five':
         unlocked = progress.coursesCompleted >= achievement.requirement;
         break;
+      // General app usage achievements
+      case 'general_3day_active':
       case 'general_week_active':
       case 'general_month_active':
         unlocked = progress.daysActive >= achievement.requirement;

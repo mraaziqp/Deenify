@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,7 @@ type LibraryResponse = {
 };
 
 export default function LibraryPage() {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [data, setData] = useState<LibraryResponse>({ freeCourses: [], specializedCourses: [], reflections: [] });
   const [loading, setLoading] = useState(true);
@@ -203,6 +205,7 @@ export default function LibraryPage() {
           <Button 
             className="w-full" 
             variant={course.enrolled ? "default" : "outline"}
+            onClick={() => router.push(`/library/${course.id}`)}
             disabled={isLocked || isPending}
           >
             {isLocked ? (

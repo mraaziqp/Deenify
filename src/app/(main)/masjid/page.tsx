@@ -14,6 +14,7 @@ import {
   ExternalLink 
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import toast from 'react-hot-toast';
 
 interface Masjid {
   name: string;
@@ -137,6 +138,11 @@ export default function MasjidFinderPage() {
     return `https://www.google.com/maps/search/?api=1&query=${query}`;
   };
 
+  const openDirections = (masjid: Masjid) => {
+    toast.success(`Opening directions to ${masjid.name}...`);
+    window.open(getDirectionsUrl(masjid), '_blank');
+  };
+
   return (
     <div className="container mx-auto max-w-6xl">
       <div className="flex items-center gap-3 mb-6">
@@ -257,7 +263,7 @@ export default function MasjidFinderPage() {
                 <div className="flex flex-col gap-2">
                   <Button
                     size="sm"
-                    onClick={() => window.open(getDirectionsUrl(masjid), '_blank')}
+                    onClick={() => openDirections(masjid)}
                     className="whitespace-nowrap"
                   >
                     <Navigation className="h-4 w-4 mr-2" />

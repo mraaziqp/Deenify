@@ -6,8 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Play, Pause, Bookmark, Volume2, BookOpen, Search, Loader2 } from 'lucide-react';
+import { Play, Pause, Bookmark, Volume2, BookOpen, Search, Loader2, CheckCircle2 } from 'lucide-react';
 import { allSurahs, type Surah } from '@/lib/quran-data';
+import toast from 'react-hot-toast';
 
 // Use the complete 114 Surah list
 const surahs: Surah[] = allSurahs;
@@ -19,14 +20,15 @@ interface Reciter {
   name: string;
   country: string;
   style: string;
+  slug: string; // For API endpoint
 }
 
 const reciters: Reciter[] = [
-  { name: 'Abdur-Rahman as-Sudais', country: 'Saudi Arabia', style: 'Tajweed with emotion' },
-  { name: 'Mishary Rashid al-Afasy', country: 'Kuwait', style: 'Clear and beautiful' },
-  { name: 'Saad al-Ghamidi', country: 'Saudi Arabia', style: 'Powerful and moving' },
-  { name: 'Muhammad Ayyoub', country: 'Saudi Arabia', style: 'Slow and meditative' },
-  { name: 'Hani ar-Rifai', country: 'Syria', style: 'Smooth and melodious' },
+  { name: 'Abdur-Rahman as-Sudais', country: 'Saudi Arabia', style: 'Tajweed with emotion', slug: 'ar.abdurrahmaansudais' },
+  { name: 'Mishary Rashid al-Afasy', country: 'Kuwait', style: 'Clear and beautiful', slug: 'ar.alafasy' },
+  { name: 'Saad al-Ghamidi', country: 'Saudi Arabia', style: 'Powerful and moving', slug: 'ar.saadalghamadi' },
+  { name: 'Muhammad Ayyoub', country: 'Saudi Arabia', style: 'Slow and meditative', slug: 'ar.muhammadayyoub' },
+  { name: 'Hani ar-Rifai', country: 'Syria', style: 'Smooth and melodious', slug: 'ar.hanirifai' },
 ];
 
 export default function QuranPage() {
@@ -35,13 +37,14 @@ export default function QuranPage() {
   const [savedSurahs, setSavedSurahs] = useState<number[]>([]);
   const [playingSurah, setPlayingSurah] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedReciter, setSelectedReciter] = useState<Reciter>(reciters[1]); // Default to Al-Afasy
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Get audio URL for a surah (using Al-Afasy recitation from Islamic.Network CDN)
+  // Get audio URL for a surah (using selected recitation from Islamic.Network CDN)
   const getAudioUrl = (surahNumber: number): string => {
     // Pad the number if needed (e.g., 1 -> 001)
     const paddedNumber = surahNumber.toString().padStart(3, '0');
-    return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${paddedNumber}.mp3`;
+    return `https://cdn.islamic.network/quran/audio/128/${selectedReciter.slug}/${paddedNumber}.mp3`;
   };
 
   // Play/Pause audio handler
@@ -110,6 +113,17 @@ export default function QuranPage() {
         ? prev.filter(n => n !== surahNumber)
         : [...prev, surahNumber]
     );
+  };
+
+  const selectReciter = (reciter: Reciter) => {
+    // Stop any playing audio when changing reciter
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setPlayingSurah(null);
+    setSelectedReciter(reciter);
+    toast.success(`Reciter changed to ${reciter.name}`);
   };
 
   return (
@@ -256,24 +270,54 @@ export default function QuranPage() {
 
         {/* Reciters Tab */}
         <TabsContent value="reciters" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Select Your Preferred Reciter</CardTitle>
+              <CardDescription>
+                Choose a reciter to listen to Quran recitations. Currently selected: {selectedReciter.name}
+              </CardDescription>
+            </CardHeader>
+          </Card>
+          
           <div className="grid gap-4">
             {reciters.map((reciter, idx) => (
-              <Card key={idx} className="hover:shadow-md transition-shadow">
+              <Card 
+                key={idx} 
+                className={`hover:shadow-md transition-all ${
+                  selectedReciter.slug === reciter.slug ? 'ring-2 ring-teal-600 bg-teal-50/50' : ''
+                }`}
+              >
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-lg">{reciter.name}</h3>
-                      <p className="text-sm text-muted-foreground">{reciter.country}</p>
-                      <Badge variant="outline" className="mt-2">
-                        {reciter.style}
-                      </Badge>
+                    <div className="flex items-center gap-3">
+                      {selectedReciter.slug === reciter.slug && (
+                        <CheckCircle2 className="h-5 w-5 text-teal-600" />
+                      )}
+                      <div>
+                        <h3 className="font-semibold text-lg">{reciter.name}</h3>
+                        <p className="text-sm text-muted-foreground">{reciter.country}</p>
+                        <Badge variant="outline" className="mt-2">
+                          {reciter.style}
+                        </Badge>
+                      </div>
                     </div>
                     <Button
                       size="sm"
-                      className="bg-teal-600 hover:bg-teal-700"
+                      className={selectedReciter.slug === reciter.slug ? '' : 'bg-teal-600 hover:bg-teal-700'}
+                      variant={selectedReciter.slug === reciter.slug ? 'secondary' : 'default'}
+                      onClick={() => selectReciter(reciter)}
                     >
-                      <Volume2 className="h-4 w-4 mr-2" />
-                      Listen
+                      {selectedReciter.slug === reciter.slug ? (
+                        <>
+                          <CheckCircle2 className="h-4 w-4 mr-2" />
+                          Selected
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="h-4 w-4 mr-2" />
+                          Select
+                        </>
+                      )}
                     </Button>
                   </div>
                 </CardContent>
