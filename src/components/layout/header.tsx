@@ -27,6 +27,7 @@ import { Icons } from '@/components/icons';
 import type { NavLink } from '@/lib/types';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { KeyboardShortcutsDialog } from '@/components/keyboard-shortcuts-dialog';
 
 const navLinks: NavLink[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -92,8 +93,8 @@ export function Header() {
         </SheetContent>
       </Sheet>
 
-      <div className="relative ml-auto flex-1 md:grow-0">
-        {/* Potentially a search bar */}
+      <div className="relative ml-auto flex-1 md:grow-0 flex items-center gap-2">
+        <KeyboardShortcutsDialog />
       </div>
 
       <DropdownMenu>

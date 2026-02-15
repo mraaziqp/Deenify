@@ -19,6 +19,8 @@ import {
   GraduationCap,
   ShieldCheck,
   Apple,
+  Trophy,
+  MapPin,
 } from 'lucide-react';
 import { Icons } from '@/components/icons';
 import type { NavLink } from '@/lib/types';
@@ -38,6 +40,8 @@ const toolNavLinks: NavLink[] = [
   { href: '/halal-food', label: 'Halal Food', icon: Apple },
   { href: '/quran', label: 'Quran & Recitations', icon: BookOpen },
   { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
+  { href: '/masjid', label: 'Masjid Finder', icon: MapPin },
+  { href: '/achievements', label: 'Achievements', icon: Trophy },
 ];
 
 function NavLinkItem({ href, label, icon: Icon }: NavLink) {

@@ -23,14 +23,28 @@ import {
   Mail,
   Lock,
   Save,
-  ShieldCheck
+  ShieldCheck,
+  Database,
+  Download,
+  Trash2,
+  RefreshCw
 } from "lucide-react";
 import { useAuth } from '@/lib/auth-context';
-import { useToast } from "@/hooks/use-toast";
+import toast from 'react-hot-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function SettingsPage() {
   const { user } = useAuth();
-  const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
 
   const [settings, setSettings] = useState({
@@ -59,27 +73,45 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // TODO: Save to database
-      // await fetch('/api/user/settings', {
-      //   method: 'PUT',
-      //   body: JSON.stringify(settings),
-      // });
+      // Save settings to localStorage
+      localStorage.setItem('userSettings', JSON.stringify(settings));
       
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      toast({
-        title: "Settings saved",
-        description: "Your preferences have been updated successfully.",
-      });
+      toast.success('Settings saved successfully!', { duration: 3000 });
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Failed to save settings",
-        description: "Please try again later.",
-      });
+      toast.error('Failed to save settings. Please try again.', { duration: 3000 });
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleExportData = () => {
+    const data = {
+      settings,
+      dhikrCount: localStorage.getItem('dhikrCount'),
+      aiChatHistory: localStorage.getItem('aiChatHistory'),
+      khatmJuzData: localStorage.getItem('khatmJuzData'),
+      userProgress: localStorage.getItem('userProgress'),
+      exportedAt: new Date().toISOString(),
+    };
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `deenify-data-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    toast.success('Data exported successfully!', { duration: 3000 });
+  };
+
+  const handleClearData = () => {
+    localStorage.removeItem('dhikrCount');
+    localStorage.removeItem('dhikrDate');
+    localStorage.removeItem('aiChatHistory');
+    localStorage.removeItem('khatmJuzData');
+    localStorage.removeItem('userProgress');
+    toast.success('All local data cleared!', { duration: 3000 });
   };
 
   return (
@@ -349,6 +381,81 @@ export default function SettingsPage() {
               <Label htmlFor="theme">Theme</Label>
               <Select
                 value={settings.theme}
+                onValueChange={(value: 'light' | 'dark' | 'system') => 
+                  setSettings({ ...settings, theme: value })
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light">Light</SelectItem>
+                  <SelectItem value="dark">Dark</SelectItem>
+                  <SelectItem value="system">System</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Data Management */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Data Management
+            </CardTitle>
+            <CardDescription>Manage your stored data and preferences</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+              <div>
+                <p className="font-medium">Export Your Data</p>
+                <p className="text-sm text-muted-foreground">
+                  Download all your data including progress, settings, and history
+                </p>
+              </div>
+              <Button variant="outline" onClick={handleExportData}>
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+            </div>
+
+            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+              <div>
+                <p className="font-medium">Clear Local Data</p>
+                <p className="text-sm text-muted-foreground">
+                  Remove all locally stored data (Dhikr count, chat history, etc.)
+                </p>
+              </div>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="text-orange-600 border-orange-200">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Clear
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Clear all local data?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will remove your Dhikr count, chat history, Khatm claims, and other locally stored data. 
+                      This action cannot be undone. Consider exporting your data first.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleClearData} className="bg-orange-600">
+                      Clear Data
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/*     value={settings.theme}
                 onValueChange={(value: 'light' | 'dark' | 'system') => 
                   setSettings({ ...settings, theme: value })
                 }

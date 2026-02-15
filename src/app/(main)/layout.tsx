@@ -2,10 +2,12 @@ import type { ReactNode } from 'react';
 import { AppSidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
 import { DailyReminders } from '@/components/daily-reminders';
+import { GlobalKeyboardShortcuts } from '@/components/global-keyboard-shortcuts';
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
+      <GlobalKeyboardShortcuts />
       <AppSidebar />
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <Header />

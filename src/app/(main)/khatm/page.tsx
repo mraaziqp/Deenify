@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { BookOpen, Check, User, Clock } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface JuzStatus {
   juzNumber: number;
@@ -28,17 +29,38 @@ export default function KhatmPage() {
   const [selectedJuz, setSelectedJuz] = useState<number | null>(null);
   const [userName, setUserName] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Mock data - In production, this would come from Firestore
+  // Initial data for default state
   const initialJuzStatus: JuzStatus[] = Array.from({ length: 30 }, (_, i) => ({
     juzNumber: i + 1,
-    status: i < 3 ? 'completed' : i < 8 ? 'taken' : 'available',
-    reciterName: i < 3 ? `User ${i + 1}` : i < 8 ? `User ${i + 1}` : undefined,
-    claimedAt: i < 8 ? new Date(Date.now() - Math.random() * 86400000).toISOString() : undefined,
-    completedAt: i < 3 ? new Date(Date.now() - Math.random() * 172800000).toISOString() : undefined,
+    status: 'available' as const,
+    reciterName: undefined,
+    claimedAt: undefined,
+    completedAt: undefined,
   }));
 
   const [juzData, setJuzData] = useState<JuzStatus[]>(initialJuzStatus);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('khatmJuzData');
+    if (savedData) {
+      try {
+        setJuzData(JSON.parse(savedData));
+      } catch (error) {
+        console.error('Failed to load Khatm data:', error);
+      }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Save to localStorage whenever juzData changes
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('khatmJuzData', JSON.stringify(juzData));
+    }
+  }, [juzData, isLoaded]);
 
   const handleJuzClick = (juz: JuzStatus) => {
     if (juz.status === 'available') {
@@ -62,6 +84,10 @@ export default function KhatmPage() {
             : juz
         )
       );
+      toast.success(`🎉 Juz ${selectedJuz} claimed! May Allah make it easy for you.`, { 
+        duration: 4000,
+        icon: '📖'
+      });
       setIsDialogOpen(false);
       setUserName('');
       setSelectedJuz(null);
@@ -81,6 +107,21 @@ export default function KhatmPage() {
           : juz
       )
     );
+    
+    const newCompletedCount = juzData.filter(j => j.status === 'completed').length + 1;
+    if (newCompletedCount === 30) {
+      toast.success('🎊 Alhamdulillah! The entire Quran has been completed! 🎊', { 
+        duration: 6000 
+      });
+    } else {
+      toast.success(`✅ Juz ${juzNumber} marked as complete! Barakallahu feek!`, { 
+        duration: 3000 
+      });
+    }
+  };
+          : juz
+      )
+    );
   };
 
   const availableCount = juzData.filter(j => j.status === 'available').length;
@@ -90,6 +131,12 @@ export default function KhatmPage() {
 
   return (
     <div className="container mx-auto max-w-6xl">
+      <Toaster position="top-center" toastOptions={{
+        style: {
+          background: '#363636',
+          color: '#fff',
+        },
+      }} />
       <div className="flex items-center gap-3 mb-6">
         <BookOpen className="h-8 w-8 text-primary" />
         <div>

@@ -7,109 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Play, Pause, Bookmark, Volume2, BookOpen, Search, Loader2 } from 'lucide-react';
+import { allSurahs, type Surah } from '@/lib/quran-data';
 
-interface Surah {
-  number: number;
-  name: string;
-  arabicName: string;
-  meaning: string;
-  verses: number;
-  revelation: 'Meccan' | 'Madinan';
-  description: string;
-}
+// Use the complete 114 Surah list
+const surahs: Surah[] = allSurahs;
 
-const surahs: Surah[] = [
-  {
-    number: 1,
-    name: 'Al-Fatiha',
-    arabicName: 'الفاتحة',
-    meaning: 'The Opening',
-    verses: 7,
-    revelation: 'Meccan',
-    description: 'The opening chapter of the Quran, recited in every prayer',
-  },
-  {
-    number: 2,
-    name: 'Al-Baqarah',
-    arabicName: 'البقرة',
-    meaning: 'The Cow',
-    verses: 286,
-    revelation: 'Madinan',
-    description: 'The longest chapter, containing guidance on various aspects of Islamic life',
-  },
-  {
-    number: 3,
-    name: 'Al-Imran',
-    arabicName: 'آل عمران',
-    meaning: 'The Family of Imran',
-    verses: 200,
-    revelation: 'Madinan',
-    description: 'Discusses the family of Imran and the story of Maryam',
-  },
-  {
-    number: 4,
-    name: 'An-Nisa',
-    arabicName: 'النساء',
-    meaning: 'The Women',
-    verses: 176,
-    revelation: 'Madinan',
-    description: 'Addresses womens rights and family matters',
-  },
-  {
-    number: 5,
-    name: 'Al-Maidah',
-    arabicName: 'المائدة',
-    meaning: 'The Table',
-    verses: 120,
-    revelation: 'Madinan',
-    description: 'Discusses halal food, contracts, and judicial matters',
-  },
-  {
-    number: 36,
-    name: 'Ya-Sin',
-    arabicName: 'يس',
-    meaning: 'Ya Sin',
-    verses: 83,
-    revelation: 'Meccan',
-    description: 'The heart of the Quran, often recited for the deceased',
-  },
-  {
-    number: 55,
-    name: 'Ar-Rahman',
-    arabicName: 'الرحمن',
-    meaning: 'The Most Merciful',
-    verses: 78,
-    revelation: 'Meccan',
-    description: 'Describes Allahs blessings and attributes of mercy',
-  },
-  {
-    number: 56,
-    name: 'Al-Waqi\'ah',
-    arabicName: 'الواقعة',
-    meaning: 'The Inevitable Hour',
-    verses: 96,
-    revelation: 'Meccan',
-    description: 'Discusses the Day of Judgment and the afterlife',
-  },
-  {
-    number: 67,
-    name: 'Al-Mulk',
-    arabicName: 'الملك',
-    meaning: 'The Dominion',
-    verses: 30,
-    revelation: 'Meccan',
-    description: 'Emphasizes Allahs power and majesty',
-  },
-  {
-    number: 112,
-    name: 'Al-Ikhlas',
-    arabicName: 'الإخلاص',
-    meaning: 'The Sincerity',
-    verses: 4,
-    revelation: 'Meccan',
-    description: 'Affirms the oneness of Allah (Tawheed)',
-  },
-];
+// Highlighted surahs to show initially (featured ones)
+const highlightedSurahs = [1, 2, 18, 36, 55, 56, 67, 112]; // Surah numbers
 
 interface Reciter {
   name: string;

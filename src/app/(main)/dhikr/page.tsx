@@ -5,14 +5,54 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { HeartPulse, PlusCircle, MinusCircle, RefreshCw, Users, Target } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import toast, { Toaster } from 'react-hot-toast';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 export default function DhikrPage() {
   const [count, setCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [globalCount] = useState(1247830); // Mock global count
+  const [isLoaded, setIsLoaded] = useState(false);
   const dailyGoal = 100;
   const progress = Math.min((count / dailyGoal) * 100, 100);
+
+  // Load count from localStorage on mount
+  useEffect(() => {
+    const savedCount = localStorage.getItem('dhikrCount');
+    const savedDate = localStorage.getItem('dhikrDate');
+    const today = new Date().toDateString();
+
+    if (savedDate === today && savedCount) {
+      setCount(parseInt(savedCount, 10));
+    } else {
+      // New day - reset count
+      localStorage.setItem('dhikrDate', today);
+      localStorage.setItem('dhikrCount', '0');
+      if (savedDate && savedDate !== today && parseInt(savedCount || '0', 10) > 0) {
+        toast('🌅 New day! Your counter has been reset.', { duration: 3000 });
+      }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Save count to localStorage whenever it changes
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('dhikrCount', count.toString());
+      
+      // Show milestone toasts
+      if (count === dailyGoal) {
+        toast.success('🎉 Alhamdulillah! Daily goal reached!', { duration: 4000 });
+      } else if (count === 33) {
+        toast('✨ SubhanAllah completed (33)', { duration: 2000 });
+      } else if (count === 66) {
+        toast('✨ Alhamdulillah completed (33)', { duration: 2000 });
+      } else if (count === 99) {
+        toast('✨ Close to completing! Keep going!', { duration: 2000 });
+      }
+    }
+  }, [count, isLoaded, dailyGoal]);
 
   // Optimistic UI: Update local state immediately
   const increment = () => {
@@ -22,10 +62,35 @@ export default function DhikrPage() {
   };
   
   const decrement = () => setCount(prev => (prev > 0 ? prev - 1 : 0));
-  const reset = () => setCount(0);
+  const reset = () => {
+    setCount(0);
+    toast.success('Counter reset successfully', { duration: 2000 });
+  };
+
+  // Keyboard shortcuts
+  useHotkeys('space', (e) => {
+    e.preventDefault();
+    increment();
+  }, { enableOnFormTags: false });
+
+  useHotkeys('r', (e) => {
+    e.preventDefault();
+    reset();
+  }, { enableOnFormTags: false });
+
+  useHotkeys('backspace', (e) => {
+    e.preventDefault();
+    decrement();
+  }, { enableOnFormTags: false });
 
   return (
     <div className="container mx-auto max-w-4xl">
+      <Toaster position="top-center" toastOptions={{
+        style: {
+          background: '#363636',
+          color: '#fff',
+        },
+      }} />
       <div className="flex items-center gap-3 mb-6">
         <HeartPulse className="h-8 w-8 text-primary animate-pulse" />
         <div>
