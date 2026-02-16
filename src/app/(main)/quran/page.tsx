@@ -1,13 +1,26 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Play, Pause, Bookmark, Volume2, BookOpen, Search, Loader2, CheckCircle2 } from 'lucide-react';
 import { allSurahs, type Surah } from '@/lib/quran-data';
+import { loadProgress, saveProgress } from '@/lib/achievements';
 import toast from 'react-hot-toast';
 
 // Use the complete 114 Surah list
@@ -31,6 +44,134 @@ const reciters: Reciter[] = [
   { name: 'Hani ar-Rifai', country: 'Syria', style: 'Smooth and melodious', slug: 'ar.hanirifai' },
 ];
 
+const translationOptions = [
+  { id: 'en.sahih', label: 'Sahih International', language: 'English' },
+  { id: 'en.yusufali', label: 'Yusuf Ali', language: 'English' },
+  { id: 'en.pickthall', label: 'Pickthall', language: 'English' },
+  { id: 'en.asad', label: 'Muhammad Asad', language: 'English' },
+  { id: 'en.qarai', label: 'Qarai', language: 'English' },
+  { id: 'en.ahmedali', label: 'Ahmed Ali', language: 'English' },
+  { id: 'en.maududi', label: 'Abul Ala Maududi', language: 'English' },
+  { id: 'en.hilali', label: 'Hilali & Khan', language: 'English' },
+  { id: 'en.itani', label: 'Talal Itani', language: 'English' },
+  { id: 'en.wahiduddin', label: 'Wahiduddin Khan', language: 'English' },
+  { id: 'ur.jalandhry', label: 'Jalandhry', language: 'Urdu' },
+  { id: 'ur.maududi', label: 'Maududi', language: 'Urdu' },
+  { id: 'fr.hamidullah', label: 'Hamidullah', language: 'French' },
+  { id: 'tr.diyanet', label: 'Diyanet', language: 'Turkish' },
+  { id: 'es.cortes', label: 'Cortes', language: 'Spanish' },
+  { id: 'id.indonesian', label: 'Indonesian', language: 'Indonesian' },
+];
+
+const transliterationEdition = 'en.transliteration';
+const translationLanguages = Array.from(
+  new Set(translationOptions.map((option) => option.language))
+);
+const translationLabelById = translationOptions.reduce<Record<string, string>>((acc, option) => {
+  acc[option.id] = option.label;
+  return acc;
+}, {});
+
+const TOTAL_QURAN_PAGES = 604;
+const TOTAL_QURAN_VERSES = 6236;
+const READER_PROGRESS_KEY = 'quranReadingProgress';
+const READER_SETTINGS_KEY = 'quranReaderSettings';
+
+type QuranReaderAyah = {
+  numberInSurah: number;
+  text: string;
+  page: number;
+  surahNumber?: number;
+  surahName?: string;
+  translationText?: string;
+  compareTranslationText?: string;
+  transliterationText?: string;
+};
+
+type QuranReaderMeta = {
+  number: number;
+  name: string;
+  englishName: string;
+};
+
+type QuranReadingProgress = {
+  completedVerses: Record<string, number>;
+  lastSurah: number;
+};
+
+type QuranReaderSettings = {
+  readerMode: 'surah' | 'page';
+  readerPage: number;
+  pendingPage: string;
+  showTranslation: boolean;
+  translationOnly: boolean;
+  showTransliteration: boolean;
+  selectedLanguage: string;
+  selectedTranslation: string;
+  compareTranslations: boolean;
+  compareLanguage: string;
+  compareTranslation: string;
+};
+
+const getDefaultReadingProgress = (): QuranReadingProgress => ({
+  completedVerses: {},
+  lastSurah: 1,
+});
+
+const loadReadingProgress = (): QuranReadingProgress => {
+  if (typeof window === 'undefined') return getDefaultReadingProgress();
+  const stored = localStorage.getItem(READER_PROGRESS_KEY);
+  if (!stored) return getDefaultReadingProgress();
+  try {
+    const parsed = JSON.parse(stored) as QuranReadingProgress;
+    return {
+      completedVerses: parsed.completedVerses || {},
+      lastSurah: parsed.lastSurah || 1,
+    };
+  } catch {
+    return getDefaultReadingProgress();
+  }
+};
+
+const saveReadingProgress = (progress: QuranReadingProgress) => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(READER_PROGRESS_KEY, JSON.stringify(progress));
+};
+
+const getDefaultReaderSettings = (): QuranReaderSettings => ({
+  readerMode: 'surah',
+  readerPage: 1,
+  pendingPage: '1',
+  showTranslation: false,
+  translationOnly: false,
+  showTransliteration: false,
+  selectedLanguage: translationLanguages[0] ?? 'English',
+  selectedTranslation: translationOptions[0].id,
+  compareTranslations: false,
+  compareLanguage: translationLanguages[0] ?? 'English',
+  compareTranslation: translationOptions[1]?.id ?? translationOptions[0].id,
+});
+
+const loadReaderSettings = (): QuranReaderSettings => {
+  if (typeof window === 'undefined') return getDefaultReaderSettings();
+  const stored = localStorage.getItem(READER_SETTINGS_KEY);
+  if (!stored) return getDefaultReaderSettings();
+  try {
+    const parsed = JSON.parse(stored) as QuranReaderSettings;
+    return {
+      ...getDefaultReaderSettings(),
+      ...parsed,
+    };
+  } catch {
+    return getDefaultReaderSettings();
+  }
+};
+
+const saveReaderSettings = (settings: QuranReaderSettings) => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(READER_SETTINGS_KEY, JSON.stringify(settings));
+};
+
 export default function QuranPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTab, setSelectedTab] = useState('surahs');
@@ -39,6 +180,25 @@ export default function QuranPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedReciter, setSelectedReciter] = useState<Reciter>(reciters[1]); // Default to Al-Afasy
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [readerSurah, setReaderSurah] = useState(1);
+  const [readerMode, setReaderMode] = useState<'surah' | 'page'>('surah');
+  const [readerPage, setReaderPage] = useState(1);
+  const [pendingPage, setPendingPage] = useState('1');
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [translationOnly, setTranslationOnly] = useState(false);
+  const [showTransliteration, setShowTransliteration] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(translationLanguages[0] ?? 'English');
+  const [selectedTranslation, setSelectedTranslation] = useState(translationOptions[0].id);
+  const [compareTranslations, setCompareTranslations] = useState(false);
+  const [compareLanguage, setCompareLanguage] = useState(translationLanguages[0] ?? 'English');
+  const [compareTranslation, setCompareTranslation] = useState(translationOptions[1]?.id ?? translationOptions[0].id);
+  const [readerAyahs, setReaderAyahs] = useState<QuranReaderAyah[]>([]);
+  const [readerMeta, setReaderMeta] = useState<QuranReaderMeta | null>(null);
+  const [readerLoading, setReaderLoading] = useState(false);
+  const [readerError, setReaderError] = useState<string | null>(null);
+  const [readingProgress, setReadingProgress] = useState<QuranReadingProgress>(getDefaultReadingProgress());
+  const [readingProgressLoaded, setReadingProgressLoaded] = useState(false);
+  const [readerSettingsLoaded, setReaderSettingsLoaded] = useState(false);
 
   // Get audio URL for a surah (using selected recitation from Islamic.Network CDN)
   const getAudioUrl = (surahNumber: number): string => {
@@ -101,6 +261,264 @@ export default function QuranPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const progress = loadReadingProgress();
+    setReadingProgress(progress);
+    setReaderSurah(progress.lastSurah || 1);
+    setReadingProgressLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    const settings = loadReaderSettings();
+    setReaderMode(settings.readerMode);
+    setReaderPage(settings.readerPage);
+    setPendingPage(settings.pendingPage);
+    setShowTranslation(settings.showTranslation);
+    setTranslationOnly(settings.translationOnly);
+    setShowTransliteration(settings.showTransliteration);
+    setSelectedLanguage(settings.selectedLanguage);
+    setSelectedTranslation(settings.selectedTranslation);
+    setCompareTranslations(settings.compareTranslations);
+    setCompareLanguage(settings.compareLanguage);
+    setCompareTranslation(settings.compareTranslation);
+    setReaderSettingsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!readingProgressLoaded) return;
+    saveReadingProgress(readingProgress);
+
+    const pagesRead = new Set(Object.values(readingProgress.completedVerses)).size;
+    const progressData = loadProgress();
+    progressData.quranPagesRead = pagesRead;
+    saveProgress(progressData);
+    window.dispatchEvent(new Event('progressUpdated'));
+  }, [readingProgress, readingProgressLoaded]);
+
+  useEffect(() => {
+    if (!readerSettingsLoaded) return;
+    saveReaderSettings({
+      readerMode,
+      readerPage,
+      pendingPage,
+      showTranslation,
+      translationOnly,
+      showTransliteration,
+      selectedLanguage,
+      selectedTranslation,
+      compareTranslations,
+      compareLanguage,
+      compareTranslation,
+    });
+  }, [
+    compareLanguage,
+    compareTranslation,
+    compareTranslations,
+    pendingPage,
+    readerMode,
+    readerPage,
+    readerSettingsLoaded,
+    selectedLanguage,
+    selectedTranslation,
+    showTranslation,
+    translationOnly,
+    showTransliteration,
+  ]);
+
+  const translationsForLanguage = useMemo(
+    () => translationOptions.filter((option) => option.language === selectedLanguage),
+    [selectedLanguage]
+  );
+
+  const compareTranslationsForLanguage = useMemo(() => {
+    return translationOptions.filter((option) => {
+      if (option.language !== compareLanguage) return false;
+      if (compareLanguage === selectedLanguage && option.id === selectedTranslation) return false;
+      return true;
+    });
+  }, [compareLanguage, selectedLanguage, selectedTranslation]);
+
+  useEffect(() => {
+    if (!translationsForLanguage.length) return;
+    if (!translationsForLanguage.some((option) => option.id === selectedTranslation)) {
+      setSelectedTranslation(translationsForLanguage[0].id);
+    }
+  }, [translationsForLanguage, selectedTranslation]);
+
+  useEffect(() => {
+    if (!compareTranslationsForLanguage.length) return;
+    if (!compareTranslationsForLanguage.some((option) => option.id === compareTranslation)) {
+      setCompareTranslation(compareTranslationsForLanguage[0].id);
+    }
+  }, [compareTranslation, compareTranslationsForLanguage]);
+
+  useEffect(() => {
+    const fetchSurah = async () => {
+      setReaderLoading(true);
+      setReaderError(null);
+      try {
+        if (readerMode === 'surah') {
+          const [arabicResponse, translationResponse, transliterationResponse] = await Promise.all([
+            fetch(`https://api.alquran.cloud/v1/surah/${readerSurah}/quran-uthmani`),
+            showTranslation
+              ? fetch(`https://api.alquran.cloud/v1/surah/${readerSurah}/${selectedTranslation}`)
+              : Promise.resolve(null),
+            showTransliteration
+              ? fetch(`https://api.alquran.cloud/v1/surah/${readerSurah}/${transliterationEdition}`)
+              : Promise.resolve(null),
+          ]);
+
+          const compareResponse = showTranslation && compareTranslations
+            ? await fetch(`https://api.alquran.cloud/v1/surah/${readerSurah}/${compareTranslation}`)
+            : null;
+
+          if (
+            !arabicResponse.ok
+            || (showTranslation && !translationResponse?.ok)
+            || (showTransliteration && !transliterationResponse?.ok)
+            || (showTranslation && compareTranslations && !compareResponse?.ok)
+          ) {
+            throw new Error('Failed to load surah.');
+          }
+
+          const arabicResult = await arabicResponse.json();
+          const translationResult = showTranslation && translationResponse ? await translationResponse.json() : null;
+          const transliterationResult = showTransliteration && transliterationResponse ? await transliterationResponse.json() : null;
+          const compareResult = showTranslation && compareTranslations && compareResponse ? await compareResponse.json() : null;
+
+          const arabicData = arabicResult?.data;
+          const translationData = translationResult?.data;
+          const transliterationData = transliterationResult?.data;
+          const compareData = compareResult?.data;
+          const arabicAyahs = Array.isArray(arabicData?.ayahs) ? arabicData.ayahs : [];
+          const translationAyahs = Array.isArray(translationData?.ayahs) ? translationData.ayahs : [];
+          const transliterationAyahs = Array.isArray(transliterationData?.ayahs) ? transliterationData.ayahs : [];
+          const compareAyahs = Array.isArray(compareData?.ayahs) ? compareData.ayahs : [];
+
+          const translations = new Map<number, string>();
+          translationAyahs.forEach((ayah: { numberInSurah: number; text: string }) => {
+            translations.set(ayah.numberInSurah, ayah.text);
+          });
+
+          const transliterations = new Map<number, string>();
+          transliterationAyahs.forEach((ayah: { numberInSurah: number; text: string }) => {
+            transliterations.set(ayah.numberInSurah, ayah.text);
+          });
+
+          const compareTranslationsMap = new Map<number, string>();
+          compareAyahs.forEach((ayah: { numberInSurah: number; text: string }) => {
+            compareTranslationsMap.set(ayah.numberInSurah, ayah.text);
+          });
+
+          const mergedAyahs = arabicAyahs.map((ayah: QuranReaderAyah) => ({
+            ...ayah,
+            translationText: translations.get(ayah.numberInSurah) || '',
+            compareTranslationText: compareTranslationsMap.get(ayah.numberInSurah) || '',
+            transliterationText: transliterations.get(ayah.numberInSurah) || '',
+          }));
+
+          setReaderAyahs(mergedAyahs);
+          setReaderMeta({
+            number: arabicData?.number || readerSurah,
+            name: arabicData?.name || '',
+            englishName: arabicData?.englishName || '',
+          });
+        } else {
+          const safePage = Math.min(Math.max(readerPage, 1), TOTAL_QURAN_PAGES);
+          const [arabicResponse, translationResponse, transliterationResponse] = await Promise.all([
+            fetch(`https://api.alquran.cloud/v1/page/${safePage}/quran-uthmani`),
+            showTranslation
+              ? fetch(`https://api.alquran.cloud/v1/page/${safePage}/${selectedTranslation}`)
+              : Promise.resolve(null),
+            showTransliteration
+              ? fetch(`https://api.alquran.cloud/v1/page/${safePage}/${transliterationEdition}`)
+              : Promise.resolve(null),
+          ]);
+
+          const compareResponse = showTranslation && compareTranslations
+            ? await fetch(`https://api.alquran.cloud/v1/page/${safePage}/${compareTranslation}`)
+            : null;
+
+          if (
+            !arabicResponse.ok
+            || (showTranslation && !translationResponse?.ok)
+            || (showTransliteration && !transliterationResponse?.ok)
+            || (showTranslation && compareTranslations && !compareResponse?.ok)
+          ) {
+            throw new Error('Failed to load page.');
+          }
+
+          const arabicResult = await arabicResponse.json();
+          const translationResult = showTranslation && translationResponse ? await translationResponse.json() : null;
+          const transliterationResult = showTransliteration && transliterationResponse ? await transliterationResponse.json() : null;
+          const compareResult = showTranslation && compareTranslations && compareResponse ? await compareResponse.json() : null;
+
+          const arabicData = arabicResult?.data;
+          const translationData = translationResult?.data;
+          const transliterationData = transliterationResult?.data;
+          const compareData = compareResult?.data;
+          const arabicAyahs = Array.isArray(arabicData?.ayahs) ? arabicData.ayahs : [];
+          const translationAyahs = Array.isArray(translationData?.ayahs) ? translationData.ayahs : [];
+          const transliterationAyahs = Array.isArray(transliterationData?.ayahs) ? transliterationData.ayahs : [];
+          const compareAyahs = Array.isArray(compareData?.ayahs) ? compareData.ayahs : [];
+
+          const translations = new Map<string, string>();
+          translationAyahs.forEach((ayah: { numberInSurah: number; text: string; surah?: { number: number } }) => {
+            const key = `${ayah.surah?.number || 0}:${ayah.numberInSurah}`;
+            translations.set(key, ayah.text);
+          });
+
+          const transliterations = new Map<string, string>();
+          transliterationAyahs.forEach((ayah: { numberInSurah: number; text: string; surah?: { number: number } }) => {
+            const key = `${ayah.surah?.number || 0}:${ayah.numberInSurah}`;
+            transliterations.set(key, ayah.text);
+          });
+
+          const compareTranslationsMap = new Map<string, string>();
+          compareAyahs.forEach((ayah: { numberInSurah: number; text: string; surah?: { number: number } }) => {
+            const key = `${ayah.surah?.number || 0}:${ayah.numberInSurah}`;
+            compareTranslationsMap.set(key, ayah.text);
+          });
+
+          const mergedAyahs = arabicAyahs.map((ayah: QuranReaderAyah & { surah?: { number: number; englishName: string } }) => {
+            const key = `${ayah.surah?.number || 0}:${ayah.numberInSurah}`;
+            return {
+              ...ayah,
+              surahNumber: ayah.surah?.number,
+              surahName: ayah.surah?.englishName,
+              translationText: translations.get(key) || '',
+              compareTranslationText: compareTranslationsMap.get(key) || '',
+              transliterationText: transliterations.get(key) || '',
+            };
+          });
+
+          setReaderAyahs(mergedAyahs);
+          setReaderMeta({
+            number: safePage,
+            name: `Page ${safePage}`,
+            englishName: `Page ${safePage}`,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load surah:', error);
+        setReaderError(readerMode === 'surah' ? 'Unable to load this surah. Please try again.' : 'Unable to load this page. Please try again.');
+      } finally {
+        setReaderLoading(false);
+      }
+    };
+
+    void fetchSurah();
+  }, [
+    compareTranslation,
+    compareTranslations,
+    readerMode,
+    readerSurah,
+    readerPage,
+    selectedTranslation,
+    showTranslation,
+    showTransliteration,
+  ]);
+
   const filteredSurahs = surahs.filter(surah =>
     surah.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     surah.arabicName.includes(searchTerm) ||
@@ -114,6 +532,60 @@ export default function QuranPage() {
         : [...prev, surahNumber]
     );
   };
+
+  const handleReaderSurahChange = (value: string) => {
+    const nextSurah = Number(value);
+    if (!Number.isFinite(nextSurah)) return;
+    setReaderSurah(nextSurah);
+    setReadingProgress(prev => ({
+      ...prev,
+      lastSurah: nextSurah,
+    }));
+  };
+
+  const handleReaderModeChange = (value: string) => {
+    if (value !== 'surah' && value !== 'page') return;
+    setReaderMode(value);
+  };
+
+  const handlePageInputChange = (value: string) => {
+    const sanitized = value.replace(/[^0-9]/g, '');
+    setPendingPage(sanitized);
+  };
+
+  const handlePageJump = () => {
+    if (!pendingPage) return;
+    const nextPage = Math.min(Math.max(Number(pendingPage), 1), TOTAL_QURAN_PAGES);
+    setReaderPage(nextPage);
+    setPendingPage(nextPage.toString());
+  };
+
+  const handleToggleVerse = (verseId: string, page: number, checked: boolean) => {
+    setReadingProgress(prev => {
+      const next = {
+        ...prev,
+        completedVerses: { ...prev.completedVerses },
+      };
+
+      if (checked) {
+        next.completedVerses[verseId] = page;
+      } else {
+        delete next.completedVerses[verseId];
+      }
+
+      return next;
+    });
+  };
+
+  const completedVerseCount = useMemo(
+    () => Object.keys(readingProgress.completedVerses).length,
+    [readingProgress.completedVerses]
+  );
+  const completedPagesCount = useMemo(
+    () => new Set(Object.values(readingProgress.completedVerses)).size,
+    [readingProgress.completedVerses]
+  );
+  const pageProgressPercent = Math.round((completedPagesCount / TOTAL_QURAN_PAGES) * 100);
 
   const selectReciter = (reciter: Reciter) => {
     // Stop any playing audio when changing reciter
@@ -174,10 +646,14 @@ export default function QuranPage() {
 
       {/* Tabs */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="surahs">
             <BookOpen className="h-4 w-4 mr-2" />
             Surahs
+          </TabsTrigger>
+          <TabsTrigger value="reader">
+            <BookOpen className="h-4 w-4 mr-2" />
+            Reader
           </TabsTrigger>
           <TabsTrigger value="reciters">
             <Volume2 className="h-4 w-4 mr-2" />
@@ -324,6 +800,282 @@ export default function QuranPage() {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        {/* Reader Tab */}
+        <TabsContent value="reader" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Virtual Quran Reader</CardTitle>
+              <CardDescription>
+                Read ayahs and track the pages and verses you complete.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold">Choose a Surah</p>
+                    <div className="space-y-2">
+                      <Label className="text-xs text-muted-foreground">Reading mode</Label>
+                      <Select value={readerMode} onValueChange={handleReaderModeChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select reading mode" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="surah">Surah</SelectItem>
+                          <SelectItem value="page">Page</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {readerMode === 'surah' ? (
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Choose a surah</Label>
+                        <Select value={readerSurah.toString()} onValueChange={handleReaderSurahChange}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select surah" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {surahs.map((surah) => (
+                              <SelectItem key={surah.number} value={surah.number.toString()}>
+                                {surah.number}. {surah.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">
+                          Current: {readerMeta?.englishName || 'Loading...'}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Jump to page</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            type="number"
+                            min={1}
+                            max={TOTAL_QURAN_PAGES}
+                            value={pendingPage}
+                            onChange={(event) => handlePageInputChange(event.target.value)}
+                          />
+                          <Button variant="secondary" onClick={handlePageJump}>
+                            Go
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Page {readerPage} of {TOTAL_QURAN_PAGES}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <Switch checked={showTranslation} onCheckedChange={setShowTranslation} />
+                      <Label className="text-xs text-muted-foreground">Show translation</Label>
+                    </div>
+
+                    {showTranslation && (
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Language</Label>
+                        <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select language" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {translationLanguages.map((language) => (
+                              <SelectItem key={language} value={language}>
+                                {language}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Label className="text-xs text-muted-foreground">Translation</Label>
+                        <Select value={selectedTranslation} onValueChange={setSelectedTranslation}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select translation" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {translationsForLanguage.map((translation) => (
+                              <SelectItem key={translation.id} value={translation.id}>
+                                {translation.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <div className="flex items-center gap-2 pt-1">
+                          <Switch checked={translationOnly} onCheckedChange={setTranslationOnly} />
+                          <Label className="text-xs text-muted-foreground">Translation-only view</Label>
+                        </div>
+
+                        <div className="flex items-center gap-2 pt-1">
+                          <Switch checked={compareTranslations} onCheckedChange={setCompareTranslations} />
+                          <Label className="text-xs text-muted-foreground">Compare translations</Label>
+                        </div>
+
+                        {compareTranslations && (
+                          <div className="space-y-2">
+                            <Label className="text-xs text-muted-foreground">Compare language</Label>
+                            <Select value={compareLanguage} onValueChange={setCompareLanguage}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select language" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {translationLanguages.map((language) => (
+                                  <SelectItem key={language} value={language}>
+                                    {language}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+
+                            <Label className="text-xs text-muted-foreground">Compare with</Label>
+                            <Select value={compareTranslation} onValueChange={setCompareTranslation}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select translation" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {compareTranslationsForLanguage.map((translation) => (
+                                  <SelectItem key={translation.id} value={translation.id}>
+                                    {translation.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-2">
+                      <Switch checked={showTransliteration} onCheckedChange={setShowTransliteration} />
+                      <Label className="text-xs text-muted-foreground">Show transliteration</Label>
+                    </div>
+                </div>
+
+                <Card className="border-teal-200 bg-teal-50/50">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-teal-700">
+                        {completedPagesCount}
+                      </div>
+                      <p className="text-sm text-muted-foreground">Pages completed</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-blue-200 bg-blue-50/50">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-700">
+                        {completedVerseCount}
+                      </div>
+                      <p className="text-sm text-muted-foreground">Verses completed</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Page progress</span>
+                  <span className="font-semibold">{pageProgressPercent}%</span>
+                </div>
+                <Progress value={pageProgressPercent} className="h-2" />
+                <p className="text-xs text-muted-foreground">
+                  {completedPagesCount} of {TOTAL_QURAN_PAGES} pages • {completedVerseCount} of {TOTAL_QURAN_VERSES} verses
+                </p>
+              </div>
+
+              <div className="rounded-lg border bg-background">
+                <div className="border-b px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">
+                        {readerMeta?.englishName || 'Loading'}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {readerMeta?.name || ''}
+                      </p>
+                    </div>
+                    {readerLoading && (
+                      <Badge variant="secondary">Loading...</Badge>
+                    )}
+                  </div>
+                </div>
+
+                <ScrollArea className="h-[520px]">
+                  <div className="space-y-4 p-4">
+                    {readerError && (
+                      <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                        {readerError}
+                      </div>
+                    )}
+
+                    {!readerError && readerAyahs.length === 0 && !readerLoading && (
+                      <div className="text-sm text-muted-foreground">No verses available.</div>
+                    )}
+
+                    {readerAyahs.map((ayah) => {
+                      const surahNumber = ayah.surahNumber || readerSurah;
+                      const verseId = `${surahNumber}:${ayah.numberInSurah}`;
+                      const isCompleted = Boolean(readingProgress.completedVerses[verseId]);
+                      return (
+                        <div key={verseId} className="flex gap-3 border-b pb-4">
+                          <Checkbox
+                            checked={isCompleted}
+                            onCheckedChange={(checked) =>
+                              handleToggleVerse(verseId, ayah.page, checked === true)
+                            }
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <p className="text-xs text-muted-foreground">
+                                {readerMode === 'page' && ayah.surahName
+                                  ? `${ayah.surahName} ${ayah.numberInSurah}`
+                                  : `Ayah ${ayah.numberInSurah}`} • Page {ayah.page}
+                              </p>
+                              {isCompleted && <Badge variant="secondary">Completed</Badge>}
+                            </div>
+                            {!translationOnly && (
+                              <p className="text-right text-xl leading-loose">{ayah.text}</p>
+                            )}
+                            {!translationOnly && showTransliteration && ayah.transliterationText && (
+                              <p className="mt-2 text-sm italic text-muted-foreground">
+                                {ayah.transliterationText}
+                              </p>
+                            )}
+                            {showTranslation && ayah.translationText && (
+                              <div className={`mt-2 grid gap-3 ${compareTranslations ? 'md:grid-cols-2' : ''}`}>
+                                <div>
+                                  <p className="text-xs font-semibold text-muted-foreground">
+                                    {translationLabelById[selectedTranslation] || 'Translation'}
+                                  </p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {ayah.translationText}
+                                  </p>
+                                </div>
+                                {compareTranslations && ayah.compareTranslationText && (
+                                  <div>
+                                    <p className="text-xs font-semibold text-muted-foreground">
+                                      {translationLabelById[compareTranslation] || 'Translation'}
+                                    </p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {ayah.compareTranslationText}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Reading Guide Tab */}

@@ -261,7 +261,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           <Card className="shadow-md">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -273,6 +273,21 @@ export default function DashboardPage() {
             <CardContent>
               <Button asChild className="w-full">
                 <Link href="/qiblah">Open Qiblah Compass</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-primary" />
+                Learning Library
+              </CardTitle>
+              <CardDescription>Explore PDFs, books, and ask questions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild className="w-full">
+                <Link href="/learning">Open Learning Library</Link>
               </Button>
             </CardContent>
           </Card>

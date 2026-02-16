@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { QuranMediaManager } from '@/components/admin/quran-media-manager';
+import { LearningAdminManager } from '@/components/admin/learning-admin-manager';
 import { 
   Users, 
   BookOpen, 
@@ -244,6 +246,8 @@ export default function AdminDashboard() {
           <TabsTrigger value="activity">Recent Activity</TabsTrigger>
           <TabsTrigger value="alerts">System Alerts</TabsTrigger>
           <TabsTrigger value="users">User Management</TabsTrigger>
+          <TabsTrigger value="quran-media">Quran Media</TabsTrigger>
+          <TabsTrigger value="learning">Learning Library</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
@@ -465,6 +469,16 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Quran Media Tab */}
+        <TabsContent value="quran-media" className="space-y-4">
+          <QuranMediaManager />
+        </TabsContent>
+
+        {/* Learning Library Tab */}
+        <TabsContent value="learning" className="space-y-4">
+          <LearningAdminManager />
         </TabsContent>
       </Tabs>
     </div>

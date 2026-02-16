@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model QuranMedia {
+  id              String   @id @default(cuid())
+  title           String
+  type            String
+  url             String
+  thumbnailUrl    String?
+  reciter         String?
+  surahNumber     Int?
+  ayahStart       Int?
+  ayahEnd         Int?
+  language        String?
+  durationSeconds Int?
+  tags            String[]
+  source          String?
+  license         String?
+  notes           String?
+  published       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model LearningResource {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  type          String
+  url           String
+  coverImageUrl String?
+  author        String?
+  language      String?
+  pageCount     Int?
+  tags          String[]
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model LearningQuestion {
+  id             String   @id @default(cuid())
+  userId         String
+  userName       String
+  question       String
+  aiAnswer       String?
+  approvedAnswer String?
+  status         String   @default("pending")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
