@@ -49,6 +49,17 @@ npm install prisma @prisma/client
 npx prisma init
 ```
 
+### 4. **Neon + Prisma (Recommended for Deenify)**
+- Serverless Postgres with autoscaling
+- Type-safe queries and migrations via Prisma
+- Works with the new Learning Library and Quran media features
+
+```bash
+npm install prisma @prisma/client
+npx prisma migrate dev --name init
+npx prisma generate
+```
+
 ## Database Schema
 
 See `src/lib/database-types.ts` for complete TypeScript types.
@@ -77,6 +88,11 @@ Create `.env.local`:
 ```env
 # Database
 DATABASE_URL="your-connection-string"
+
+# Supabase Storage (for media/PDF uploads)
+SUPABASE_URL=your-supabase-url
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_STORAGE_BUCKET=your-storage-bucket
 
 # If using Firebase
 NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
@@ -118,6 +134,17 @@ export async function GET() {
   return NextResponse.json({ freeCourses: courses, ... });
 }
 ```
+
+### Step 3a: Run Prisma Migrations (Neon)
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
+
+### Step 3b: New Tables Added
+- `QuranMedia` - Audio/video/image assets with metadata
+- `LearningResource` - PDFs/books library
+- `LearningQuestion` - Q&A with AI drafts and admin approval
 
 ### Step 4: Implement Authentication
 

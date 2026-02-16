@@ -66,6 +66,7 @@ const parseNumber = (value: string) => {
 export default function LearningPage() {
   const { user, hasRole, isLoading } = useAuth();
   const isAdmin = hasRole('admin');
+  const [activeTab, setActiveTab] = useState<'library' | 'qa'>('library');
   const [resources, setResources] = useState<LearningResource[]>([]);
   const [questions, setQuestions] = useState<LearningQuestion[]>([]);
   const [librarySearch, setLibrarySearch] = useState('');
@@ -73,6 +74,8 @@ export default function LearningPage() {
   const [questionText, setQuestionText] = useState('');
   const [submittingQuestion, setSubmittingQuestion] = useState(false);
   const [showMyQuestions, setShowMyQuestions] = useState(false);
+  const [questionStatus, setQuestionStatus] = useState<'all' | 'pending' | 'draft' | 'approved'>('all');
+  const [myQuestionCount, setMyQuestionCount] = useState(0);
 
   const [editingResourceId, setEditingResourceId] = useState<string | null>(null);
   const [resourceTitle, setResourceTitle] = useState('');
@@ -111,6 +114,10 @@ export default function LearningPage() {
           params.set('userId', user.id);
         }
 
+        if (questionStatus !== 'all') {
+          params.set('status', questionStatus);
+        }
+
         const query = params.toString();
         const response = await fetch(`/api/learning/questions${query ? `?${query}` : ''}`);
         if (!response.ok) return;
@@ -125,7 +132,32 @@ export default function LearningPage() {
       void fetchResources();
       void fetchQuestions();
     }
-  }, [isAdmin, isLoading, showMyQuestions, user?.id]);
+  }, [isAdmin, isLoading, questionStatus, showMyQuestions, user?.id]);
+
+  useEffect(() => {
+    const fetchMyCount = async () => {
+      if (!user?.id) {
+        setMyQuestionCount(0);
+        return;
+      }
+      try {
+        const params = new URLSearchParams();
+        params.set('mine', 'true');
+        params.set('userId', user.id);
+        const response = await fetch(`/api/learning/questions?${params.toString()}`);
+        if (!response.ok) return;
+        const data = await response.json();
+        const count = Array.isArray(data.questions) ? data.questions.length : 0;
+        setMyQuestionCount(count);
+      } catch (error) {
+        console.error('Failed to load my question count:', error);
+      }
+    };
+
+    if (!isLoading) {
+      void fetchMyCount();
+    }
+  }, [isLoading, user?.id]);
 
   const filteredResources = useMemo(() => {
     const query = librarySearch.trim().toLowerCase();
@@ -305,6 +337,7 @@ export default function LearningPage() {
       const data = await response.json();
       const question = data.question as LearningQuestion;
       setQuestions([question, ...questions]);
+      setMyQuestionCount((prev) => prev + 1);
       setQuestionText('');
       toast.success('Question submitted');
     } catch (error) {
@@ -350,14 +383,25 @@ export default function LearningPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Learning Library</h1>
-        <p className="text-muted-foreground">
-          Browse Islamic PDFs and books, then ask questions with AI-assisted answers.
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Learning Library</h1>
+          <p className="text-muted-foreground">
+            Browse Islamic PDFs and books, then ask questions with AI-assisted answers.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setActiveTab('qa');
+            setShowMyQuestions(true);
+          }}
+        >
+          My Questions
+        </Button>
       </div>
 
-      <Tabs defaultValue="library" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'library' | 'qa')} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="library">
             <BookOpen className="h-4 w-4 mr-2" />
@@ -366,6 +410,9 @@ export default function LearningPage() {
           <TabsTrigger value="qa">
             <HelpCircle className="h-4 w-4 mr-2" />
             Q&A
+            <Badge variant="secondary" className="ml-2">
+              My: {myQuestionCount}
+            </Badge>
           </TabsTrigger>
         </TabsList>
 
@@ -576,11 +623,24 @@ export default function LearningPage() {
               <CardDescription>Receive AI guidance, then admins can review and approve.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <Switch checked={showMyQuestions} onCheckedChange={setShowMyQuestions} />
-                <Label className="text-xs text-muted-foreground">
-                  {isAdmin ? 'Show only my questions' : 'Show my questions'}
-                </Label>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Switch checked={showMyQuestions} onCheckedChange={setShowMyQuestions} />
+                  <Label className="text-xs text-muted-foreground">
+                    {isAdmin ? 'Show only my questions' : 'Show my questions'}
+                  </Label>
+                </div>
+                <Select value={questionStatus} onValueChange={(value) => setQuestionStatus(value as typeof questionStatus)}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All statuses</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <Textarea
                 value={questionText}

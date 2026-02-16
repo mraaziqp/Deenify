@@ -14,17 +14,28 @@ export async function GET(request: Request) {
     const includeAll = searchParams.get('all') === 'true';
     const mineOnly = searchParams.get('mine') === 'true';
     const userId = searchParams.get('userId');
+    const status = searchParams.get('status');
 
     if (mineOnly && !userId) {
       return NextResponse.json({ error: 'userId is required for mine=true.' }, { status: 400 });
     }
 
+    const where: Record<string, unknown> = {};
+    if (includeAll) {
+      if (status) {
+        where.status = status;
+      }
+    } else if (mineOnly) {
+      where.userId = userId;
+      if (status) {
+        where.status = status;
+      }
+    } else {
+      where.status = 'approved';
+    }
+
     const questions = await prisma.learningQuestion.findMany({
-      where: includeAll
-        ? undefined
-        : mineOnly
-          ? { userId }
-          : { status: 'approved' },
+      where,
       orderBy: { createdAt: 'desc' },
     });
 
