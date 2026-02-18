@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       String  @id @default(cuid())
+  email    String  @unique
+  password String
+  createdAt DateTime @default(now())
+}
+
 model QuranMedia {
   id              String   @id @default(cuid())
   title           String
@@ -54,4 +61,16 @@ model LearningQuestion {
   status         String   @default("pending")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model HalalFoodItem {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  category    String?
+  isHalal     Boolean @default(true)
+  source      String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

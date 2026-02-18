@@ -1,15 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-type UserRole = 'student' | 'teacher' | 'verifier' | 'admin';
 
 type User = {
   id: string;
-  name: string;
   email: string;
-  role: UserRole;
-  avatar?: string;
 };
 
 type AuthContextType = {
@@ -17,7 +11,6 @@ type AuthContextType = {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  hasRole: (role: UserRole) => boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,50 +20,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
-    setIsLoading(true);
-    // Dynamically import Firebase to avoid SSR issues
-    import('firebase/auth').then(({ getAuth, onAuthStateChanged }) => {
-      const auth = getAuth();
-      unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-        if (firebaseUser) {
-          // Map Firebase user to app User type
-          setUser({
-            id: firebaseUser.uid,
-            name: firebaseUser.displayName || firebaseUser.email || 'User',
-            email: firebaseUser.email || '',
-            role: 'student', // Future: fetch role from Firestore if needed
-            avatar: firebaseUser.photoURL || undefined,
-          });
+    async function fetchUser() {
+      setIsLoading(true);
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user || null);
         } else {
           setUser(null);
         }
+      } catch {
+        setUser(null);
+      } finally {
         setIsLoading(false);
-      });
-    });
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
+      }
+    }
+    fetchUser();
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    // Implement actual sign in logic with Firebase Auth here
-    throw new Error('Sign in not implemented. Use Firebase Auth.');
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/auth/sign-in', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) throw new Error('Invalid credentials');
+      const data = await res.json();
+      setUser(data);
+      // Optionally, reload to update session cookie
+      window.location.href = '/dashboard';
+    } catch (err) {
+      setUser(null);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const signOut = async () => {
-    // Implement actual sign out logic with Firebase Auth here
-    setUser(null);
-  };
-
-  const hasRole = (role: UserRole) => {
-    if (!user) return false;
-    if (user.role === 'admin') return true; // Admin has all permissions
-    return user.role === role;
+    setIsLoading(true);
+    try {
+      await fetch('/api/auth/sign-out', { method: 'POST' });
+      setUser(null);
+      window.location.href = '/auth/sign-in';
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signOut, hasRole }}>
+    <AuthContext.Provider value={{ user, isLoading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
