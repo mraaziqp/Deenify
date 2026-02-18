@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from 'react';
 
 // Helper: fetch prayer times from AlAdhan API

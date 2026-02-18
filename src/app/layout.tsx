@@ -1,4 +1,3 @@
-"use client";
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -12,22 +11,12 @@ export const metadata: Metadata = {
   description: 'Your companion for Islamic growth and knowledge.',
 };
 
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
-export default function RootLayout({
+
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const router = typeof window !== 'undefined' ? require('next/navigation').useRouter() : null;
-  useEffect(() => {
-    if (pathname === '/') {
-      if (router) router.replace('/ramadan');
-      else window.location.href = '/ramadan';
-    }
-  }, [pathname]);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -38,6 +27,7 @@ export default function RootLayout({
       <body className={cn('font-body antialiased')}>
         <AuthProvider>
           <AuroraBackground>
+            <RootRedirector />
             {children}
           </AuroraBackground>
           <Toaster />
@@ -46,4 +36,12 @@ export default function RootLayout({
       </body>
     </html>
   );
+}
+
+// Client-only redirector for root path
+function RootRedirector() {
+  if (typeof window !== 'undefined' && window.location.pathname === '/') {
+    window.location.replace('/ramadan');
+  }
+  return null;
 }
