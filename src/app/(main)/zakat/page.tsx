@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ZakatCalculator } from "@/components/zakat-calculator";
 import { CircleDollarSign } from "lucide-react";
