@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { AuthProvider } from '@/lib/auth-context';
 import { DevRoleSwitcher } from '@/components/dev-role-switcher';
+import RootRedirector from '@/components/root-redirector';
 
 export const metadata: Metadata = {
   title: 'Deenify',
@@ -38,10 +39,3 @@ export const metadata: Metadata = {
   );
 }
 
-// Client-only redirector for root path
-function RootRedirector() {
-  if (typeof window !== 'undefined' && window.location.pathname === '/') {
-    window.location.replace('/ramadan');
-  }
-  return null;
-}
