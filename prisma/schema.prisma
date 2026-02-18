@@ -12,6 +12,10 @@ model User {
   email    String  @unique
   password String
   createdAt DateTime @default(now())
+  dhikrCount Int @default(0)
+  currentStreak Int @default(0)
+  totalDaysActive Int @default(0)
+  coursesCompleted Int @default(0)
 }
 
 model QuranMedia {
