@@ -6,37 +6,47 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Trophy, Lock, Sparkles } from 'lucide-react';
-import { 
-  achievementsList, 
-  checkAchievements, 
-  getProgressPercentage, 
-  loadProgress,
-  type Achievement,
-  type UserProgress 
-} from '@/lib/achievements';
+
+import { achievementsList, checkAchievements, getProgressPercentage, type Achievement, type UserProgress } from '@/lib/achievements';
 
 export default function AchievementsPage() {
   const [progress, setProgress] = useState<UserProgress | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const refresh = () => {
-      const userProgress = loadProgress();
-      setProgress(userProgress);
-      const userAchievements = checkAchievements(userProgress);
-      setAchievements(userAchievements);
-    };
-
-    refresh();
-    window.addEventListener('progressUpdated', refresh);
-    return () => {
-      window.removeEventListener('progressUpdated', refresh);
-    };
+    async function fetchProgress() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch('/api/achievements/progress');
+        if (!res.ok) throw new Error('Failed to fetch progress');
+        const data = await res.json();
+        if (!data.progress) throw new Error('No progress data');
+        setProgress(data.progress);
+        // Map DB fields to UserProgress type if needed
+        // setAchievements(checkAchievements(data.progress));
+        // For now, use checkAchievements with DB data
+        setAchievements(checkAchievements(data.progress));
+      } catch (err: any) {
+        setError(err.message || 'Unknown error');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProgress();
   }, []);
 
-  if (!progress) {
+  if (loading) {
     return <div className="container mx-auto max-w-6xl">Loading...</div>;
+  }
+  if (error) {
+    return <div className="container mx-auto max-w-6xl text-red-500">{error}</div>;
+  }
+  if (!progress) {
+    return <div className="container mx-auto max-w-6xl">No progress data found.</div>;
   }
 
   const totalAchievements = achievements.length;

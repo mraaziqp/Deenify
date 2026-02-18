@@ -276,21 +276,5 @@ export function getDefaultProgress(): UserProgress {
   };
 }
 
-export function loadProgress(): UserProgress {
-  if (typeof window === 'undefined') return getDefaultProgress();
-  
-  const saved = localStorage.getItem('userProgress');
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return getDefaultProgress();
-    }
-  }
-  return getDefaultProgress();
-}
 
-export function saveProgress(progress: UserProgress): void {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem('userProgress', JSON.stringify(progress));
-}
+// Removed loadProgress and saveProgress. All progress should come from the database via API.
