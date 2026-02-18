@@ -25,8 +25,17 @@ export async function GET(req: NextRequest) {
       },
     });
     if (!dbUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    // You may need to map DB fields to the expected progress object
-    return NextResponse.json({ progress: dbUser });
+    // Map DB fields to the expected UserProgress shape
+    const progress = {
+      dhikrCount: dbUser.dhikrCount ?? 0,
+      dhikrStreak: dbUser.currentStreak ?? 0,
+      quranPagesRead: 0, // Not tracked yet
+      coursesCompleted: dbUser.coursesCompleted ?? 0,
+      khatmJuzCompleted: 0, // Not tracked yet
+      daysActive: dbUser.totalDaysActive ?? 0,
+      lastActiveDate: '', // Not tracked yet
+    };
+    return NextResponse.json({ progress });
   } catch {
     return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
   }
