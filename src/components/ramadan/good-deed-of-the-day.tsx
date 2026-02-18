@@ -42,6 +42,7 @@ function getHijriDay() {
   return (diff % 30);
 }
 
+export default function GoodDeedOfTheDay() {
   const deed = useMemo(() => goodDeeds[getHijriDay()] || goodDeeds[0], []);
   return (
     <div className="bg-white rounded-lg shadow p-6 flex flex-col gap-2" aria-label="30 Days of Good Deeds">

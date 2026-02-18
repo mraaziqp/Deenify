@@ -14,10 +14,8 @@ export const metadata: Metadata = {
 
 
 
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout(props: Readonly<{ children: React.ReactNode }>) {
+  const { children } = props;
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
