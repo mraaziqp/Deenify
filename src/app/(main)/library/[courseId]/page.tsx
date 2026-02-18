@@ -17,7 +17,7 @@ import {
   Lock
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { loadProgress, saveProgress } from '@/lib/achievements';
+// TODO: Implement DB-based progress management
 
 interface Lesson {
   id: string;
@@ -292,9 +292,7 @@ Reflect on how you can implement what you've learned today in your life.
       if (!completedCourses.includes(courseId)) {
         completedCourses.push(courseId);
         localStorage.setItem('completed_courses', JSON.stringify(completedCourses));
-        const progressData = loadProgress();
-        progressData.coursesCompleted = completedCourses.length;
-        saveProgress(progressData);
+        // TODO: Update progress via API (coursesCompleted)
         addActivity(`Completed course: ${course.title}`, 'course');
         window.dispatchEvent(new Event('progressUpdated'));
         toast.success('Course completed!');

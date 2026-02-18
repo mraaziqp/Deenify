@@ -8,7 +8,7 @@ import { HeartPulse, PlusCircle, MinusCircle, RefreshCw, Target } from "lucide-r
 import { useState, useEffect } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { loadProgress, saveProgress } from '@/lib/achievements';
+// TODO: Implement DB-based progress management
 
 export default function DhikrPage() {
   const [count, setCount] = useState(0);
@@ -58,10 +58,7 @@ export default function DhikrPage() {
   useEffect(() => {
     if (isLoaded) {
       localStorage.setItem('dhikrCount', count.toString());
-      const progressData = loadProgress();
-      progressData.dhikrCount = count;
-      progressData.dhikrStreak = Number(localStorage.getItem('dhikrStreak') || streak || 0);
-      saveProgress(progressData);
+      // TODO: Update progress via API (dhikrCount, dhikrStreak)
       window.dispatchEvent(new Event('progressUpdated'));
       
       // Show milestone toasts

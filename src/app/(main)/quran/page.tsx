@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select';
 import { Play, Pause, Bookmark, Volume2, BookOpen, Search, Loader2, CheckCircle2 } from 'lucide-react';
 import { allSurahs, type Surah } from '@/lib/quran-data';
-import { loadProgress, saveProgress } from '@/lib/achievements';
+// TODO: Implement DB-based progress management
 import toast from 'react-hot-toast';
 
 // Use the complete 114 Surah list
@@ -289,9 +289,7 @@ export default function QuranPage() {
     saveReadingProgress(readingProgress);
 
     const pagesRead = new Set(Object.values(readingProgress.completedVerses)).size;
-    const progressData = loadProgress();
-    progressData.quranPagesRead = pagesRead;
-    saveProgress(progressData);
+    // TODO: Update progress via API (quranPagesRead)
     window.dispatchEvent(new Event('progressUpdated'));
   }, [readingProgress, readingProgressLoaded]);
 

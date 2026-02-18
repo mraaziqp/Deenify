@@ -28,7 +28,7 @@ import {
 import Link from 'next/link';
 import { DailyHadithCard } from '@/components/daily-hadith-card';
 import { PrayerTimesCard } from '@/components/prayer-times-card';
-import { loadProgress, saveProgress } from '@/lib/achievements';
+// TODO: Implement DB-based progress management
 
 type DashboardStats = {
   currentStreak: number;
@@ -94,7 +94,8 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const initStats = async () => {
-      const progress = loadProgress();
+      // TODO: Fetch progress from API
+      const progress = {} as any;
       const today = new Date();
       const todayString = today.toDateString();
       const yesterday = new Date(today);
@@ -112,7 +113,7 @@ export default function DashboardPage() {
       } else if (progress.daysActive === 0) {
         progress.daysActive = 1;
         appStreak = Math.max(appStreak, 1);
-        saveProgress(progress);
+        // TODO: Update progress via API
         localStorage.setItem('appStreak', appStreak.toString());
       }
 
