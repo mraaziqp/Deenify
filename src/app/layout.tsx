@@ -3,7 +3,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { AuroraBackground } from '@/components/ui/aurora-background';
-import { AuthProvider } from '@/lib/auth-context';
+import ClientAuthProvider from '@/components/client-auth-provider';
 import { DevRoleSwitcher } from '@/components/dev-role-switcher';
 import RootRedirector from '@/components/root-redirector';
 
@@ -24,14 +24,14 @@ export default function RootLayout(props: Readonly<{ children: React.ReactNode }
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn('font-body antialiased')}>
-        <AuthProvider>
+        <ClientAuthProvider>
           <AuroraBackground>
             <RootRedirector />
             {children}
           </AuroraBackground>
           <Toaster />
           <DevRoleSwitcher />
-        </AuthProvider>
+        </ClientAuthProvider>
       </body>
     </html>
   );
