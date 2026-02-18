@@ -39,8 +39,8 @@ const mainNavLinks: NavLink[] = [
 
 const toolNavLinks: NavLink[] = [
   { href: '/zakat', label: 'Zakat Calculator', icon: CircleDollarSign },
-  { href: '/hiblah', label: 'Qiblah Compass', icon: Compass },
-  { href: '/qalal-food', label: 'Halal Food', icon: Apple },
+  { href: '/qibla', label: 'Qiblah Compass', icon: Compass },
+  { href: '/halal-food', label: 'Halal Food', icon: Apple },
   { href: '/quran', label: 'Quran & Recitations', icon: BookOpen },
   { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
   { href: '/masjid', label: 'Masjid Finder', icon: MapPin },
@@ -71,7 +71,8 @@ function NavLinkItem({ href, label, icon: Icon }: NavLink) {
 }
 
 export function AppSidebar() {
-  const { user, hasRole } = useAuth();
+  const { user, hasRole, signOut } = useAuth();
+  const router = typeof window !== 'undefined' ? require('next/navigation').useRouter() : null;
   
   // Conditional nav links based on role
   const roleNavLinks: NavLink[] = [];
@@ -136,6 +137,26 @@ export function AppSidebar() {
               </Link>
             </TooltipTrigger>
             <TooltipContent side="right">Settings</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                onClick={async () => {
+                  await signOut();
+                  if (router) router.push('/login');
+                  else window.location.href = '/login';
+                }}
+                aria-label="Sign Out"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H9m0 0l3-3m-3 3l3 3" />
+                </svg>
+                <span className="sr-only">Sign Out</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Sign Out</TooltipContent>
           </Tooltip>
         </nav>
       </aside>

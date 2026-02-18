@@ -27,84 +27,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const roles: UserRole[] = ['student', 'teacher', 'verifier', 'admin'];
-
-    // TODO: Check for existing session (from cookie, localStorage, etc.)
-    // For now, simulate checking auth state
-    const checkAuth = async () => {
-      try {
-        // Example: const session = await fetch('/api/auth/session');
-        // const data = await session.json();
-        // setUser(data.user);
-
-        // Mock user for development - remove this in production
-        const mockUser: User = {
-          id: 'dev-user-1',
-          name: 'Abdullah',
-          email: 'abdullah@deenify.com',
-          role: 'student',
-        };
-
-        const storedRole = typeof window !== 'undefined'
-          ? localStorage.getItem('devRole')
-          : null;
-        if (storedRole && roles.includes(storedRole as UserRole)) {
-          mockUser.role = storedRole as UserRole;
+    let unsubscribe: (() => void) | undefined;
+    setIsLoading(true);
+    // Dynamically import Firebase to avoid SSR issues
+    import('firebase/auth').then(({ getAuth, onAuthStateChanged }) => {
+      const auth = getAuth();
+      unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+        if (firebaseUser) {
+          // Map Firebase user to app User type
+          setUser({
+            id: firebaseUser.uid,
+            name: firebaseUser.displayName || firebaseUser.email || 'User',
+            email: firebaseUser.email || '',
+            role: 'student', // Future: fetch role from Firestore if needed
+            avatar: firebaseUser.photoURL || undefined,
+          });
+        } else {
+          setUser(null);
         }
-
-        setUser(mockUser);
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        setUser(null);
-      } finally {
         setIsLoading(false);
-      }
-    };
-
-    const handleRoleChange = () => {
-      const storedRole = localStorage.getItem('devRole');
-      if (!storedRole || !roles.includes(storedRole as UserRole)) return;
-      setUser((prev) => (prev ? { ...prev, role: storedRole as UserRole } : prev));
-    };
-
-    checkAuth();
-    if (typeof window !== 'undefined') {
-      window.addEventListener('devRoleChanged', handleRoleChange);
-    }
-
+      });
+    });
     return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('devRoleChanged', handleRoleChange);
-      }
+      if (unsubscribe) unsubscribe();
     };
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    try {
-      // TODO: Implement actual sign in logic
-      // const response = await fetch('/api/auth/signin', {
-      //   method: 'POST',
-      //   body: JSON.stringify({ email, password }),
-      // });
-      // const data = await response.json();
-      // setUser(data.user);
-      
-      console.log('Sign in:', email, password);
-    } catch (error) {
-      console.error('Sign in failed:', error);
-      throw error;
-    }
+    // Implement actual sign in logic with Firebase Auth here
+    throw new Error('Sign in not implemented. Use Firebase Auth.');
   };
 
   const signOut = async () => {
-    try {
-      // TODO: Implement actual sign out logic
-      // await fetch('/api/auth/signout', { method: 'POST' });
-      setUser(null);
-    } catch (error) {
-      console.error('Sign out failed:', error);
-      throw error;
-    }
+    // Implement actual sign out logic with Firebase Auth here
+    setUser(null);
   };
 
   const hasRole = (role: UserRole) => {

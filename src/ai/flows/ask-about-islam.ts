@@ -21,31 +21,22 @@ export type AskAboutIslamOutput = z.infer<typeof AskAboutIslamOutputSchema>;
 export async function askAboutIslam(input: AskAboutIslamInput): Promise<AskAboutIslamOutput> {
   try {
     console.log('[askAboutIslam] Starting flow with question:', input.question);
-    
     // Check API key is available
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
     if (!apiKey) {
       console.error('[askAboutIslam] ERROR: No API key found in environment');
       return {
-        answer: 'I apologize, but I cannot access the AI service at this moment. Please ensure the API configuration is set up correctly, or contact support.'
+        answer: 'I am currently offline. Did you know the Prophet (SAW) advised breaking the fast with fresh dates?'
       };
     }
-    
     console.log('[askAboutIslam] API key found, invoking flow...');
     const result = await askAboutIslamFlow(input);
     console.log('[askAboutIslam] Flow completed successfully');
     return result;
-    
   } catch (error) {
     console.error('[askAboutIslam] ERROR occurred:', error);
-    console.error('[askAboutIslam] Error details:', {
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-      type: typeof error,
-    });
-    
     return {
-      answer: 'I apologize, but I encountered an error while processing your question. This could be due to API connectivity issues or service limitations. Please try again in a moment, or rephrase your question. If the problem persists, please contact support.'
+      answer: 'I am currently offline. Did you know the Prophet (SAW) advised breaking the fast with fresh dates?'
     };
   }
 }
