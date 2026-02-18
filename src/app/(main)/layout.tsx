@@ -1,4 +1,5 @@
 
+
 import type { ReactNode } from 'react';
 import { AppSidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
@@ -6,6 +7,8 @@ import { DailyReminders } from '@/components/daily-reminders';
 import { GlobalKeyboardShortcuts } from '@/components/global-keyboard-shortcuts';
 import ClientAuthProvider from '@/components/client-auth-provider';
 
+
+export default function MainLayout({ children }: { children: ReactNode }) {
   return (
     <ClientAuthProvider>
       <div className="flex min-h-screen w-full flex-col bg-muted/40">
