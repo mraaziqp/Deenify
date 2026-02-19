@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "seed:bukhari": "ts-node scripts/seed-bukhari.ts",
+    "seed:bukhari": "ts-node scripts/seed-bukhari.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
