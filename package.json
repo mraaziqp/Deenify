@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "seed:bukhari": "ts-node scripts/seed-bukhari.ts"
+    "seed:bukhari": "ts-node scripts/seed-bukhari.ts",
+    "postinstall": "npm install --legacy-peer-deps"
   },
   "dependencies": {
     "@genkit-ai/core": "^1.28.0",
