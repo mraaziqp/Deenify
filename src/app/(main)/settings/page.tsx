@@ -33,17 +33,7 @@ import {
 } from "lucide-react";
 import { useAuth } from '@/lib/auth-context';
 import toast from 'react-hot-toast';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+// AlertDialog imports removed for build isolation
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -500,29 +490,10 @@ export default function SettingsPage() {
                   Remove all locally stored data (Dhikr count, chat history, etc.)
                 </p>
               </div>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="text-orange-600 border-orange-200">
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Clear
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Clear all local data?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will remove your Dhikr count, chat history, Khatm claims, and other locally stored data. 
-                      This action cannot be undone. Consider exporting your data first.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleClearData} className="bg-orange-600">
-                      Clear Data
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <Button variant="outline" className="text-orange-600 border-orange-200" onClick={handleClearData}>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Clear
+              </Button>
             </div>
           </CardContent>
         </Card>

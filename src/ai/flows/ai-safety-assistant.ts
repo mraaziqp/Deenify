@@ -8,58 +8,22 @@
  * - AskAboutIslamOutput - The return type for the askAboutIslam function.
  */
 
-import {ai} from '@/ai/genkit';
-import { z } from 'zod';
+// import {ai} from '@/ai/genkit';
+// import { z } from 'zod';
 
-const AskAboutIslamInputSchema = z.object({
-  question: z.string().describe('The question about Islam.'),
-});
-export type AskAboutIslamInput = z.infer<typeof AskAboutIslamInputSchema>;
+// const AskAboutIslamInputSchema = z.object({
+//   question: z.string().describe('The question about Islam.'),
+// });
+// export type AskAboutIslamInput = z.infer<typeof AskAboutIslamInputSchema>;
 
-const AskAboutIslamOutputSchema = z.object({
-  answer: z.string().describe('The answer to the question, based on approved Islamic texts.'),
-  sources: z.array(z.string()).describe('The sources used to answer the question.'),
-});
-export type AskAboutIslamOutput = z.infer<typeof AskAboutIslamOutputSchema>;
+// const AskAboutIslamOutputSchema = z.object({
+//   answer: z.string().describe('The answer to the question, based on approved Islamic texts.'),
+//   sources: z.array(z.string()).describe('The sources used to answer the question.'),
+// });
+// export type AskAboutIslamOutput = z.infer<typeof AskAboutIslamOutputSchema>;
 
-export async function askAboutIslam(input: AskAboutIslamInput): Promise<AskAboutIslamOutput> {
-  return askAboutIslamFlow(input);
+export async function askAboutIslam(/*input: any*/): Promise<any> {
+  return { answer: 'AI temporarily disabled for debugging.' };
 }
 
-const prompt = ai.definePrompt({
-  name: 'askAboutIslamPrompt',
-  input: {schema: AskAboutIslamInputSchema},
-  output: {schema: AskAboutIslamOutputSchema},
-  prompt: `You are a helpful AI assistant that answers questions about Islam based on the Quran and Sahih Hadith.
-
-  Adhere to the following guidelines:
-  - Only provide answers based on approved Islamic texts.
-  - Avoid complex rulings (Fatwa Firewall). If the user asks about divorce, moon sighting, or inheritance, politely refuse and refer them to a local scholar.
-  - Provide sources for your answers.
-
-  Question: {{{question}}}
-
-  Answer:`, // Keep it open-ended, the model will populate the fields based on output schema.
-});
-
-const askAboutIslamFlow = ai.defineFlow(
-  {
-    name: 'askAboutIslamFlow',
-    inputSchema: AskAboutIslamInputSchema,
-    outputSchema: AskAboutIslamOutputSchema,
-  },
-  async input => {
-    // Fatwa Firewall
-    const highRiskKeywords = ['divorce', 'moon sighting', 'inheritance', 'talaq'];
-    const question = input.question.toLowerCase();
-    if(highRiskKeywords.some(keyword => question.includes(keyword))){
-      return {
-        answer: "This is a complex matter requiring a local scholar. I am not equipped to provide a ruling on this topic. Please find a qualified Imam in your area for guidance.",
-        sources: []
-      }
-    }
-
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+// Genkit AI temporarily disabled for debugging

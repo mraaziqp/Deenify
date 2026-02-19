@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { config } from 'dotenv';
-config();
 
-// Import AI flows to register them
-import '@/ai/dev';
+// Genkit/AI temporarily disabled for debugging
 
 export async function GET(request: NextRequest) {
   return NextResponse.json({ 
