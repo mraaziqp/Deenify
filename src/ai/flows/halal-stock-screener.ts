@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { z } from 'zod';
 
 const HalalStockScreenerInputSchema = z.object({
   ticker: z.string().describe('The ticker symbol of the stock to screen.'),

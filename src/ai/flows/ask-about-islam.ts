@@ -6,7 +6,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { z } from 'zod';
 
 const AskAboutIslamInputSchema = z.object({
   question: z.string().describe('The question about Islam the user wants to ask.'),
