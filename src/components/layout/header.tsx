@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Link from 'next/link';
 import {
   CircleUser,
@@ -127,15 +127,21 @@ const navLinks: NavLink[] = [
               <DropdownMenuItem>
                 <Link href="/profile" className="w-full">Profile</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={signOut} className="text-red-600 font-semibold cursor-pointer">
+                Sign Out
+              </DropdownMenuItem>
             </>
           )}
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={signOut} className="text-red-600 font-semibold cursor-pointer">
-            Sign Out
-          </DropdownMenuItem>
+          {!user && (
+            <DropdownMenuItem>
+              <Link href="/auth/sign-in" className="w-full">Sign In</Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
   );
-}
+
+export default Header;
