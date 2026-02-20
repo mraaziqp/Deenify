@@ -155,7 +155,13 @@ export default function DashboardPage() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(progress),
+            body: JSON.stringify({
+              userId: user?.id,
+              currentStreak: appStreak,
+              totalDaysActive: progress.daysActive || 0,
+              dhikrCount,
+              coursesCompleted: progress.coursesCompleted || 0,
+            }),
           });
         } catch (error) {
           console.error('Failed to save progress:', error);
