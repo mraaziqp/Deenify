@@ -148,6 +148,8 @@ export default function DashboardPage() {
         progress.daysActive = (progress.daysActive || 0) + 1;
         appStreak = progress.lastActiveDate === yesterdayString ? appStreak + 1 : 1;
         progress.lastActiveDate = todayString;
+        // Calculate dhikrCount before API call
+        const dhikrCount = Number(localStorage.getItem('dhikrCount') || progress.dhikrCount || 0);
         // Save progress to API
         try {
           await fetch('/api/progress', {
