@@ -28,6 +28,7 @@ import type { NavLink } from '@/lib/types';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { KeyboardShortcutsDialog } from '@/components/keyboard-shortcuts-dialog';
+import DeenifyLogo from '@/components/ui/deenify-logo';
 
 const navLinks: NavLink[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -95,6 +96,10 @@ export function Header() {
 
       <div className="relative ml-auto flex-1 md:grow-0 flex items-center gap-2">
         <KeyboardShortcutsDialog />
+        <Link href="/dashboard" className="font-bold text-xl text-primary flex items-center gap-2">
+          <DeenifyLogo />
+          <span>Deenify</span>
+        </Link>
       </div>
 
       <DropdownMenu>
