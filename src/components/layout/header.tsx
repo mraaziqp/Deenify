@@ -47,8 +47,10 @@ const navLinks: NavLink[] = [
 function Header() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+      {/* Mobile Hamburger Menu */}
       <Sheet>
         <SheetTrigger asChild>
           <Button size="icon" variant="outline" className="sm:hidden">
@@ -95,6 +97,27 @@ function Header() {
         </SheetContent>
       </Sheet>
 
+      {/* Desktop Horizontal Nav */}
+      <nav className="hidden sm:flex gap-2 items-center">
+        {navLinks.map((link, index) => {
+          if (link.type === 'divider' || link.type === 'title') return null;
+          const LinkIcon = link.icon;
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                'flex items-center gap-2 px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition',
+                pathname === link.href && 'text-foreground bg-accent'
+              )}
+            >
+              <LinkIcon className="h-4 w-4" />
+              <span className="hidden md:inline">{link.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
       <div className="relative ml-auto flex-1 md:grow-0 flex items-center gap-2">
         <KeyboardShortcutsDialog />
         <Link href="/dashboard" className="font-bold text-xl text-primary flex items-center gap-2">
@@ -113,7 +136,7 @@ function Header() {
             <CircleUser className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="w-56 sm:w-64 max-w-[90vw]">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {user && (

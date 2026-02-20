@@ -19,15 +19,27 @@ import {
   Edit2,
   Save
 } from "lucide-react";
+import { useAuth } from '@/lib/auth-context';
 
 export default function ProfilePage() {
+  const { user, isLoading } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: "Abdullah",
-    joinedDate: "January 2026",
-    madhab: "Hanafi",
-    level: "Learning Muslim",
+    name: user?.name || user?.email?.split('@')[0] || '',
+    joinedDate: user?.createdAt ? new Date(user.createdAt).toLocaleString('default', { month: 'long', year: 'numeric' }) : '',
+    madhab: user?.madhab || '',
+    level: user?.level || '',
   });
+
+  // Update profile state when user changes
+  React.useEffect(() => {
+    setProfile({
+      name: user?.name || user?.email?.split('@')[0] || '',
+      joinedDate: user?.createdAt ? new Date(user.createdAt).toLocaleString('default', { month: 'long', year: 'numeric' }) : '',
+      madhab: user?.madhab || '',
+      level: user?.level || '',
+    });
+  }, [user]);
 
   // Mock streak data
   const streakData = {
