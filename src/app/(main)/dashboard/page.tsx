@@ -61,37 +61,9 @@ const features = [
     id: 'halal_food',
     title: 'Halal Food Guide',
     description: 'Learn about permissible and forbidden foods.',
-      (async () => {
-        await initStats();
-        await loadDailyFact();
-        loadActivity();
-      })();
+    icon: Apple,
     requiredMilestone: 'quran_intro',
     href: '/halal-food',
-    const loadDailyFact = async () => {
-      try {
-        const useCustomFacts = localStorage.getItem('useCustomFacts') === 'true';
-        const customFacts = JSON.parse(localStorage.getItem('customFacts') || '[]');
-
-        let facts: string[] = [];
-        if (useCustomFacts && Array.isArray(customFacts) && customFacts.length > 0) {
-          facts = customFacts;
-        } else {
-          const response = await fetch('/api/facts');
-          if (response.ok) {
-            const data = await response.json();
-            facts = data.facts || [];
-          }
-        }
-
-        const dateKey = new Date().toISOString().slice(0, 10);
-        const fact = selectDailyFact(facts, dateKey) || 'Keep learning something beneficial every day.';
-        setDailyFact(fact);
-      } catch (error) {
-        console.error('Failed to load daily fact:', error);
-        setDailyFact('Keep learning something beneficial every day.');
-      }
-    };
   },
   {
     id: 'quran_page',
