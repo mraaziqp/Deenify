@@ -94,6 +94,8 @@ export default function DashboardPage() {
     dhikrCount: 0,
   });
   const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const initStats = async () => {
@@ -127,16 +129,17 @@ export default function DashboardPage() {
         currentStreak: appStreak,
         totalDaysActive: progress.daysActive || 0,
         dhikrCount,
-        const { user, isLoading } = useAuth();
-        const router = useRouter();
-
-        // Redirect unauthenticated users
-        useEffect(() => {
-          if (!isLoading && !user) {
-            router.push('/auth/sign-in');
-          }
-        }, [user, isLoading, router]);
       }));
+    };
+    initStats();
+  }, []);
+
+  // Redirect unauthenticated users
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/auth/sign-in');
+    }
+  }, [user, isLoading, router]);
 
       try {
         const response = await fetch('/api/library');
