@@ -31,6 +31,7 @@ import {
 import Link from 'next/link';
 import { DailyHadithCard } from '@/components/daily-hadith-card';
 import { PrayerTimesCard } from '@/components/prayer-times-card';
+import TasbeehCounter from '@/components/dhikr/tasbeeh-counter';
 // TODO: Implement DB-based progress management
 
 type DashboardStats = {
@@ -152,19 +153,21 @@ export default function DashboardPage() {
         const dhikrCount = Number(localStorage.getItem('dhikrCount') || progress.dhikrCount || 0);
         // Save progress to API
         try {
-          await fetch('/api/progress', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userId: user?.id,
-              currentStreak: appStreak,
-              totalDaysActive: progress.daysActive || 0,
-              dhikrCount,
-              coursesCompleted: progress.coursesCompleted || 0,
-            }),
-          });
+          if (user?.id) {
+            await fetch('/api/progress', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                userId: user.id,
+                currentStreak: appStreak,
+                totalDaysActive: progress.daysActive || 0,
+                dhikrCount,
+                coursesCompleted: progress.coursesCompleted || 0,
+              }),
+            });
+          }
         } catch (error) {
           console.error('Failed to save progress:', error);
         }
@@ -360,6 +363,16 @@ export default function DashboardPage() {
           <DailyHadithCard />
           <PrayerTimesCard />
         </div>
+
+        <Card className="shadow-md mt-6">
+          <CardHeader>
+            <CardTitle>Tasbeeh Counter</CardTitle>
+            <CardDescription>Count your dhikr easily</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <TasbeehCounter />
+          </CardContent>
+        </Card>
 
         <Card className="shadow-md">
           <CardHeader>

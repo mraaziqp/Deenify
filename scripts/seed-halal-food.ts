@@ -57,6 +57,22 @@ const items = [
     isHalal: false,
     source: 'https://sanha.org.za/',
     imageUrl: 'https://images.unsplash.com/photo-1519864600265-abb011b1a5b1?auto=format&fit=crop&w=400&q=80'
+  },
+  {
+    name: 'Coca-Cola',
+    description: 'Coca-Cola beverages are generally considered halal unless containing alcohol.',
+    category: 'Beverage',
+    isHalal: true,
+    source: 'https://www.coca-cola.com/za/en',
+    imageUrl: 'https://images.unsplash.com/photo-1510626176961-4b57d4fbad04?auto=format&fit=facearea&w=256&q=80',
+  },
+  {
+    name: 'Wine',
+    description: 'Alcoholic beverages are not halal.',
+    category: 'Beverage',
+    isHalal: false,
+    source: '',
+    imageUrl: 'https://images.unsplash.com/photo-1514361892635-cebbf7dd0fa5?auto=format&fit=facearea&w=256&q=80',
   }
 ];
 
@@ -66,24 +82,6 @@ async function main() {
     await prisma.halalFoodItem.create({ data: item });
   }
   console.log('Halal food items seeded successfully.');
-}
-
-main().finally(() => prisma.$disconnect());
-        source: 'https://www.coca-cola.com/za/en',
-        imageUrl: 'https://images.unsplash.com/photo-1510626176961-4b57d4fbad04?auto=format&fit=facearea&w=256&q=80',
-      },
-      {
-        name: 'Wine',
-        description: 'Alcoholic beverages are not halal.',
-        category: 'Beverage',
-        isHalal: false,
-        source: '',
-        imageUrl: 'https://images.unsplash.com/photo-1514361892635-cebbf7dd0fa5?auto=format&fit=facearea&w=256&q=80',
-      },
-    ],
-    skipDuplicates: true,
-  });
-  console.log('Seeded halal food items!');
 }
 
 main().finally(() => prisma.$disconnect());
