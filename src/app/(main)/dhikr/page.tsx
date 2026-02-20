@@ -105,15 +105,31 @@ export default function DhikrPage() {
   }, { enableOnFormTags: false });
 
   return (
-    <div>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 to-green-100">
       <Toaster />
-      <h1 className="text-3xl font-bold">Dhikr Circle (UI temporarily disabled for build test)</h1>
-      <p>Count: {count}</p>
-      <p>Streak: {streak}</p>
-      <p>Daily Goal: {dailyGoal}</p>
-      <button onClick={increment}>Increment</button>
-      <button onClick={decrement}>Decrement</button>
-      <button onClick={reset}>Reset</button>
+      <div className="w-full max-w-md p-6 rounded-xl shadow-xl bg-white/90 border border-primary/10">
+        <h1 className="text-3xl font-bold text-center mb-2 text-primary">Dhikr & Tasbeeh Counter</h1>
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-lg font-semibold">Streak: <span className="text-green-600">{streak}</span></div>
+          <div className="text-lg font-semibold">Goal: <span className="text-blue-600">{dailyGoal}</span></div>
+        </div>
+        <div className="flex flex-col items-center mb-6">
+          <div className={`text-5xl font-bold mb-2 ${isAnimating ? 'animate-bounce' : ''}`}>{count}</div>
+          <div className="w-full">
+            <div className="h-4 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-4 bg-primary rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
+            </div>
+            <div className="text-xs text-center mt-1 text-muted-foreground">Progress: {Math.round(progress)}%</div>
+          </div>
+        </div>
+        <div className="flex gap-3 justify-center mb-4">
+          <button className="px-4 py-2 bg-green-500 text-white rounded-lg font-semibold shadow hover:bg-green-600 transition" onClick={increment}>+1</button>
+          <button className="px-4 py-2 bg-yellow-400 text-white rounded-lg font-semibold shadow hover:bg-yellow-500 transition" onClick={decrement}>-1</button>
+          <button className="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold shadow hover:bg-red-600 transition" onClick={reset}>Reset</button>
+        </div>
+        <div className="text-sm text-muted-foreground text-center mb-2">Tip: Use <b>Space</b> to increment, <b>R</b> to reset, <b>Backspace</b> to decrement.</div>
+        <div className="text-xs text-center text-blue-700">Milestones: 33 (SubhanAllah), 66 (Alhamdulillah), 99 (Allahu Akbar), 100 (Goal)</div>
+      </div>
     </div>
   );
 }

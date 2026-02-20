@@ -58,6 +58,9 @@ function CurrencyInput({ field, label, description }: { field: any, label: strin
 }
 
 export function ZakatCalculator() {
+  // ...existing code...
+  const [showBelowNisab, setShowBelowNisab] = useState(false);
+  const resetForm = () => form.reset();
   const [nisab, setNisab] = useState(0);
   const [zakatDue, setZakatDue] = useState(0);
 
@@ -101,10 +104,10 @@ export function ZakatCalculator() {
   
   useEffect(() => {
     const goldNisab = watchAllFields.goldPricePerGram * NISAB_GOLD_GRAMS;
-    // Traditionally, silver is often used for Nisab
     const silverNisab = watchAllFields.silverPricePerGram * NISAB_SILVER_GRAMS;
     setNisab(Math.min(goldNisab, silverNisab));
-  }, [watchAllFields.goldPricePerGram, watchAllFields.silverPricePerGram]);
+    setShowBelowNisab(netAssets < Math.min(goldNisab, silverNisab));
+  }, [watchAllFields.goldPricePerGram, watchAllFields.silverPricePerGram, netAssets]);
 
 
   const calculateZakat = () => {
@@ -122,6 +125,16 @@ export function ZakatCalculator() {
         <TabsTrigger value="purification">Income Purification</TabsTrigger>
       </TabsList>
       <TabsContent value="zakat" className="p-6">
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h2 className="text-xl font-bold mb-2 text-primary">How to Use the Zakah Calculator</h2>
+          <ul className="list-disc pl-6 text-sm text-blue-900">
+            <li>Enter your gold/silver prices and amounts.</li>
+            <li>Fill in your cash, investments, and crypto assets.</li>
+            <li>Add any debts due within a year.</li>
+            <li>Click <b>Calculate Zakat</b> to see your summary.</li>
+            <li>If your net assets are below the Nisab threshold, Zakat is not due.</li>
+          </ul>
+        </div>
         <Form {...form}>
           <div className="grid md:grid-cols-3 gap-8">
             {/* Assets */}
@@ -185,14 +198,23 @@ export function ZakatCalculator() {
                   <div className="flex justify-between"><span className="text-muted-foreground">Total Liabilities</span> <span>-R{totalLiabilities.toFixed(2)}</span></div>
                   <div className="flex justify-between font-semibold border-t pt-2 mt-2"><span >Net Zakatable Assets</span> <span>R{netAssets.toFixed(2)}</span></div>
                 </div>
+                {showBelowNisab && (
+                  <div className="bg-yellow-100 text-yellow-800 rounded p-2 text-center text-sm mt-2">
+                    <AlertCircle className="inline mr-1 h-4 w-4" />
+                    Your net assets are below the Nisab threshold. Zakat is not due.
+                  </div>
+                )}
                 <div className="text-center p-2 bg-background rounded">
                   <p className="text-xs text-muted-foreground">Nisab Threshold (Silver)</p>
                   <p className="font-bold text-primary">R{nisab.toFixed(2)}</p>
                   <p className="text-xs text-muted-foreground mt-1">Est. R9,500 - R130,000</p>
                 </div>
-                <Button onClick={calculateZakat} className="w-full">
-                  <Calculator className="mr-2 h-4 w-4" /> Calculate Zakat
-                </Button>
+                <div className="flex gap-2 mt-2">
+                  <Button onClick={calculateZakat} className="w-full">
+                    <Calculator className="mr-2 h-4 w-4" /> Calculate Zakat
+                  </Button>
+                  <Button variant="outline" onClick={resetForm} className="w-full">Reset</Button>
+                </div>
                 <div className="text-center p-4 border-t border-dashed mt-4">
                     <p className="text-muted-foreground">Zakat Due (2.5%)</p>
                     <p className="text-3xl font-bold text-primary">R{zakatDue.toFixed(2)}</p>

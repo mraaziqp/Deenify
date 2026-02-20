@@ -53,10 +53,10 @@ export default function AdminDashboard() {
 
   // Redirect if not admin
   useEffect(() => {
-    if (!hasRole('admin')) {
+    if (!user || !(hasRole && hasRole())) {
       redirect('/dashboard');
     }
-  }, [hasRole]);
+  }, [user, hasRole]);
 
   // Fetch admin data
   useEffect(() => {
@@ -184,6 +184,19 @@ export default function AdminDashboard() {
           <ShieldCheck className="h-4 w-4 mr-2" />
           Administrator
         </Badge>
+      </div>
+
+      {/* Quran Media Upload Shortcut */}
+      <div className="flex justify-end mb-2">
+        <Button variant="default" size="lg" onClick={() => {
+          const el = document.querySelector('[data-tab="quran-media"]');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }}>
+          <span className="flex items-center gap-2">
+            <BookOpen className="h-5 w-5" />
+            Upload Recitation Audio
+          </span>
+        </Button>
       </div>
 
       {/* Stats Overview */}

@@ -14,16 +14,16 @@ interface PrayerTime {
 export function PrayerTimesCard() {
   const [currentTime, setCurrentTime] = useState<string>('');
   const [nextPrayer, setNextPrayer] = useState<string>('Fajr');
-  const [location] = useState<string>('Johannesburg, ZA');
+  const [location] = useState<string>('Cape Town, ZA');
 
-  // South African prayer times (example for Johannesburg - should be dynamic based on location)
+  // Cape Town prayer times (example for February 2026)
   const prayerTimes: PrayerTime[] = [
-    { name: 'Fajr', time: '04:32', icon: <Sunrise className="h-4 w-4" /> },
-    { name: 'Sunrise', time: '05:53', icon: <Sunrise className="h-4 w-4" /> },
-    { name: 'Dhuhr', time: '12:05', icon: <Clock className="h-4 w-4" /> },
-    { name: 'Asr', time: '15:32', icon: <Clock className="h-4 w-4" /> },
-    { name: 'Maghrib', time: '18:17', icon: <Sunset className="h-4 w-4" /> },
-    { name: 'Isha', time: '19:38', icon: <Clock className="h-4 w-4" /> },
+    { name: 'Fajr', time: '04:50', icon: <Sunrise className="h-4 w-4" /> },
+    { name: 'Sunrise', time: '06:18', icon: <Sunrise className="h-4 w-4" /> },
+    { name: 'Dhuhr', time: '12:57', icon: <Clock className="h-4 w-4" /> },
+    { name: 'Asr', time: '16:37', icon: <Clock className="h-4 w-4" /> },
+    { name: 'Maghrib', time: '19:33', icon: <Sunset className="h-4 w-4" /> },
+    { name: 'Isha', time: '20:41', icon: <Clock className="h-4 w-4" /> },
   ];
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export function PrayerTimesCard() {
           ))}
         </div>
         <p className="text-xs text-muted-foreground mt-4 text-center">
-          Times are calculated for Johannesburg. Enable location for accurate times.
+          Times are calculated for Cape Town. Enable location for accurate times.
         </p>
       </CardContent>
     </Card>

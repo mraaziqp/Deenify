@@ -28,7 +28,14 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'deenify.co.za',
+        port: '',
+        pathname: '/**',
+      },
     ],
+    domains: ['deenify.co.za'],
   },
 };
 

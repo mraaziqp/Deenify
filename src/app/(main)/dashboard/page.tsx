@@ -1,4 +1,6 @@
 'use client';
+import { useAuth } from '@/lib/auth-context';
+import { useRouter } from 'next/navigation';
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from 'react';
@@ -125,6 +127,15 @@ export default function DashboardPage() {
         currentStreak: appStreak,
         totalDaysActive: progress.daysActive || 0,
         dhikrCount,
+        const { user, isLoading } = useAuth();
+        const router = useRouter();
+
+        // Redirect unauthenticated users
+        useEffect(() => {
+          if (!isLoading && !user) {
+            router.push('/auth/sign-in');
+          }
+        }, [user, isLoading, router]);
       }));
 
       try {
