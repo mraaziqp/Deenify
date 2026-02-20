@@ -214,13 +214,6 @@ export default function DashboardPage() {
     }
   }, [user, isLoading, router]);
 
-    // Only set up event listener, do not call refreshAll() directly here
-    window.addEventListener('progressUpdated', refreshAll);
-
-    return () => {
-      window.removeEventListener('progressUpdated', refreshAll);
-    };
-  }, []);
 
   const isFeatureUnlocked = (_milestone: string) => true;
   const progressPercentage = stats.totalCourses
