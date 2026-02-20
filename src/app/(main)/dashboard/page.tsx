@@ -143,37 +143,6 @@ export default function DashboardPage() {
     }
   }, [user, isLoading, router]);
 
-      try {
-        const response = await fetch('/api/library');
-        if (!response.ok) return;
-        const data = await response.json();
-        const allCourses = [...(data.freeCourses || []), ...(data.specializedCourses || [])];
-
-        const completedCourses = JSON.parse(localStorage.getItem('completed_courses') || '[]');
-        let completedCount = Array.isArray(completedCourses) ? completedCourses.length : 0;
-
-        if (!completedCount) {
-          const enrolled = JSON.parse(localStorage.getItem('enrolled_courses') || '[]');
-          completedCount = enrolled.filter((courseId: string) => {
-            const course = allCourses.find((item: any) => item.id === courseId);
-            if (!course || !course.lessons) return false;
-            const progressData = JSON.parse(localStorage.getItem(`course_${courseId}`) || '{}');
-            const completedLessons = Object.values(progressData).filter(Boolean).length;
-            return completedLessons >= course.lessons;
-          }).length;
-        }
-
-        progress.coursesCompleted = completedCount;
-        saveProgress(progress);
-
-        setStats((prev) => ({
-          ...prev,
-          coursesCompleted: completedCount,
-          totalCourses: allCourses.length,
-        }));
-      } catch (error) {
-        console.error('Failed to load course stats:', error);
-      }
     };
 
     const loadActivity = () => {
