@@ -134,7 +134,49 @@ export default function DashboardPage() {
       // Fetch course stats
     };
     initStats();
+      const loadActivity = () => {
+        const stored = JSON.parse(localStorage.getItem('activityLog') || '[]');
+        setActivity(Array.isArray(stored) ? stored.slice(0, 6) : []);
+      };
+
+      const loadDailyFact = async () => {
+        try {
+          const useCustomFacts = localStorage.getItem('useCustomFacts') === 'true';
+          const customFacts = JSON.parse(localStorage.getItem('customFacts') || '[]');
+
+          let facts: string[] = [];
+          if (useCustomFacts && Array.isArray(customFacts) && customFacts.length > 0) {
+            facts = customFacts;
+          } else {
+            const response = await fetch('/api/facts');
+            if (response.ok) {
+              const data = await response.json();
+              facts = data.facts || [];
+            }
+          }
+
+          const dateKey = new Date().toISOString().slice(0, 10);
+          const fact = selectDailyFact(facts, dateKey) || 'Keep learning something beneficial every day.';
+          setDailyFact(fact);
+        } catch (error) {
+          console.error('Failed to load daily fact:', error);
+          setDailyFact('Keep learning something beneficial every day.');
+        }
+      };
+
+      const refreshAll = () => {
+        void initStats();
+        void loadDailyFact();
+        loadActivity();
+      };
+
   }, []);
+      refreshAll();
+      window.addEventListener('progressUpdated', refreshAll);
+
+      return () => {
+        window.removeEventListener('progressUpdated', refreshAll);
+      };
 
   // Redirect unauthenticated users
   useEffect(() => {
