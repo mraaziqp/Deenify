@@ -221,7 +221,7 @@ export default function DashboardPage() {
       loadActivity();
     };
 
-    refreshAll();
+    // Only set up event listener, do not call refreshAll() directly here
     window.addEventListener('progressUpdated', refreshAll);
 
     return () => {
