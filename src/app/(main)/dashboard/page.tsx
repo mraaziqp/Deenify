@@ -206,12 +206,6 @@ export default function DashboardPage() {
       };
 
   }, []);
-      refreshAll();
-      window.addEventListener('progressUpdated', refreshAll);
-
-      return () => {
-        window.removeEventListener('progressUpdated', refreshAll);
-      };
 
   // Redirect unauthenticated users
   useEffect(() => {
