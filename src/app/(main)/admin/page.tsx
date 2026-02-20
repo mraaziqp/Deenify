@@ -84,7 +84,7 @@ export default function AdminDashboard() {
             id: '1',
             type: 'course_submitted',
             description: 'New course "Advanced Tajweed" submitted',
-            timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 15).toISOString() : '',
             userId: 'teacher-1',
             userName: 'Sheikh Ahmed',
           },
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
             id: '2',
             type: 'course_approved',
             description: 'Course "Fiqh Essentials" approved',
-            timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 30).toISOString() : '',
             userId: 'verifier-1',
             userName: 'Dr. Fatima',
           },
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
             id: '3',
             type: 'user_registered',
             description: 'New user registration',
-            timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 45).toISOString() : '',
             userId: 'user-123',
             userName: 'Ahmad Ibrahim',
           },
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
             id: '4',
             type: 'enrollment',
             description: 'User enrolled in "Introduction to Islam"',
-            timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 60).toISOString() : '',
             userId: 'user-456',
             userName: 'Sarah Ahmed',
           },
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
             id: '5',
             type: 'course_rejected',
             description: 'Course "Quick Fiqh" rejected - needs more sources',
-            timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
+            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 90).toISOString() : '',
             userId: 'verifier-2',
             userName: 'Sheikh Hassan',
           },
@@ -148,8 +148,8 @@ export default function AdminDashboard() {
   };
 
   const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp);
-    const now = new Date();
+    const date = typeof window !== 'undefined' ? new Date(timestamp) : null;
+    const now = typeof window !== 'undefined' ? new Date() : null;
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     

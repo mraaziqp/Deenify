@@ -86,6 +86,13 @@ const selectDailyFact = (facts: string[], dateKey: string) => {
 };
 
 export default function DashboardPage() {
+    const initStats = async () => {
+      // TODO: Fetch progress from API
+      const progress = {} as any;
+      const today = new Date();
+      // ...existing code...
+    };
+
     const loadActivity = () => {
       const stored = JSON.parse(localStorage.getItem('activityLog') || '[]');
       setActivity(Array.isArray(stored) ? stored.slice(0, 6) : []);
@@ -389,7 +396,7 @@ export default function DashboardPage() {
                     <div>
                       <p className="text-sm font-medium">{item.message}</p>
                       <p className="text-xs text-muted-foreground">
-                        {new Date(item.timestamp).toLocaleString()}
+                        {typeof window !== 'undefined' ? new Date(item.timestamp).toLocaleString() : ''}
                       </p>
                     </div>
                     <Badge variant="outline" className="capitalize">

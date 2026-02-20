@@ -666,7 +666,7 @@ export default function LearningPage() {
                     </Badge>
                   </div>
                   <CardDescription>
-                    {new Date(question.createdAt).toLocaleString()}
+                    {typeof window !== 'undefined' ? new Date(question.createdAt).toLocaleString() : ''}
                     {isAdmin && question.userName && (
                       <span className="ml-2">• Asked by {question.userName}</span>
                     )}

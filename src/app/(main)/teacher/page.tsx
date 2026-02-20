@@ -337,7 +337,7 @@ export default function TeacherPortalPage() {
                     {getStatusBadge(course.status)}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Submitted {new Date(course.submittedAt).toLocaleDateString()}
+                    Submitted {typeof window !== 'undefined' ? new Date(course.submittedAt).toLocaleDateString() : ''}
                   </p>
                   {course.feedback && (
                     <div className="p-2 bg-muted rounded text-xs">

@@ -22,6 +22,11 @@ export async function POST(req: NextRequest) {
   // Create JWT and set cookie
   const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
   const cookieStore = cookies();
-  cookieStore.set('token', token, { httpOnly: true, path: '/', maxAge: 60 * 60 * 24 * 7 });
+  cookieStore.set('token', token, {
+    httpOnly: false,
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+    sameSite: 'lax',
+  });
   return NextResponse.json({ id: user.id, email: user.email });
 }

@@ -31,11 +31,23 @@ const buttonVariants = cva(
 
 export interface ButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-		VariantProps<typeof buttonVariants> {}
+		VariantProps<typeof buttonVariants> {
+	asChild?: boolean;
+}
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	({ className, variant, size, asChild, ...props }, ref) => {
 		// Remove 'asChild' prop so it doesn't get passed to DOM
+		if (asChild) {
+			const Comp = (props as any).asChildComponent || 'span';
+			return (
+				<Comp
+					className={cn(buttonVariants({ variant, size }), className)}
+					ref={ref}
+					{...props}
+				/>
+			);
+		}
 		return (
 			<button
 				className={cn(buttonVariants({ variant, size }), className)}

@@ -221,13 +221,13 @@ export default function VerifierDashboardPage() {
         </div>
 
         <div className="text-xs text-muted-foreground">
-          Submitted {new Date(course.submittedAt).toLocaleDateString('en-US', {
+          Submitted {typeof window !== 'undefined' ? new Date(course.submittedAt).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-          })}
+          }) : ''}
         </div>
 
         {course.status === 'pending_verification' && (
