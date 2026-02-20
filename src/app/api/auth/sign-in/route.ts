@@ -26,7 +26,9 @@ export async function POST(req: NextRequest) {
     httpOnly: false,
     path: '/',
     maxAge: 60 * 60 * 24 * 7,
-    sameSite: 'lax',
+    sameSite: 'none',
+    secure: true,
+    domain: '.deenify.co.za',
   });
   return NextResponse.json({ id: user.id, email: user.email });
 }
