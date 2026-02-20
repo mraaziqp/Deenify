@@ -29,6 +29,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { KeyboardShortcutsDialog } from '@/components/keyboard-shortcuts-dialog';
 import DeenifyLogo from '@/components/ui/deenify-logo';
+import { useAuth } from '@/lib/auth-context';
 
 const navLinks: NavLink[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -43,8 +44,8 @@ const navLinks: NavLink[] = [
   { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
 ];
 
-export function Header() {
   const pathname = usePathname();
+  const { user, signOut } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
@@ -115,12 +116,24 @@ export function Header() {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Link href="/profile" className="w-full">Profile</Link>
-          </DropdownMenuItem>
+          {user && (
+            <>
+              <DropdownMenuItem>
+                <div className="flex flex-col">
+                  <span className="font-semibold">{user.email}</span>
+                  <span className="text-xs text-muted-foreground">User ID: {user.id}</span>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/profile" className="w-full">Profile</Link>
+              </DropdownMenuItem>
+            </>
+          )}
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={signOut} className="text-red-600 font-semibold cursor-pointer">
+            Sign Out
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
