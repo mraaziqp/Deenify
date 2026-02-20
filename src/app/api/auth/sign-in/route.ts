@@ -22,13 +22,20 @@ export async function POST(req: NextRequest) {
   // Create JWT and set cookie
   const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
   const cookieStore = cookies();
-  cookieStore.set('token', token, {
-    httpOnly: false,
+  // Dynamically set cookie options for local/dev/prod
+  const host = req.headers.get('host') || '';
+  const isProd = host.endsWith('deenify.co.za');
+  const isSecure = req.nextUrl.protocol === 'https:' || host.startsWith('www.');
+  const cookieOptions: any = {
+    httpOnly: true,
     path: '/',
     maxAge: 60 * 60 * 24 * 7,
-    sameSite: 'none',
-    secure: true,
-    domain: '.deenify.co.za',
-  });
+    sameSite: isProd ? 'none' : 'lax',
+    secure: isProd || isSecure,
+  };
+  if (isProd) {
+    cookieOptions.domain = '.deenify.co.za';
+  }
+  cookieStore.set('token', token, cookieOptions);
   return NextResponse.json({ id: user.id, email: user.email });
 }
