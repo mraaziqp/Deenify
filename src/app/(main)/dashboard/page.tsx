@@ -143,8 +143,6 @@ export default function DashboardPage() {
     }
   }, [user, isLoading, router]);
 
-    };
-
     const loadActivity = () => {
       const stored = JSON.parse(localStorage.getItem('activityLog') || '[]');
       setActivity(Array.isArray(stored) ? stored.slice(0, 6) : []);
