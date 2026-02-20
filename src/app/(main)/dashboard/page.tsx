@@ -148,7 +148,18 @@ export default function DashboardPage() {
         progress.daysActive = (progress.daysActive || 0) + 1;
         appStreak = progress.lastActiveDate === yesterdayString ? appStreak + 1 : 1;
         progress.lastActiveDate = todayString;
-        saveProgress(progress);
+        // Save progress to API
+        try {
+          await fetch('/api/progress', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(progress),
+          });
+        } catch (error) {
+          console.error('Failed to save progress:', error);
+        }
         localStorage.setItem('appStreak', appStreak.toString());
       } else if (progress.daysActive === 0) {
         progress.daysActive = 1;
