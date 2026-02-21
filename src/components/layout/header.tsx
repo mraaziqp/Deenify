@@ -224,47 +224,5 @@ export default function Header() {
     </>
   );
 }
-      {/* Desktop Account Dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="overflow-hidden rounded-full hidden sm:flex"
-          >
-            <CircleUser className="h-5 w-5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 sm:w-64 max-w-[98vw] rounded-t-lg sm:rounded-md p-2">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {user && (
-            <>
-              <DropdownMenuItem>
-                <div className="flex flex-col">
-                  <span className="font-semibold">{user.email}</span>
-                  <span className="text-xs text-muted-foreground">User ID: {user.id}</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/profile" className="w-full">Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={signOut} className="text-red-600 font-semibold cursor-pointer">
-                Sign Out
-              </DropdownMenuItem>
-            </>
-          )}
-          {!user && (
-            <DropdownMenuItem>
-              <Link href="/auth/sign-in" className="w-full">Sign In</Link>
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </header>
-  );
-}
 
 export default Header;
