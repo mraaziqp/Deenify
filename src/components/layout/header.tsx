@@ -177,14 +177,13 @@ function MobileAccountButton() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          className="overflow-hidden rounded-full fixed bottom-4 right-4 z-[100] sm:hidden shadow-lg bg-white border border-primary"
-          aria-label="Account"
+        <button
+          className="fixed bottom-6 right-6 z-[200] sm:hidden flex items-center gap-2 px-6 py-4 rounded-full bg-emerald-500 text-white font-bold text-lg shadow-2xl border-4 border-white animate-bounce"
+          aria-label="Open Account Menu"
         >
-          <CircleUser className="h-6 w-6 text-primary" />
-        </Button>
+          <CircleUser className="h-8 w-8 mr-2" />
+          <span>Account</span>
+        </button>
       </SheetTrigger>
       <SheetContent side="bottom" className="sm:hidden p-6 max-w-full w-full h-[90vh] rounded-t-2xl flex flex-col justify-between">
         <div className="flex flex-col gap-4">
