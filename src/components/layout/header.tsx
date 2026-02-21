@@ -126,12 +126,50 @@ function Header() {
         </Link>
       </div>
 
+      {/* Mobile Account Sheet */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className="overflow-hidden rounded-full sm:hidden"
+          >
+            <CircleUser className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="bottom" className="sm:hidden p-4 max-w-full w-full rounded-t-2xl">
+          <div className="flex flex-col gap-2">
+            <div className="font-bold text-lg mb-2">My Account</div>
+            {user && (
+              <>
+                <div className="flex flex-col mb-2">
+                  <span className="font-semibold">{user.email}</span>
+                  <span className="text-xs text-muted-foreground">User ID: {user.id}</span>
+                </div>
+                <Button asChild variant="ghost" className="justify-start w-full">
+                  <Link href="/profile">Profile</Link>
+                </Button>
+                <Button asChild variant="ghost" className="justify-start w-full">
+                  <Link href="/settings">Settings</Link>
+                </Button>
+                <Button onClick={signOut} variant="destructive" className="w-full mt-2">Sign Out</Button>
+              </>
+            )}
+            {!user && (
+              <Button asChild variant="default" className="w-full">
+                <Link href="/auth/sign-in">Sign In</Link>
+              </Button>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+      {/* Desktop Account Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
             size="icon"
-            className="overflow-hidden rounded-full"
+            className="overflow-hidden rounded-full hidden sm:flex"
           >
             <CircleUser className="h-5 w-5" />
           </Button>
