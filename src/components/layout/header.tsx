@@ -44,7 +44,8 @@ const navLinks: NavLink[] = [
   { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
 ];
 
-function Header() {
+
+function HeaderContent() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
 
@@ -126,45 +127,101 @@ function Header() {
         </Link>
       </div>
 
-      {/* Mobile Account Fullscreen Sheet */}
-      <Sheet>
-        <SheetTrigger asChild>
+      {/* Desktop Account Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
             size="icon"
-            className="overflow-hidden rounded-full fixed bottom-4 right-4 z-[100] sm:hidden shadow-lg bg-white border border-primary"
-            aria-label="Account"
+            className="overflow-hidden rounded-full hidden sm:flex"
           >
-            <CircleUser className="h-6 w-6 text-primary" />
+            <CircleUser className="h-5 w-5" />
           </Button>
-        </SheetTrigger>
-        <SheetContent side="bottom" className="sm:hidden p-6 max-w-full w-full h-[90vh] rounded-t-2xl flex flex-col justify-between">
-          <div className="flex flex-col gap-4">
-            <div className="font-bold text-xl mb-2">My Account</div>
-            {user && (
-              <>
-                <div className="flex flex-col mb-2">
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56 sm:w-64 max-w-[98vw] rounded-t-lg sm:rounded-md p-2">
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {user && (
+            <>
+              <DropdownMenuItem>
+                <div className="flex flex-col">
                   <span className="font-semibold">{user.email}</span>
                   <span className="text-xs text-muted-foreground">User ID: {user.id}</span>
                 </div>
-                <Button asChild variant="ghost" className="justify-start w-full">
-                  <Link href="/profile">Profile</Link>
-                </Button>
-                <Button asChild variant="ghost" className="justify-start w-full">
-                  <Link href="/settings">Settings</Link>
-                </Button>
-                <Button onClick={signOut} variant="destructive" className="w-full mt-2">Sign Out</Button>
-              </>
-            )}
-            {!user && (
-              <Button asChild variant="default" className="w-full">
-                <Link href="/auth/sign-in">Sign In</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/profile" className="w-full">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={signOut} className="text-red-600 font-semibold cursor-pointer">
+                Sign Out
+              </DropdownMenuItem>
+            </>
+          )}
+          {!user && (
+            <DropdownMenuItem>
+              <Link href="/auth/sign-in" className="w-full">Sign In</Link>
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </header>
+  );
+}
+
+function MobileAccountButton() {
+  const { user, signOut } = useAuth();
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="outline"
+          size="icon"
+          className="overflow-hidden rounded-full fixed bottom-4 right-4 z-[100] sm:hidden shadow-lg bg-white border border-primary"
+          aria-label="Account"
+        >
+          <CircleUser className="h-6 w-6 text-primary" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="bottom" className="sm:hidden p-6 max-w-full w-full h-[90vh] rounded-t-2xl flex flex-col justify-between">
+        <div className="flex flex-col gap-4">
+          <div className="font-bold text-xl mb-2">My Account</div>
+          {user && (
+            <>
+              <div className="flex flex-col mb-2">
+                <span className="font-semibold">{user.email}</span>
+                <span className="text-xs text-muted-foreground">User ID: {user.id}</span>
+              </div>
+              <Button asChild variant="ghost" className="justify-start w-full">
+                <Link href="/profile">Profile</Link>
               </Button>
-            )}
-          </div>
-          <div className="text-center text-xs text-muted-foreground mt-8">Deenify &copy; {new Date().getFullYear()}</div>
-        </SheetContent>
-      </Sheet>
+              <Button asChild variant="ghost" className="justify-start w-full">
+                <Link href="/settings">Settings</Link>
+              </Button>
+              <Button onClick={signOut} variant="destructive" className="w-full mt-2">Sign Out</Button>
+            </>
+          )}
+          {!user && (
+            <Button asChild variant="default" className="w-full">
+              <Link href="/auth/sign-in">Sign In</Link>
+            </Button>
+          )}
+        </div>
+        <div className="text-center text-xs text-muted-foreground mt-8">Deenify &copy; {new Date().getFullYear()}</div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+export default function Header() {
+  return (
+    <>
+      <HeaderContent />
+      <MobileAccountButton />
+    </>
+  );
+}
       {/* Desktop Account Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
