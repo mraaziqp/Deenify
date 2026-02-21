@@ -178,10 +178,11 @@ function MobileAccountButton() {
     <Sheet>
       <SheetTrigger asChild>
         <button
-          className="fixed bottom-6 right-6 z-[200] sm:hidden flex items-center gap-2 px-6 py-4 rounded-full bg-emerald-500 text-white font-bold text-lg shadow-2xl border-4 border-white animate-bounce"
+          className="fixed top-4 right-4 z-[200] sm:hidden flex items-center gap-2 px-5 py-3 rounded-full bg-emerald-500 text-white font-bold text-base shadow-2xl border-4 border-white"
+          style={{ paddingTop: 'env(safe-area-inset-top, 1rem)' }}
           aria-label="Open Account Menu"
         >
-          <CircleUser className="h-8 w-8 mr-2" />
+          <CircleUser className="h-7 w-7 mr-2" />
           <span>Account</span>
         </button>
       </SheetTrigger>
