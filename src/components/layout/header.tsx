@@ -49,7 +49,7 @@ function Header() {
   const { user, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background px-2 sm:px-6 sm:gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent">
       {/* Mobile Hamburger Menu */}
       <Sheet>
         <SheetTrigger asChild>
@@ -98,7 +98,7 @@ function Header() {
       </Sheet>
 
       {/* Desktop Horizontal Nav */}
-      <nav className="hidden sm:flex gap-2 items-center">
+      <nav className="hidden sm:flex gap-1 md:gap-2 items-center">
         {navLinks.map((link, index) => {
           if (link.type === 'divider' || link.type === 'title') return null;
           const LinkIcon = link.icon;
@@ -118,7 +118,7 @@ function Header() {
         })}
       </nav>
 
-      <div className="relative ml-auto flex-1 md:grow-0 flex items-center gap-2">
+      <div className="relative ml-auto flex-1 md:grow-0 flex items-center gap-1 md:gap-2">
         <KeyboardShortcutsDialog />
         <Link href="/dashboard" className="font-bold text-xl text-primary flex items-center gap-2">
           <DeenifyLogo />
@@ -136,7 +136,7 @@ function Header() {
             <CircleUser className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 sm:w-64 max-w-[90vw]">
+        <DropdownMenuContent align="end" className="w-56 sm:w-64 max-w-[98vw] rounded-t-lg sm:rounded-md p-2">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {user && (

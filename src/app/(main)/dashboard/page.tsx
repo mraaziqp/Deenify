@@ -250,29 +250,29 @@ export default function DashboardPage() {
     : 0;
 
   return (
-    <div className="container mx-auto p-4 sm:p-0">
-      <div className="space-y-6">
+    <div className="container mx-auto px-2 py-3 sm:px-4 md:px-8 max-w-5xl">
+      <div className="space-y-4 md:space-y-6">
         <Card className="shadow-lg border-l-4 border-l-primary bg-gradient-to-r from-primary/5 to-transparent">
           <CardHeader>
-            <div className="flex items-start justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <div>
-                <CardTitle className="text-3xl font-bold text-primary flex items-center gap-2">
+                <CardTitle className="text-2xl md:text-3xl font-bold text-primary flex items-center gap-2">
                   <Sparkles className="h-8 w-8" />
                   As-salamu alaykum!
                 </CardTitle>
-                <CardDescription className="text-lg mt-2">
+                <CardDescription className="text-base md:text-lg mt-2">
                   Your journey of knowledge and spiritual growth continues
                 </CardDescription>
               </div>
-              <Badge variant="secondary" className="text-base px-4 py-2">
+              <Badge variant="secondary" className="text-sm md:text-base px-3 md:px-4 py-1.5 md:py-2">
                 <Heart className="h-4 w-4 mr-1 fill-red-500 text-red-500" />
                 Level {Math.floor(stats.totalDaysActive / 30) + 1}
               </Badge>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-              <div className="flex items-center gap-3 p-3 bg-card rounded-lg border">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mt-4">
+              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-card rounded-lg border">
                 <div className="p-2 bg-primary/10 rounded-full">
                   <Target className="h-6 w-6 text-primary" />
                 </div>
@@ -281,7 +281,7 @@ export default function DashboardPage() {
                   <p className="text-sm text-muted-foreground">Day Streak</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-card rounded-lg border">
+              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-card rounded-lg border">
                 <div className="p-2 bg-accent/10 rounded-full">
                   <BookMarked className="h-6 w-6 text-accent" />
                 </div>
@@ -290,7 +290,7 @@ export default function DashboardPage() {
                   <p className="text-sm text-muted-foreground">Courses Done</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-card rounded-lg border">
+              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-card rounded-lg border">
                 <div className="p-2 bg-secondary rounded-full">
                   <Clock className="h-6 w-6 text-primary" />
                 </div>
@@ -303,8 +303,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <Card className="shadow-md">
+        <div className="grid gap-4 md:gap-6 md:grid-cols-3">
+          <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Compass className="h-5 w-5 text-primary" />
@@ -319,7 +319,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-md">
+          <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BookOpen className="h-5 w-5 text-primary" />
@@ -334,7 +334,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-md">
+          <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lightbulb className="h-5 w-5 text-primary" />
@@ -348,14 +348,14 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        <Card className="shadow-md">
+        <Card className="shadow-md mt-4">
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <CardTitle className="flex items-center gap-2">
                 <Award className="h-6 w-6 text-primary" />
                 Your Learning Journey
               </CardTitle>
-              <span className="text-2xl font-bold text-primary">{progressPercentage}%</span>
+              <span className="text-xl md:text-2xl font-bold text-primary">{progressPercentage}%</span>
             </div>
           </CardHeader>
           <CardContent>
