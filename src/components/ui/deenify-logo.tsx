@@ -6,7 +6,7 @@ export default function DeenifyLogo() {
     <img
       src="/logo.png"
       alt="Deenify Logo"
-      className="h-12 w-auto mx-auto"
+      className="h-10 w-auto object-contain bg-transparent"
       style={{ maxWidth: '180px' }}
     />
   );

@@ -178,27 +178,26 @@ function MobileAccountButton() {
     <Sheet>
       <SheetTrigger asChild>
         <button
-          className="fixed top-4 right-4 z-[200] sm:hidden flex items-center gap-2 px-5 py-3 rounded-full bg-emerald-500 text-white font-bold text-base shadow-2xl border-4 border-white"
-          style={{ paddingTop: 'env(safe-area-inset-top, 1rem)' }}
+          className="fixed bottom-4 right-4 z-[200] sm:hidden flex items-center gap-2 px-5 py-3 rounded-full bg-emerald-500 text-white font-bold text-base shadow-2xl border-4 border-white hover:bg-emerald-600 transition"
           aria-label="Open Account Menu"
         >
           <CircleUser className="h-7 w-7 mr-2" />
           <span>Account</span>
         </button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="sm:hidden p-6 max-w-full w-full h-[90vh] rounded-t-2xl flex flex-col justify-between">
+      <SheetContent side="bottom" className="sm:hidden p-6 max-w-full w-full h-[90vh] rounded-t-2xl flex flex-col justify-between bg-[#F9F7F2]">
         <div className="flex flex-col gap-4">
-          <div className="font-bold text-xl mb-2">My Account</div>
+          <div className="font-bold text-xl mb-2 text-[#7C6F57]">My Account</div>
           {user && (
             <>
               <div className="flex flex-col mb-2">
                 <span className="font-semibold">{user.email}</span>
                 <span className="text-xs text-muted-foreground">User ID: {user.id}</span>
               </div>
-              <Button asChild variant="ghost" className="justify-start w-full">
+              <Button asChild variant="ghost" className="justify-start w-full text-[#7C6F57]">
                 <Link href="/profile">Profile</Link>
               </Button>
-              <Button asChild variant="ghost" className="justify-start w-full">
+              <Button asChild variant="ghost" className="justify-start w-full text-[#7C6F57]">
                 <Link href="/settings">Settings</Link>
               </Button>
               <Button onClick={signOut} variant="destructive" className="w-full mt-2">Sign Out</Button>
