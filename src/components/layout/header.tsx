@@ -170,6 +170,8 @@ function HeaderContent() {
   );
 }
 
+// ---
+
 function MobileAccountButton() {
   const { user, signOut } = useAuth();
   return (
