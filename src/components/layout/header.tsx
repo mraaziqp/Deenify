@@ -126,20 +126,21 @@ function Header() {
         </Link>
       </div>
 
-      {/* Mobile Account Sheet */}
+      {/* Mobile Account Fullscreen Sheet */}
       <Sheet>
         <SheetTrigger asChild>
           <Button
             variant="outline"
             size="icon"
-            className="overflow-hidden rounded-full sm:hidden"
+            className="overflow-hidden rounded-full fixed bottom-4 right-4 z-[100] sm:hidden shadow-lg bg-white border border-primary"
+            aria-label="Account"
           >
-            <CircleUser className="h-5 w-5" />
+            <CircleUser className="h-6 w-6 text-primary" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="bottom" className="sm:hidden p-4 max-w-full w-full rounded-t-2xl">
-          <div className="flex flex-col gap-2">
-            <div className="font-bold text-lg mb-2">My Account</div>
+        <SheetContent side="bottom" className="sm:hidden p-6 max-w-full w-full h-[90vh] rounded-t-2xl flex flex-col justify-between">
+          <div className="flex flex-col gap-4">
+            <div className="font-bold text-xl mb-2">My Account</div>
             {user && (
               <>
                 <div className="flex flex-col mb-2">
@@ -161,6 +162,7 @@ function Header() {
               </Button>
             )}
           </div>
+          <div className="text-center text-xs text-muted-foreground mt-8">Deenify &copy; {new Date().getFullYear()}</div>
         </SheetContent>
       </Sheet>
       {/* Desktop Account Dropdown */}
