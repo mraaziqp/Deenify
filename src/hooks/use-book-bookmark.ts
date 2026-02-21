@@ -1,13 +1,13 @@
-import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/lib/auth-context';
 
 export function useBookBookmark(bookId: string) {
-  const { data: session } = useSession();
+  const { user } = useAuth();
   const [page, setPage] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!session?.user?.id || !bookId) return;
+    if (!user?.id || !bookId) return;
     setLoading(true);
     fetch(`/api/bookmark?bookId=${bookId}`)
       .then(res => res.json())
@@ -15,10 +15,10 @@ export function useBookBookmark(bookId: string) {
         setPage(data.bookmark?.page ?? null);
         setLoading(false);
       });
-  }, [session, bookId]);
+  }, [user, bookId]);
 
   const saveBookmark = async (newPage: number) => {
-    if (!session?.user?.id) return;
+    if (!user?.id) return;
     setLoading(true);
     await fetch('/api/bookmark', {
       method: 'POST',
