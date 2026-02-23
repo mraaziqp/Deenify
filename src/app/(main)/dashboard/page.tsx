@@ -86,49 +86,9 @@ const selectDailyFact = (facts: string[], dateKey: string) => {
 };
 
 export default function DashboardPage() {
-    const initStats = async () => {
-      // TODO: Fetch progress from API
-      const progress = {} as any;
-      const today = new Date();
-      // ...existing code...
-    };
-
-    const loadActivity = () => {
-      const stored = JSON.parse(localStorage.getItem('activityLog') || '[]');
-      setActivity(Array.isArray(stored) ? stored.slice(0, 6) : []);
-    };
-
-    const loadDailyFact = async () => {
-      try {
-        const useCustomFacts = localStorage.getItem('useCustomFacts') === 'true';
-        const customFacts = JSON.parse(localStorage.getItem('customFacts') || '[]');
-
-        let facts: string[] = [];
-        if (useCustomFacts && Array.isArray(customFacts) && customFacts.length > 0) {
-          facts = customFacts;
-        } else {
-          const response = await fetch('/api/facts');
-          if (response.ok) {
-            const data = await response.json();
-            facts = data.facts || [];
-          }
-        }
-
-        const dateKey = new Date().toISOString().slice(0, 10);
-        const fact = selectDailyFact(facts, dateKey) || 'Keep learning something beneficial every day.';
-        setDailyFact(fact);
-      } catch (error) {
-        console.error('Failed to load daily fact:', error);
-        setDailyFact('Keep learning something beneficial every day.');
-      }
-    };
-
-    const refreshAll = () => {
-      void initStats();
-      void loadDailyFact();
-      loadActivity();
-    };
-  const [dailyFact, setDailyFact] = useState("Loading today's fact...");
+  const { user, hasRole, isLoading } = useAuth();
+  const router = useRouter();
+  const [selectedTab, setSelectedTab] = useState<'learning' | 'yaseen' | 'qiblah' | 'ccemag' | 'fact' | 'admin'>('learning');
   const [stats, setStats] = useState<DashboardStats>({
     currentStreak: 0,
     totalDaysActive: 0,
@@ -137,114 +97,11 @@ export default function DashboardPage() {
     dhikrCount: 0,
   });
   const [activity, setActivity] = useState<ActivityItem[]>([]);
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
+  const [dailyFact, setDailyFact] = useState('');
 
-  useEffect(() => {
-    const initStats = async () => {
-      // TODO: Fetch progress from API
-      const progress = {} as any;
-      const today = new Date();
-      const todayString = today.toDateString();
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
-      const yesterdayString = yesterday.toDateString();
-
-      let appStreak = Number(localStorage.getItem('appStreak') || '0');
-
-      if (progress.lastActiveDate !== todayString) {
-        progress.daysActive = (progress.daysActive || 0) + 1;
-        appStreak = progress.lastActiveDate === yesterdayString ? appStreak + 1 : 1;
-        progress.lastActiveDate = todayString;
-        // Calculate dhikrCount before API call
-        const dhikrCount = Number(localStorage.getItem('dhikrCount') || progress.dhikrCount || 0);
-        // Save progress to API
-        try {
-          if (user?.id) {
-            await fetch('/api/progress', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                userId: user.id,
-                currentStreak: appStreak,
-                totalDaysActive: progress.daysActive || 0,
-                dhikrCount,
-                coursesCompleted: progress.coursesCompleted || 0,
-              }),
-            });
-          }
-        } catch (error) {
-          console.error('Failed to save progress:', error);
-        }
-        localStorage.setItem('appStreak', appStreak.toString());
-      } else if (progress.daysActive === 0) {
-        progress.daysActive = 1;
-        appStreak = Math.max(appStreak, 1);
-        // TODO: Update progress via API
-        localStorage.setItem('appStreak', appStreak.toString());
-      }
-
-      const dhikrCount = Number(localStorage.getItem('dhikrCount') || progress.dhikrCount || 0);
-
-      setStats((prev) => ({
-        ...prev,
-        currentStreak: appStreak,
-        totalDaysActive: progress.daysActive || 0,
-        dhikrCount,
-      }));
-
-      // Fetch course stats
-    };
-    initStats();
-      const loadActivity = () => {
-        const stored = JSON.parse(localStorage.getItem('activityLog') || '[]');
-        setActivity(Array.isArray(stored) ? stored.slice(0, 6) : []);
-      };
-
-      const loadDailyFact = async () => {
-        try {
-          const useCustomFacts = localStorage.getItem('useCustomFacts') === 'true';
-          const customFacts = JSON.parse(localStorage.getItem('customFacts') || '[]');
-
-          let facts: string[] = [];
-          if (useCustomFacts && Array.isArray(customFacts) && customFacts.length > 0) {
-            facts = customFacts;
-          } else {
-            const response = await fetch('/api/facts');
-            if (response.ok) {
-              const data = await response.json();
-              facts = data.facts || [];
-            }
-          }
-
-          const dateKey = new Date().toISOString().slice(0, 10);
-          const fact = selectDailyFact(facts, dateKey) || 'Keep learning something beneficial every day.';
-          setDailyFact(fact);
-        } catch (error) {
-          console.error('Failed to load daily fact:', error);
-          setDailyFact('Keep learning something beneficial every day.');
-        }
-      };
-
-      const refreshAll = () => {
-        void initStats();
-        void loadDailyFact();
-        loadActivity();
-      };
-
-  }, []);
-
-  // Redirect unauthenticated users
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/auth/sign-in');
-    }
-  }, [user, isLoading, router]);
-
-
+  // Helper: feature unlock logic (placeholder, always true)
   const isFeatureUnlocked = (_milestone: string) => true;
+  // Helper: progress percentage
   const progressPercentage = stats.totalCourses
     ? Math.round((stats.coursesCompleted / stats.totalCourses) * 100)
     : 0;
@@ -270,82 +127,170 @@ export default function DashboardPage() {
               </Badge>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mt-4">
-              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-card rounded-lg border">
-                <div className="p-2 bg-primary/10 rounded-full">
-                  <Target className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.currentStreak}</p>
-                  <p className="text-sm text-muted-foreground">Day Streak</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-card rounded-lg border">
-                <div className="p-2 bg-accent/10 rounded-full">
-                  <BookMarked className="h-6 w-6 text-accent" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.coursesCompleted}/{stats.totalCourses}</p>
-                  <p className="text-sm text-muted-foreground">Courses Done</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-card rounded-lg border">
-                <div className="p-2 bg-secondary rounded-full">
-                  <Clock className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.totalDaysActive}</p>
-                  <p className="text-sm text-muted-foreground">Days Active</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
         </Card>
 
-        <div className="grid gap-4 md:gap-6 md:grid-cols-3">
-          <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Compass className="h-5 w-5 text-primary" />
-                Qiblah Compass
-              </CardTitle>
-              <CardDescription>Find the Qiblah direction quickly</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild className="w-full">
-                <Link href="/qiblah">Open Qiblah Compass</Link>
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Dashboard Tabs */}
+        <div className="w-full mt-2">
+          <div className="border-b border-muted mb-4">
+            <div className="flex gap-2">
+              <button
+                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'learning' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
+                onClick={() => setSelectedTab('learning')}
+              >
+                <BookOpen className="inline h-5 w-5 mr-1 align-text-bottom" /> Learning Library
+              </button>
+              <button
+                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'yaseen' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
+                onClick={() => setSelectedTab('yaseen')}
+              >
+                <BookOpen className="inline h-5 w-5 mr-1 align-text-bottom" /> Surah Yaaseen
+              </button>
+              <button
+                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'qiblah' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
+                onClick={() => setSelectedTab('qiblah')}
+              >
+                <Compass className="inline h-5 w-5 mr-1 align-text-bottom" /> Qiblah Compass
+              </button>
+              <button
+                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'ccemag' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
+                onClick={() => setSelectedTab('ccemag')}
+              >
+                <Award className="inline h-5 w-5 mr-1 align-text-bottom" /> CCE Mag Portal
+              </button>
 
-          <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-primary" />
-                Learning Library
-              </CardTitle>
-              <CardDescription>Explore PDFs, books, and ask questions</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild className="w-full">
-                <Link href="/learning">Open Learning Library</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-primary" />
-                Islamic Fact of the Day
-              </CardTitle>
-              <CardDescription>Small, steady learning every day</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{dailyFact}</p>
-            </CardContent>
-          </Card>
+                        {selectedTab === 'ccemag' && (
+                          <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
+                            <CardHeader>
+                              <CardTitle className="flex items-center gap-2">
+                                <Award className="h-5 w-5 text-primary" />
+                                CCE Mag Quality of Life Portal
+                              </CardTitle>
+                              <CardDescription>
+                                Access the CCE Magazine portal for quality of life resources and opportunities.
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="w-full h-[60vh] rounded-lg overflow-hidden border shadow">
+                                <iframe
+                                  src="https://ccemagazine.web.za/ccemag/"
+                                  title="CCE Mag Portal"
+                                  className="w-full h-full border-0"
+                                  allowFullScreen
+                                />
+                              </div>
+                              <div className="mt-4 text-center">
+                                <a
+                                  href="https://ccemagazine.web.za/ccemag/"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-700 underline hover:text-blue-900"
+                                >
+                                  Open CCE Mag Portal in new tab
+                                </a>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )}
+              {hasRole && hasRole('admin') && (
+                <button
+                  className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'admin' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
+                  onClick={() => setSelectedTab('admin')}
+                >
+                  <Award className="inline h-5 w-5 mr-1 align-text-bottom" /> Admin Panel
+                </button>
+              )}
+            </div>
+          </div>
+          {/* Tab Content */}
+          {selectedTab === 'learning' && (
+            <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-primary" />
+                  Learning Library
+                </CardTitle>
+                <CardDescription>Explore PDFs, books, and ask questions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full">
+                  <Link href="/learning">Open Learning Library</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+          {selectedTab === 'yaseen' && (
+            <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-primary" />
+                  Surah Yaaseen
+                </CardTitle>
+                <CardDescription>
+                  The heart of the Quran. Read, listen, and reflect on Surah Yaaseen (36).<br />
+                  <span className="font-semibold">New:</span> Join a group recitation and mark your progress together!
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-2">
+                <Button asChild className="w-full">
+                  <Link href="/yaseen">Open Group Recitation & Tracker</Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/quran?surah=36">Read Surah Yaaseen (in-app)</Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="https://quran.com/36" target="_blank" rel="noopener">Open on Quran.com</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+          {selectedTab === 'qiblah' && (
+            <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Compass className="h-5 w-5 text-primary" />
+                  Qiblah Compass
+                </CardTitle>
+                <CardDescription>Find the Qiblah direction quickly</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full">
+                  <Link href="/qiblah">Open Qiblah Compass</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+          {selectedTab === 'fact' && (
+            <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Islamic Fact of the Day
+                </CardTitle>
+                <CardDescription>Small, steady learning every day</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">{dailyFact}</p>
+              </CardContent>
+            </Card>
+          )}
+          {selectedTab === 'admin' && hasRole && hasRole('admin') && (
+            <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-primary" />
+                  Admin Dashboard
+                </CardTitle>
+                <CardDescription>
+                  Manage users, content, and settings.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full">
+                  <Link href="/admin">Go to Full Admin Dashboard</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <Card className="shadow-md mt-4">

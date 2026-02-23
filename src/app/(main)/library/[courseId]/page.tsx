@@ -170,35 +170,21 @@ export default function CourseDetailPage() {
   };
 
   const getLessonContent = (category: string, moduleIdx: number, lessonIdx: number): string => {
-    const content = `
-# Welcome to this Lesson
-
-In this lesson, we'll explore important concepts in **${category}**.
-
-## Key Points:
-
-1. **Understanding the Basics**: We begin with foundational knowledge that every Muslim should know.
-
-2. **Practical Application**: Learn how to apply these teachings in your daily life.
-
-3. **Deep Reflection**: Take time to reflect on the wisdom and guidance.
-
-## Important Note
-
-Remember that seeking knowledge is a lifelong journey. The Prophet Muhammad ﷺ said:
-
-> "Seeking knowledge is an obligation upon every Muslim." — Ibn Majah
-
-## Exercise
-
-Reflect on how you can implement what you've learned today in your life.
-
----
-
-*Continue to the next lesson to build upon this foundation.*
-    `.trim();
-    
-    return content;
+    // Text-based lesson content for each topic
+    if (category === 'Basics') {
+      if (moduleIdx === 0 && lessonIdx === 0) {
+        return `# The Five Pillars of Islam\n\nThe Five Pillars are the foundation of a Muslim's faith and practice.\n\n1. **Shahada (Testimony of Faith):** Declaring there is no god but Allah, and Muhammad is His Messenger.\n2. **Salah (Prayer):** Performing the five daily prayers.\n3. **Zakat (Charity):** Giving to those in need and supporting the community.\n4. **Sawm (Fasting):** Fasting during the month of Ramadan.\n5. **Hajj (Pilgrimage):** Performing pilgrimage to Mecca if able.\n\nReflect on how each pillar strengthens your faith and daily life.`;
+      }
+      if (moduleIdx === 0 && lessonIdx === 1) {
+        return `# Shahada Explained\n\nThe Shahada is the declaration of faith: 'Ashhadu an la ilaha illa Allah, wa ashhadu anna Muhammadan rasul Allah.'\n\n- **Meaning:** Bearing witness that there is no deity but Allah, and Muhammad is His Messenger.\n- **Significance:** It is the entry into Islam and the core of belief.\n\nTake a moment to reflect on the meaning of the Shahada in your life.`;
+      }
+      if (moduleIdx === 0 && lessonIdx === 2) {
+        return `# Faith in Action\n\nIman (faith) is not just belief in the heart, but is shown through actions.\n\n- **Sincerity:** Every action should be for Allah alone.\n- **Consistency:** Practice your faith daily, not just occasionally.\n- **Good Character:** The Prophet ﷺ said, 'The best among you are those who have the best manners and character.' (Bukhari)\n\nThink of ways you can put your faith into action today.`;
+      }
+      // Add more text-based lessons for other modules/lessons as needed
+    }
+    // Fallback for other categories
+    return `This lesson covers important concepts in ${category}. Please read the provided materials and reflect on how you can apply them in your life.`;
   };
 
   const generateOverview = (course: any): string => {

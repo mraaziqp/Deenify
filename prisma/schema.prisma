@@ -19,6 +19,8 @@ model User {
   emailVerified Boolean @default(false)
   verificationToken String?
   verificationTokenExpires DateTime?
+  role     String  @default("user")
+  bookmarks Bookmark[]
 }
 
 model QuranMedia {
@@ -80,4 +82,37 @@ model HalalFoodItem {
   imageUrl    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Book {
+  id            String   @id @default(cuid())
+  title         String
+  author        String
+  coverImageUrl String
+  pdfFileUrl    String
+  category      String
+  createdAt     DateTime @default(now())
+  bookmarks     Bookmark[]
+}
+
+model Recipe {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  imageUrl     String
+  ingredients  Json     // Array of strings
+  instructions Json     // Array of strings
+  prepTime     String
+  createdAt    DateTime @default(now())
+}
+
+model Bookmark {
+  id         String   @id @default(cuid())
+  userId     String
+  bookId     String
+  pageNumber Int
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
 }

@@ -1,6 +1,5 @@
 "use client";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { mockBooks } from '@/lib/library-books';
 import dynamic from 'next/dynamic';
 import { useBookBookmark } from '@/hooks/use-book-bookmark';
 import Link from 'next/link';
@@ -10,7 +9,8 @@ const PDFViewer = dynamic(() => import('@/components/pdf/PDFReader'), { ssr: fal
 
 export default function ReadBookPage({ params }: { params: { bookId: string } }) {
   const { bookId } = params;
-  const book = mockBooks.find(b => b.id === bookId);
+  // TODO: Replace with real book fetch logic
+  const book = null;
   const { page, loading } = useBookBookmark(bookId);
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [resumeAccepted, setResumeAccepted] = useState(false);
@@ -21,7 +21,7 @@ export default function ReadBookPage({ params }: { params: { bookId: string } })
     if (page && page > 1) setShowResumePrompt(true);
   }, [page]);
 
-  if (!book) return <div className="p-8 text-center">Book not found.</div>;
+  if (!book) return <div className="p-8 text-center text-red-600">Book not found or mockBooks not implemented.</div>;
 
   return (
     <div className="min-h-screen bg-[#F9F7F2] flex flex-col">

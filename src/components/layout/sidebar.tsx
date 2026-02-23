@@ -144,8 +144,7 @@ export function AppSidebar() {
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 onClick={async () => {
                   await signOut();
-                  if (router) router.push('/login');
-                  else window.location.href = '/login';
+                  window.location.href = '/auth/sign-in'; // Force reload and consistent redirect
                 }}
                 aria-label="Sign Out"
               >

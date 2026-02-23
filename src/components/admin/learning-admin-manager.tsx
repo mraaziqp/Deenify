@@ -19,37 +19,8 @@ import {
 import { Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const resourceTypes = [
-  { value: 'pdf', label: 'PDF' },
-  { value: 'book', label: 'Book' },
-] as const;
 
-type ResourceType = (typeof resourceTypes)[number]['value'];
-
-type LearningResource = {
-  id: string;
-  title: string;
-  description?: string | null;
-  type: string;
-  url: string;
-  coverImageUrl?: string | null;
-  author?: string | null;
-  language?: string | null;
-  pageCount?: number | null;
-  tags?: string[];
-  published: boolean;
-  createdAt: string;
-};
-
-type LearningQuestion = {
-  id: string;
-  userName?: string | null;
-  question: string;
-  aiAnswer?: string | null;
-  approvedAnswer?: string | null;
-  status: string;
-  createdAt: string;
-};
+import { resourceTypes, type ResourceType, type LearningResource, type LearningQuestion } from "../../lib/learning-types";
 
 type UploadResponse = {
   uploadUrl: string;
@@ -319,7 +290,7 @@ export function LearningAdminManager() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All types</SelectItem>
-                  {resourceTypes.map((option) => (
+                  {resourceTypes.map((option: { value: ResourceType; label: string }) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -390,7 +361,7 @@ export function LearningAdminManager() {
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {resourceTypes.map((option) => (
+                      {resourceTypes.map((option: { value: ResourceType; label: string }) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>

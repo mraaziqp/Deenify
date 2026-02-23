@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { QuranMediaManager } from '@/components/admin/quran-media-manager';
 import { LearningAdminManager } from '@/components/admin/learning-admin-manager';
+import PDFBookList from '@/components/admin/pdf-book-list';
+import PDFBookUploadForm from '@/components/admin/pdf-book-upload-form';
 import { 
   Users, 
   BookOpen, 
@@ -23,6 +25,7 @@ import {
   Settings
 } from 'lucide-react';
 import { redirect } from 'next/navigation';
+import PDFReader from '@/components/pdf/PDFReader';
 
 interface SystemStats {
   totalUsers: number;
@@ -46,89 +49,35 @@ interface RecentActivity {
 }
 
 export default function AdminDashboard() {
-  const { user, hasRole } = useAuth();
+  const { user, hasRole, isLoading } = useAuth();
   const [stats, setStats] = useState<SystemStats | null>(null);
   const [activities, setActivities] = useState<RecentActivity[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Redirect if not admin
+  // Redirect if not admin (only after loading)
   useEffect(() => {
-    if (!user || !(hasRole && hasRole())) {
+    if (!isLoading && (!user || !hasRole('admin'))) {
       redirect('/dashboard');
     }
-  }, [user, hasRole]);
+  }, [user, hasRole, isLoading]);
 
-  // Fetch admin data
+  // Fetch admin data from real API
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
-        // TODO: Replace with real API calls
-        // const response = await fetch('/api/admin/stats');
-        // const data = await response.json();
-        
-        // Mock data for now
-        setStats({
-          totalUsers: 2547,
-          totalCourses: 156,
-          activeCourses: 142,
-          pendingVerification: 8,
-          totalRevenue: 45230.50,
-          monthlyRevenue: 8420.00,
-          totalEnrollments: 12456,
-          activeTeachers: 34,
-          activeVerifiers: 5,
-        });
-
-        setActivities([
-          {
-            id: '1',
-            type: 'course_submitted',
-            description: 'New course "Advanced Tajweed" submitted',
-            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 15).toISOString() : '',
-            userId: 'teacher-1',
-            userName: 'Sheikh Ahmed',
-          },
-          {
-            id: '2',
-            type: 'course_approved',
-            description: 'Course "Fiqh Essentials" approved',
-            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 30).toISOString() : '',
-            userId: 'verifier-1',
-            userName: 'Dr. Fatima',
-          },
-          {
-            id: '3',
-            type: 'user_registered',
-            description: 'New user registration',
-            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 45).toISOString() : '',
-            userId: 'user-123',
-            userName: 'Ahmad Ibrahim',
-          },
-          {
-            id: '4',
-            type: 'enrollment',
-            description: 'User enrolled in "Introduction to Islam"',
-            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 60).toISOString() : '',
-            userId: 'user-456',
-            userName: 'Sarah Ahmed',
-          },
-          {
-            id: '5',
-            type: 'course_rejected',
-            description: 'Course "Quick Fiqh" rejected - needs more sources',
-            timestamp: typeof window !== 'undefined' ? new Date(Date.now() - 1000 * 60 * 90).toISOString() : '',
-            userId: 'verifier-2',
-            userName: 'Sheikh Hassan',
-          },
-        ]);
-
-        setIsLoading(false);
+        const statsRes = await fetch('/api/admin/stats');
+        if (statsRes.ok) {
+          const statsData = await statsRes.json();
+          setStats(statsData);
+        }
+        const activityRes = await fetch('/api/admin/activities');
+        if (activityRes.ok) {
+          const activityData = await activityRes.json();
+          setActivities(Array.isArray(activityData) ? activityData : []);
+        }
       } catch (error) {
         console.error('Failed to fetch admin data:', error);
-        setIsLoading(false);
       }
     };
-
     fetchAdminData();
   }, []);
 
@@ -148,11 +97,12 @@ export default function AdminDashboard() {
   };
 
   const formatTimestamp = (timestamp: string) => {
-    const date = typeof window !== 'undefined' ? new Date(timestamp) : null;
-    const now = typeof window !== 'undefined' ? new Date() : null;
+    if (typeof window === 'undefined') return '';
+    const date = new Date(timestamp);
+    const now = new Date();
+    if (isNaN(date.getTime())) return '';
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    
     if (diffMins < 60) {
       return `${diffMins}m ago`;
     } else if (diffMins < 1440) {
@@ -260,10 +210,128 @@ export default function AdminDashboard() {
           <TabsTrigger value="activity">Recent Activity</TabsTrigger>
           <TabsTrigger value="alerts">System Alerts</TabsTrigger>
           <TabsTrigger value="users">User Management</TabsTrigger>
-          <TabsTrigger value="quran-media">Quran Media</TabsTrigger>
+          <TabsTrigger value="quran-media" data-tab="quran-media">Quran Media</TabsTrigger>
           <TabsTrigger value="learning">Learning Library</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
+          <TabsTrigger value="pdf-books">PDF Book Upload</TabsTrigger>
+          <TabsTrigger value="cce-mag-portal">CCE Mag Portal</TabsTrigger>
+          <TabsTrigger value="pdf-reader-demo">PDF Reader Demo</TabsTrigger>
+  </TabsList>
+        <TabsContent value="cce-mag-portal" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>CCE Mag Quality of Life Portal</CardTitle>
+              <CardDescription>
+                Access the CCE Magazine Get Hired portal for quality of life resources and opportunities.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="w-full h-[70vh] rounded-lg overflow-hidden border shadow">
+                <iframe
+                  src="https://ccemagazine.web.za/ccemag/gethired/"
+                  title="CCE Mag Portal"
+                  className="w-full h-full border-0"
+                  allowFullScreen
+                />
+              </div>
+              <div className="mt-4 text-center">
+                <a
+                  href="https://ccemagazine.web.za/ccemag/gethired/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-700 underline hover:text-blue-900"
+                >
+                  Open CCE Mag Portal in new tab
+                </a>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* PDF Reader Demo Tab (Visible) */}
+        <TabsContent value="pdf-reader-demo" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Beautiful PDF Reader Demo</CardTitle>
+              <CardDescription>
+                Experience the in-app PDF reader. This is a sample preview.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Replace the URL below with a real PDF if available */}
+              <div className="w-full flex justify-center">
+                <PDFReader pdfUrl="https://arxiv.org/pdf/2203.15556.pdf" bookId="demo" />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* PDF Book Upload Tab */}
+        <TabsContent value="pdf-books" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Upload PDF Books</CardTitle>
+              <CardDescription>
+                Upload Islamic books (e.g. Al Mufeedah, Surah Yaaseen) as PDFs for users to read in the Learning Library.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PDFBookUploadForm />
+              <hr className="my-6" />
+              <PDFBookList />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* CCE Mag Portal Tab */}
+        <TabsContent value="cce-mag-portal" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>CCE Mag Quality of Life Portal</CardTitle>
+              <CardDescription>
+                Access the CCE Magazine Get Hired portal for quality of life resources and opportunities.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="w-full h-[70vh] rounded-lg overflow-hidden border shadow">
+                <iframe
+                  src="https://ccemagazine.web.za/ccemag/gethired/"
+                  title="CCE Mag Portal"
+                  className="w-full h-full border-0"
+                  allowFullScreen
+                />
+              </div>
+              <div className="mt-4 text-center">
+                <a
+                  href="https://ccemagazine.web.za/ccemag/gethired/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-700 underline hover:text-blue-900"
+                >
+                  Open CCE Mag Portal in new tab
+                </a>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* PDF Reader Demo Tab (Visible) */}
+        <TabsContent value="pdf-reader-demo" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Beautiful PDF Reader Demo</CardTitle>
+              <CardDescription>
+                Experience the in-app PDF reader. This is a sample preview.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Replace the URL below with a real PDF if available */}
+              <div className="w-full flex justify-center">
+                <PDFReader pdfUrl="https://arxiv.org/pdf/2203.15556.pdf" bookId="demo" />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* Recent Activity Tab */}
         <TabsContent value="activity" className="space-y-4">
@@ -486,7 +554,7 @@ export default function AdminDashboard() {
         </TabsContent>
 
         {/* Quran Media Tab */}
-        <TabsContent value="quran-media" className="space-y-4">
+        <TabsContent value="quran-media" className="space-y-4" data-tab="quran-media">
           <QuranMediaManager />
         </TabsContent>
 

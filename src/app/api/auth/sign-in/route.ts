@@ -19,23 +19,32 @@ export async function POST(req: NextRequest) {
   if (!valid) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   }
-  // Create JWT and set cookie
-  const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-  const cookieStore = cookies();
+  // Create JWT and set cookie (include role)
+  const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+  const cookieStore = await cookies();
   // Dynamically set cookie options for local/dev/prod
+  // Force dev-friendly cookie settings for localhost
   const host = req.headers.get('host') || '';
   const isProd = host.endsWith('deenify.co.za');
-  const isSecure = req.nextUrl.protocol === 'https:' || host.startsWith('www.');
-  const cookieOptions: any = {
-    httpOnly: true,
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7,
-    sameSite: isProd ? 'none' : 'lax',
-    secure: isProd || isSecure,
-  };
+  let cookieOptions: any;
   if (isProd) {
-    cookieOptions.domain = '.deenify.co.za';
+    cookieOptions = {
+      httpOnly: true,
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'none',
+      secure: true,
+      domain: '.deenify.co.za',
+    };
+  } else {
+    cookieOptions = {
+      httpOnly: true,
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'lax',
+      secure: false,
+    };
   }
   cookieStore.set('token', token, cookieOptions);
-  return NextResponse.json({ id: user.id, email: user.email });
+  return NextResponse.json({ id: user.id, email: user.email, role: user.role });
 }

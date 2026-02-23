@@ -41,6 +41,7 @@ const navLinks: NavLink[] = [
   { href: '/zakat', label: 'Zakat Calculator', icon: CircleDollarSign },
   { href: '/halal-food', label: 'Halal Food', icon: Apple },
   { href: '/quran', label: 'Quran & Recitations', icon: BookOpen },
+  { href: '/ccemag', label: 'CCE Mag Portal', icon: Landmark },
   { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
 ];
 
@@ -48,6 +49,7 @@ const navLinks: NavLink[] = [
 function HeaderContent() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
+  const router = usePathname ? require('next/navigation').useRouter() : null;
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background px-2 sm:px-6 sm:gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent">
@@ -154,7 +156,13 @@ function HeaderContent() {
               </DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={signOut} className="text-red-600 font-semibold cursor-pointer">
+              <DropdownMenuItem
+                        onClick={async () => {
+                          await signOut();
+                          window.location.href = '/auth/sign-in'; // Force reload and consistent redirect
+                        }}
+                className="text-red-600 font-semibold cursor-pointer"
+              >
                 Sign Out
               </DropdownMenuItem>
             </>
@@ -200,7 +208,16 @@ function MobileAccountButton() {
               <Button asChild variant="ghost" className="justify-start w-full text-[#7C6F57]">
                 <Link href="/settings">Settings</Link>
               </Button>
-              <Button onClick={signOut} variant="destructive" className="w-full mt-2">Sign Out</Button>
+              <Button
+                onClick={async () => {
+                  await signOut();
+                  window.location.href = '/auth/sign-in'; // Force reload and consistent redirect
+                }}
+                variant="destructive"
+                className="w-full mt-2"
+              >
+                Sign Out
+              </Button>
             </>
           )}
           {!user && (
