@@ -223,7 +223,7 @@ export default function LearningLibraryPage() {
                     {/* PDF Reader */}
                     <div className="border rounded-lg overflow-hidden">
                       <Suspense fallback={<div className="p-8 text-center text-muted-foreground">Loading PDF...</div>}>
-                        <PDFReader pdfUrl={resource.url} bookId={resource.id} />
+                        <PDFReader pdfUrl={`/api/pdf-book?id=${resource.id}`} bookId={resource.id} />
                       </Suspense>
                     </div>
                   </div>

@@ -1,6 +1,8 @@
+
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -13,23 +15,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'No PDF file uploaded.' }, { status: 400 });
   }
 
-  // Save PDF to public/books directory
+  // Save PDF to Neon (Postgres)
   const buffer = Buffer.from(await file.arrayBuffer());
-  const booksDir = path.join(process.cwd(), 'public', 'books');
-  await fs.mkdir(booksDir, { recursive: true });
   const fileName = `${Date.now()}_${title || 'book'}.pdf`.replace(/\s+/g, '_');
-  const filePath = path.join(booksDir, fileName);
-  await fs.writeFile(filePath, buffer);
-
-  // Optionally, save metadata to a JSON file
-  const metaPath = path.join(booksDir, `${fileName}.json`);
-  await fs.writeFile(metaPath, JSON.stringify({
-    title,
-    author,
-    description,
-    pdfUrl: `/books/${fileName}`,
-    uploadedAt: new Date().toISOString(),
-  }, null, 2));
-
-  return NextResponse.json({ success: true, pdfUrl: `/books/${fileName}` });
+  const book = await prisma.pDFBook.create({
+    data: {
+      title: title as string,
+      author: author as string,
+      description: description as string,
+      pdfData: buffer,
+      filename: fileName,
+    },
+  });
+  return NextResponse.json({ success: true, id: book.id });
 }
