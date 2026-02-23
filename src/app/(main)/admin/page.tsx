@@ -62,23 +62,8 @@ export default function AdminDashboard() {
 
   // Fetch admin data from real API
   useEffect(() => {
-    const fetchAdminData = async () => {
-      try {
-        const statsRes = await fetch('/api/admin/stats');
-        if (statsRes.ok) {
-          const statsData = await statsRes.json();
-          setStats(statsData);
-        }
-        const activityRes = await fetch('/api/admin/activities');
-        if (activityRes.ok) {
-          const activityData = await activityRes.json();
-          setActivities(Array.isArray(activityData) ? activityData : []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch admin data:', error);
-      }
-    };
-    fetchAdminData();
+    // Removed broken fetch calls to /api/admin/stats and /api/admin/activities
+    // TODO: Implement real admin stats and activities endpoints or use available data
   }, []);
 
   const getActivityIcon = (type: RecentActivity['type']) => {
@@ -249,22 +234,6 @@ export default function AdminDashboard() {
         </TabsContent>
 
         {/* PDF Reader Demo Tab (Visible) */}
-        <TabsContent value="pdf-reader-demo" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Beautiful PDF Reader Demo</CardTitle>
-              <CardDescription>
-                Experience the in-app PDF reader. This is a sample preview.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {/* Replace the URL below with a real PDF if available */}
-              <div className="w-full flex justify-center">
-                <PDFReader pdfUrl="https://arxiv.org/pdf/2203.15556.pdf" bookId="demo" />
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* PDF Book Upload Tab */}
         <TabsContent value="pdf-books" className="space-y-4">

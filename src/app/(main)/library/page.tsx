@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PDFReader } from "@/components/ui/pdf-reader";
 import { Progress } from "@/components/ui/progress";
 import { 
   BookOpen, 
@@ -56,6 +57,30 @@ type LibraryResponse = {
 export default function LibraryPage() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("all");
+    const [pdfBooks, setPdfBooks] = useState<any[]>([]);
+    const [selectedPDF, setSelectedPDF] = useState<any | null>(null);
+    const [pdfLoading, setPdfLoading] = useState(false);
+    const [pdfError, setPdfError] = useState<string | null>(null);
+
+    useEffect(() => {
+      // Fetch PDF books
+      const loadPDFBooks = async () => {
+        setPdfLoading(true);
+        setPdfError(null);
+        try {
+          const res = await fetch("/api/pdf-book-list");
+          if (!res.ok) throw new Error("Failed to load PDF books");
+          const books = await res.json();
+          setPdfBooks(books);
+        } catch (err: any) {
+          setPdfError(err.message || "Unable to load PDF books");
+          setPdfBooks([]);
+        } finally {
+          setPdfLoading(false);
+        }
+      };
+      loadPDFBooks();
+    }, []);
   const [data, setData] = useState<LibraryResponse>({ freeCourses: [], specializedCourses: [], reflections: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -235,7 +260,7 @@ export default function LibraryPage() {
       </div>
 
       <Tabs defaultValue="courses" className="space-y-6">
-        <TabsList className="grid w-full max-w-lg grid-cols-3">
+        <TabsList className="grid w-full max-w-lg grid-cols-4">
           <TabsTrigger value="courses" className="gap-2">
             <GraduationCap className="h-4 w-4" />
             Free Classes
@@ -247,6 +272,10 @@ export default function LibraryPage() {
           <TabsTrigger value="reflections" className="gap-2">
             <Sparkles className="h-4 w-4" />
             Reflections
+          </TabsTrigger>
+          <TabsTrigger value="reading" className="gap-2">
+            <BookOpen className="h-4 w-4" />
+            Reading Material
           </TabsTrigger>
         </TabsList>
 
@@ -376,6 +405,62 @@ export default function LibraryPage() {
             {data.reflections.map((reflection) => (
               <Card 
                 key={reflection.id}
+            <TabsContent value="reading" className="space-y-6">
+              <Card className="border-primary/20 bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5 text-primary" />
+                    Reading Material
+                  </CardTitle>
+                  <CardDescription>
+                    Explore uploaded Islamic books and PDFs. Click a book to read.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+              {pdfLoading && (
+                <Card>
+                  <CardContent className="p-6 text-muted-foreground">Loading books…</CardContent>
+                </Card>
+              )}
+              {pdfError && (
+                <Card className="border-destructive/40">
+                  <CardContent className="p-6 text-destructive">{pdfError}</CardContent>
+                </Card>
+              )}
+              {!pdfLoading && pdfBooks.length === 0 && !pdfError && (
+                <Card className="border-dashed">
+                  <CardContent className="p-6 text-center">No reading material available yet.</CardContent>
+                </Card>
+              )}
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {pdfBooks.map((book) => (
+                  <Card key={book.id} className="hover:shadow-lg hover:scale-105 transition-all">
+                    <CardHeader>
+                      <CardTitle>{book.title}</CardTitle>
+                      <CardDescription>{book.author}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground mb-2">{book.description}</p>
+                      <Button variant="outline" className="w-full" onClick={() => setSelectedPDF(book)}>
+                        <BookOpen className="h-4 w-4 mr-2" />
+                        Read Book
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              {selectedPDF && (
+                <div className="mt-8">
+                  <PDFReader
+                    url={`/api/pdf-book?id=${selectedPDF.id}`}
+                    title={selectedPDF.title}
+                  />
+                  <Button className="mt-4" variant="secondary" onClick={() => setSelectedPDF(null)}>
+                    Close Reader
+                  </Button>
+                </div>
+              )}
+            </TabsContent>
                 className="transition-all duration-300 hover:shadow-lg hover:scale-105 border-l-4 border-l-primary"
               >
                 <CardHeader>
