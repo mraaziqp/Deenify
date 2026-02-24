@@ -1,3 +1,68 @@
+enum GroupVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum GroupMemberRole {
+  ADMIN
+  MEMBER
+}
+
+enum CampaignType {
+  DHIKR
+  KHATM
+}
+
+enum KhatmJuzStatus {
+  OPEN
+  READING
+  COMPLETED
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  visibility  GroupVisibility
+  inviteCode  String? @unique
+  adminId     String
+  createdAt   DateTime @default(now())
+  members     GroupMember[]
+  campaigns   Campaign[]
+  admin       User     @relation("GroupAdmin", fields: [adminId], references: [id])
+}
+
+model GroupMember {
+  id        String   @id @default(cuid())
+  userId    String
+  groupId   String
+  role      GroupMemberRole @default(MEMBER)
+  joinedAt  DateTime @default(now())
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Campaign {
+  id           String   @id @default(cuid())
+  groupId      String
+  type         CampaignType
+  title        String
+  targetCount  Int
+  currentCount Int @default(0)
+  status       String @default("OPEN")
+  group        Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  khatmJuz     KhatmJuz[]
+}
+
+model KhatmJuz {
+  id               String   @id @default(cuid())
+  campaignId       String
+  juzNumber        Int
+  claimedByUserId  String?
+  status           KhatmJuzStatus @default(OPEN)
+  campaign         Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  claimedByUser    User?    @relation(fields: [claimedByUserId], references: [id])
+}
 model PDFBook {
   id          String   @id @default(cuid())
   title       String
@@ -16,6 +81,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+  SCHOLAR
+}
+
 model User {
   id       String  @id @default(cuid())
   email    String  @unique
@@ -28,8 +99,70 @@ model User {
   emailVerified Boolean @default(false)
   verificationToken String?
   verificationTokenExpires DateTime?
-  role     String  @default("user")
+  role     UserRole  @default(USER)
   bookmarks Bookmark[]
+  sessionParticipants SessionParticipant[]
+  answers Answer[] @relation("ScholarAnswers")
+  questions Question[]
+    groupsAdmin Group[] @relation("GroupAdmin")
+    groupMemberships GroupMember[]
+    claimedJuz KhatmJuz[]
+}
+
+enum LiveSessionType {
+  DHIKR
+  YASEEN
+  KHATM
+}
+
+enum LiveSessionStatus {
+  OPEN
+  ACTIVE
+  COMPLETED
+}
+
+model LiveSession {
+  id           String   @id @default(uuid())
+  type         LiveSessionType
+  title        String
+  targetCount  Int
+  currentCount Int @default(0)
+  status       LiveSessionStatus @default(OPEN)
+  participants SessionParticipant[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model SessionParticipant {
+  id           String   @id @default(cuid())
+  userId       String
+  sessionId    String
+  joinedAt     DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id])
+  session      LiveSession @relation(fields: [sessionId], references: [id])
+}
+
+model Question {
+  id         String   @id @default(cuid())
+  userId     String
+  content    String
+  isAnswered Boolean @default(false)
+  createdAt  DateTime @default(now())
+  answers    Answer[]
+
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Answer {
+  id         String   @id @default(cuid())
+  questionId String
+  scholarId  String
+  content    String
+  createdAt  DateTime @default(now())
+
+  question   Question @relation(fields: [questionId], references: [id])
+  scholar    User     @relation("ScholarAnswers", fields: [scholarId], references: [id])
 }
 
 model QuranMedia {
@@ -79,7 +212,7 @@ model LearningQuestion {
   status         String   @default("pending")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-}
+  }
 
 model HalalFoodItem {
   id          String   @id @default(cuid())

@@ -11,6 +11,7 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [applyScholar, setApplyScholar] = useState(false);
   const router = useRouter();
 
   async function handleSignUp(e: React.FormEvent) {
@@ -25,7 +26,7 @@ export default function SignUpPage() {
       const res = await fetch('/api/auth/sign-up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role: applyScholar ? 'SCHOLAR' : undefined }),
       });
       if (!res.ok) throw new Error('Sign up failed');
       router.push('/dashboard');
@@ -71,6 +72,14 @@ export default function SignUpPage() {
               {loading ? 'Signing Up...' : 'Sign Up'}
             </Button>
             <div className="text-center text-sm mt-2">
+              <button
+                type="button"
+                className={`text-green-700 hover:underline font-semibold ${applyScholar ? 'underline' : ''}`}
+                onClick={() => setApplyScholar(v => !v)}
+              >
+                {applyScholar ? '✓ Applied as Scholar/Teacher' : 'Apply as Scholar/Teacher'}
+              </button>
+              <br />
               Already have an account? <a href="/auth/sign-in" className="text-blue-600 hover:underline">Sign In</a>
             </div>
           </form>
