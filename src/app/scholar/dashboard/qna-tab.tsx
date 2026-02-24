@@ -1,6 +1,9 @@
 
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
+"use client";
+import useSWR from 'swr';
+import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle } from 'lucide-react';
 import { useState } from 'react';

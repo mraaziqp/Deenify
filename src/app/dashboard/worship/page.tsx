@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+"use client";
+import { useState } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import SoloWorshipTab from './solo-tab';
 import CommunityWorshipTab from './community-tab';
 
