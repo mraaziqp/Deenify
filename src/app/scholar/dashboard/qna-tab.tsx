@@ -1,13 +1,9 @@
-
-import useSWR from 'swr';
-import { Button } from '@/components/ui/button';
 "use client";
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle } from 'lucide-react';
 import { useState } from 'react';
-
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export default function ScholarQnATab() {
