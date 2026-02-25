@@ -1,0 +1,51 @@
+[
+  {
+    "title": "For a Good End",
+    "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ حُسْنَ الْخَاتِمَةِ",
+    "transliteration": "Allahumma inni as'aluka husnal khatimah",
+    "translation": "O Allah, I ask You for a good end to my life.",
+    "tags": ["Death", "Protection", "Guidance"]
+  },
+  {
+    "title": "For Sincere Repentance",
+    "arabic": "اللَّهُمَّ ارْزُقْنِي تَوْبَتًا نَصُوحًا قَبْلَ الْمَوْتِ",
+    "transliteration": "Allahummar zuqni taubatan nasuha qablal maut",
+    "translation": "O Allah, grant me sincere repentance before death.",
+    "tags": ["Forgiveness", "Repentance", "Death"]
+  },
+  {
+    "title": "For a Firm Heart",
+    "arabic": "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَىٰ دِينِكَ",
+    "transliteration": "Ya Muqallib al-quloob thabbit qalbi 'ala deenik",
+    "translation": "O Controller of hearts, make my heart firm in Your religion.",
+    "tags": ["Faith", "Guidance", "Steadfastness"]
+  },
+  {
+    "title": "For Good in Both Worlds",
+    "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    "transliteration": "Rabbanaaa aatina fid dunyaa hasanatanw wa fil aakhirati hasanatanw wa qinaa azaaban Naar",
+    "translation": "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire.",
+    "tags": ["Success", "Protection", "Hereafter"]
+  },
+  {
+    "title": "For Help in Worship",
+    "arabic": "اللَّهُمَّ أَعِنِّي عَلَىٰ ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+    "transliteration": "Allāhumma 'a`innī `alā dhikrika, wa shukrika, wa ḥusni `ibādatik.",
+    "translation": "O Allah, help me to remember You, to give You thanks, and to perform Your worship in the best manner.",
+    "tags": ["Worship", "Gratitude", "Remembrance"]
+  },
+  {
+    "title": "For Forgiveness and Protection",
+    "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ",
+    "transliteration": "Allāhumma innī as'aluka 'l-`afwa wal-`āfiyahta fid-dunyā wal-ākhirah",
+    "translation": "O Allah, I seek Your forgiveness and Your protection in this world and the next.",
+    "tags": ["Forgiveness", "Protection", "Mercy"]
+  },
+  {
+    "title": "For Mercy and Forgiveness",
+    "arabic": "رَبِّ اغْفِرْ وَارْحَمْ وَأَنْتَ خَيْرُ الرَّاحِمِينَ",
+    "transliteration": "Rabbighfir warham wa-anta khairur rahimeen",
+    "translation": "My Lord, forgive and have mercy, and You are the best of the Merciful.",
+    "tags": ["Forgiveness", "Mercy"]
+  }
+]

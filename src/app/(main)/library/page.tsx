@@ -21,8 +21,33 @@ import {
   ShieldCheck,
   UserPlus,
   Wallet,
-  AlertCircle
+  AlertCircle,
+  HeartHandshake
 } from "lucide-react";
+type Dua = {
+  id: string;
+  title: string;
+  arabic: string;
+  transliteration: string;
+  translation: string;
+  tags: string[];
+};
+  const [duas, setDuas] = useState<Dua[]>([]);
+  const [duasLoading, setDuasLoading] = useState(false);
+  const [duasError, setDuasError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setDuasLoading(true);
+    setDuasError(null);
+    fetch('/api/duas')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to load duas');
+        return res.json();
+      })
+      .then(setDuas)
+      .catch(e => setDuasError(e.message || 'Unable to load duas'))
+      .finally(() => setDuasLoading(false));
+  }, []);
 
 type Course = {
   id: string;
@@ -260,7 +285,7 @@ export default function LibraryPage() {
       </div>
 
       <Tabs defaultValue="courses" className="space-y-6">
-        <TabsList className="grid w-full max-w-lg grid-cols-4">
+        <TabsList className="grid w-full max-w-xl grid-cols-5">
           <TabsTrigger value="courses" className="gap-2">
             <GraduationCap className="h-4 w-4" />
             Free Classes
@@ -277,6 +302,59 @@ export default function LibraryPage() {
             <BookOpen className="h-4 w-4" />
             Reading Material
           </TabsTrigger>
+          <TabsTrigger value="duas" className="gap-2">
+            <HeartHandshake className="h-4 w-4" />
+            Dua Library
+          </TabsTrigger>
+                <TabsContent value="duas" className="space-y-6">
+                  <Card className="border-primary/20 bg-primary/5">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <HeartHandshake className="h-5 w-5 text-primary" />
+                        Dua Library
+                      </CardTitle>
+                      <CardDescription>
+                        Authentic Islamic supplications for every occasion.
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                  {duasLoading && (
+                    <Card>
+                      <CardContent className="p-6 text-muted-foreground">Loading duas…</CardContent>
+                    </Card>
+                  )}
+                  {duasError && (
+                    <Card className="border-destructive/40">
+                      <CardContent className="p-6 text-destructive">{duasError}</CardContent>
+                    </Card>
+                  )}
+                  {!duasLoading && duas.length === 0 && !duasError && (
+                    <Card className="border-dashed">
+                      <CardContent className="p-6 text-center">No duas available yet.</CardContent>
+                    </Card>
+                  )}
+                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {duas.map((dua) => (
+                      <Card key={dua.id} className="hover:shadow-lg hover:scale-105 transition-all">
+                        <CardHeader>
+                          <CardTitle>{dua.title}</CardTitle>
+                          <CardDescription>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {dua.tags.map((tag) => (
+                                <Badge key={tag} variant="secondary">{tag}</Badge>
+                              ))}
+                            </div>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="mb-2 text-xl font-arabic text-right leading-loose">{dua.arabic}</div>
+                          <div className="mb-2 text-sm italic text-muted-foreground">{dua.transliteration}</div>
+                          <div className="mb-2 text-base">{dua.translation}</div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
         </TabsList>
 
         <TabsContent value="courses" className="space-y-6">

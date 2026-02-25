@@ -32,6 +32,8 @@ import Link from 'next/link';
 import { DailyHadithCard } from '@/components/daily-hadith-card';
 import { PrayerTimesCard } from '@/components/prayer-times-card';
 import TasbeehCounter from '@/components/dhikr/tasbeeh-counter';
+import { PrismaClient } from '@prisma/client';
+
 // TODO: Implement DB-based progress management
 
 type DashboardStats = {
@@ -98,6 +100,7 @@ export default function DashboardPage() {
   });
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [dailyFact, setDailyFact] = useState('');
+  const [hisnulMuslim, setHisnulMuslim] = useState<any[]>([]);
 
   // Helper: feature unlock logic (placeholder, always true)
   const isFeatureUnlocked = (_milestone: string) => true;
@@ -105,6 +108,19 @@ export default function DashboardPage() {
   const progressPercentage = stats.totalCourses
     ? Math.round((stats.coursesCompleted / stats.totalCourses) * 100)
     : 0;
+
+  useEffect(() => {
+    async function fetchHisnulMuslim() {
+      // Fetch from API or direct DB call (example placeholder)
+      // Replace with actual API endpoint or Prisma call
+      const res = await fetch('/api/hisnul-muslim');
+      if (res.ok) {
+        const data = await res.json();
+        setHisnulMuslim(data);
+      }
+    }
+    fetchHisnulMuslim();
+  }, []);
 
   return (
     <div className="container mx-auto px-2 py-3 sm:px-4 md:px-8 max-w-5xl">
@@ -410,7 +426,34 @@ export default function DashboardPage() {
             })}
           </div>
         </div>
+
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4 text-primary">Hisnul Muslim Duas</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {hisnulMuslim.map((chapter, idx) => (
+              <Card key={idx} className="shadow-md border-primary/20">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold text-primary">
+                    {chapter.TITLE}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {chapter.TEXT.map((dua: any, i: number) => (
+                    <div key={i} className="mb-4">
+                      <div className="text-xl font-bold text-right mb-2">{dua.ARABIC_TEXT}</div>
+                      <div className="text-sm italic text-muted-foreground mb-2">{dua.TRANSLITERATION}</div>
+                      <div className="text-base mb-2">{dua.TRANSLATED_TEXT}</div>
+                      <div className="text-xs text-muted-foreground">{dua.REFERENCE}</div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+// ...existing code...

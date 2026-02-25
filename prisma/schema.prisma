@@ -1,3 +1,40 @@
+model AwradBook {
+  id            String   @id @default(uuid())
+  title         String   @unique
+  author        String
+  coverImageUrl String?
+  chapters      AwradChapter[]
+}
+
+model AwradChapter {
+  id        String   @id @default(uuid())
+  bookId    String
+  title     String
+  audioUrl  String?
+  order     Int
+  book      AwradBook @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  lines     AwradLine[]
+}
+
+model AwradLine {
+  id               String   @id @default(uuid())
+  chapterId        String
+  arabicText       String
+  transliteration  String?
+  translation      String?
+  order            Int
+  chapter          AwradChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+model Dua {
+  id              String   @id @default(uuid())
+  title         String   @unique
+  arabic          String
+  transliteration String
+  translation     String
+  tags            String[]
+  repeatCount     Int      @default(1)
+  audioUrl        String?
+}
 enum GroupVisibility {
   PUBLIC
   PRIVATE
@@ -166,13 +203,9 @@ model Answer {
 }
 
 model QuranMedia {
-  id              String   @id @default(cuid())
-  title           String
-  type            String
-  url             String
-  thumbnailUrl    String?
-  reciter         String?
-  surahNumber     Int?
+  id               String   @id @default(uuid())
+  // Removed invalid relation to AwradChapter
+  // If QuranMedia needs to reference a chapter, add a proper relation in both models
   ayahStart       Int?
   ayahEnd         Int?
   language        String?
