@@ -51,7 +51,11 @@ interface CourseDetail {
 export default function CourseDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const courseId = params.courseId as string;
+  const courseId = params?.courseId as string | undefined;
+  if (!courseId) {
+    // Optionally, handle missing courseId (redirect, show error, etc.)
+    return <div>Course ID not found.</div>;
+  }
   
   const [course, setCourse] = useState<CourseDetail | null>(null);
   const [loading, setLoading] = useState(true);

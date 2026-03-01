@@ -1,3 +1,4 @@
+"use client";
 
 import useSWR from 'swr';
 import { CheckCircle } from 'lucide-react';

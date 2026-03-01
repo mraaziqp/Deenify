@@ -1,0 +1,110 @@
+[
+  {
+    "id": "static-0",
+    "title": "Surah Yaseen — Arabic & English Translation",
+    "author": "The Holy Quran - Surah 36",
+    "description": "The heart of the Quran. Full Arabic text with English translation and transliteration.",
+    "category": "Quran",
+    "url": "https://archive.org/download/SurahYasin_201507/SurahYasin.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-1",
+    "title": "Fortress of the Muslim - Hisnul Muslim",
+    "author": "Sa'id ibn Ali ibn Wahf Al-Qahtani",
+    "description": "Authentic supplications from the Quran and Sunnah for every situation in daily life.",
+    "category": "Dua & Dhikr",
+    "url": "https://archive.org/download/FortressOfTheMuslimDua/FortressOfTheMuslim.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-2",
+    "title": "The Sealed Nectar - Biography of the Prophet",
+    "author": "Saifur Rahman Al-Mubarakpuri",
+    "description": "Award-winning biography of Prophet Muhammad. A comprehensive account of his life from birth to passing.",
+    "category": "Seerah",
+    "url": "https://archive.org/download/TheSealedNectarBiographyOfMuhammadPBUH_201612/TheSealedNectar.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-3",
+    "title": "Riyadh Us-Saliheen",
+    "author": "Imam Al-Nawawi",
+    "description": "Gardens of the Righteous — a classic hadith collection covering all aspects of Islamic character and conduct.",
+    "category": "Hadith",
+    "url": "https://archive.org/download/RiyadhUsSaliheen_201610/RiyadhAsSaliheen.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-4",
+    "title": "An-Nawawi's 40 Hadith",
+    "author": "Imam Al-Nawawi",
+    "description": "The celebrated 42 essential hadith forming the foundation of Islamic knowledge and practice.",
+    "category": "Hadith",
+    "url": "https://archive.org/download/40HadithNawawi/40HadithNawawi.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-5",
+    "title": "Purification of the Soul",
+    "author": "Ahmad Farid",
+    "description": "A guide to spiritual purification covering the diseases of the heart and their cures.",
+    "category": "Spirituality",
+    "url": "https://archive.org/download/PurificationOfTheSoul/Purification%20of%20the%20Soul.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-6",
+    "title": "Don't Be Sad - La Tahzan",
+    "author": "Aaidh ibn Abdullah al-Qarni",
+    "description": "An Islamic self-help book offering solace and reminders for those going through hardship.",
+    "category": "Spirituality",
+    "url": "https://archive.org/download/DontBeSadLaTahzan/DontBeSad.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-7",
+    "title": "The Ideal Muslim",
+    "author": "Dr. Muhammad Ali al-Hashimi",
+    "description": "Describes the Muslim character as shaped by the Quran and Sunnah in all aspects of life.",
+    "category": "Character",
+    "url": "https://archive.org/download/TheIdealMuslim_201612/TheIdealMuslim.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-8",
+    "title": "Description of the Prophet's Prayer",
+    "author": "Sheikh Muhammad Nasiruddin al-Albani",
+    "description": "A detailed description of the manner of prayer based on authentic hadith literature.",
+    "category": "Fiqh",
+    "url": "https://archive.org/download/TheProphetsPrayer/TheProphetsprayer.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-9",
+    "title": "Summarized Sahih Al-Bukhari",
+    "author": "Imam Al-Bukhari (summarized by Al-Zubaydi)",
+    "description": "The most authentic hadith collection in Islam condensed into a single accessible volume.",
+    "category": "Hadith",
+    "url": "https://archive.org/download/SahihAlBukhari_201504/SahihAlBukhari.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-10",
+    "title": "Tafsir Ibn Kathir - Abridged Vol. 1",
+    "author": "Imam Ibn Kathir",
+    "description": "The most widely read Tafsir in the world. Volume 1 covers Al-Fatihah and Al-Baqarah.",
+    "category": "Tafsir",
+    "url": "https://archive.org/download/TafsirIbnKathir_201503/TafsirIbnKathirVol1.pdf",
+    "type": "static"
+  },
+  {
+    "id": "static-11",
+    "title": "Islamic Jurisprudence - Fiqh Us-Sunnah",
+    "author": "Sayyid Sabiq",
+    "description": "A comprehensive guide to Islamic law covering worship, transactions, and social matters.",
+    "category": "Fiqh",
+    "url": "https://archive.org/download/FiqhUsSunnahSayyidSabiq/FiqhUsSunnahVol1.pdf",
+    "type": "static"
+  }
+]

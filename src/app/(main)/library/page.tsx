@@ -1,5 +1,4 @@
 'use client';
-export const dynamic = "force-dynamic";
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
@@ -32,22 +31,6 @@ type Dua = {
   translation: string;
   tags: string[];
 };
-  const [duas, setDuas] = useState<Dua[]>([]);
-  const [duasLoading, setDuasLoading] = useState(false);
-  const [duasError, setDuasError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setDuasLoading(true);
-    setDuasError(null);
-    fetch('/api/duas')
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to load duas');
-        return res.json();
-      })
-      .then(setDuas)
-      .catch(e => setDuasError(e.message || 'Unable to load duas'))
-      .finally(() => setDuasLoading(false));
-  }, []);
 
 type Course = {
   id: string;
@@ -82,6 +65,26 @@ type LibraryResponse = {
 export default function LibraryPage() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const [duas, setDuas] = useState<Dua[]>([]);
+  const [duasLoading, setDuasLoading] = useState(false);
+  const [duasError, setDuasError] = useState<string | null>(null);
+  const [duaCategory, setDuaCategory] = useState<string>('All');
+  const [duaSearch, setDuaSearch] = useState('');
+
+  useEffect(() => {
+    setDuasLoading(true);
+    setDuasError(null);
+    fetch('/api/duas')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to load duas');
+        return res.json();
+      })
+      .then(setDuas)
+      .catch(e => setDuasError(e.message || 'Unable to load duas'))
+      .finally(() => setDuasLoading(false));
+  }, []);
+
     const [pdfBooks, setPdfBooks] = useState<any[]>([]);
     const [selectedPDF, setSelectedPDF] = useState<any | null>(null);
     const [pdfLoading, setPdfLoading] = useState(false);
@@ -306,55 +309,6 @@ export default function LibraryPage() {
             <HeartHandshake className="h-4 w-4" />
             Dua Library
           </TabsTrigger>
-                <TabsContent value="duas" className="space-y-6">
-                  <Card className="border-primary/20 bg-primary/5">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <HeartHandshake className="h-5 w-5 text-primary" />
-                        Dua Library
-                      </CardTitle>
-                      <CardDescription>
-                        Authentic Islamic supplications for every occasion.
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
-                  {duasLoading && (
-                    <Card>
-                      <CardContent className="p-6 text-muted-foreground">Loading duas…</CardContent>
-                    </Card>
-                  )}
-                  {duasError && (
-                    <Card className="border-destructive/40">
-                      <CardContent className="p-6 text-destructive">{duasError}</CardContent>
-                    </Card>
-                  )}
-                  {!duasLoading && duas.length === 0 && !duasError && (
-                    <Card className="border-dashed">
-                      <CardContent className="p-6 text-center">No duas available yet.</CardContent>
-                    </Card>
-                  )}
-                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {duas.map((dua) => (
-                      <Card key={dua.id} className="hover:shadow-lg hover:scale-105 transition-all">
-                        <CardHeader>
-                          <CardTitle>{dua.title}</CardTitle>
-                          <CardDescription>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {dua.tags.map((tag) => (
-                                <Badge key={tag} variant="secondary">{tag}</Badge>
-                              ))}
-                            </div>
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="mb-2 text-xl font-arabic text-right leading-loose">{dua.arabic}</div>
-                          <div className="mb-2 text-sm italic text-muted-foreground">{dua.transliteration}</div>
-                          <div className="mb-2 text-base">{dua.translation}</div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </TabsContent>
         </TabsList>
 
         <TabsContent value="courses" className="space-y-6">
@@ -507,6 +461,8 @@ export default function LibraryPage() {
             ))}
           </div>
 
+        </TabsContent>
+
         <TabsContent value="reading" className="space-y-6">
           <Card className="border-primary/20 bg-primary/5">
             <CardHeader>
@@ -540,9 +496,12 @@ export default function LibraryPage() {
                 <CardHeader>
                   <CardTitle>{book.title}</CardTitle>
                   <CardDescription>{book.author}</CardDescription>
+                  {book.category && (
+                    <Badge variant="secondary" className="w-fit mt-1">{book.category}</Badge>
+                  )}
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground mb-2">{book.description}</p>
+                  <p className="text-sm text-muted-foreground mb-4">{book.description}</p>
                   <Button variant="outline" className="w-full" onClick={() => setSelectedPDF(book)}>
                     <BookOpen className="h-4 w-4 mr-2" />
                     Read Book
@@ -554,7 +513,7 @@ export default function LibraryPage() {
           {selectedPDF && (
             <div className="mt-8">
               <PDFReader
-                url={`/api/pdf-book?id=${selectedPDF.id}`}
+                url={selectedPDF.url ?? `/api/pdf-book?id=${selectedPDF.id}`}
                 title={selectedPDF.title}
               />
               <Button className="mt-4" variant="secondary" onClick={() => setSelectedPDF(null)}>
@@ -563,7 +522,123 @@ export default function LibraryPage() {
             </div>
           )}
         </TabsContent>
+
+        <TabsContent value="duas" className="space-y-6">
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <HeartHandshake className="h-5 w-5 text-primary" />
+                Dua Library
+              </CardTitle>
+              <CardDescription>
+                Authentic Islamic supplications for every occasion.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+          {duasLoading && (
+            <Card>
+              <CardContent className="p-6 text-muted-foreground">Loading duas…</CardContent>
+            </Card>
+          )}
+          {duasError && (
+            <Card className="border-destructive/40">
+              <CardContent className="p-6 text-destructive">{duasError}</CardContent>
+            </Card>
+          )}
+          {!duasLoading && !duasError && duas.length > 0 && (() => {
+            // Collect all unique tags for category pills
+            const allTags = Array.from(
+              new Set(duas.flatMap((d) => d.tags))
+            ).sort();
+            const filteredDuas = duas.filter((d) => {
+              const matchCat = duaCategory === 'All' || d.tags.includes(duaCategory);
+              const matchSearch =
+                !duaSearch ||
+                d.title.toLowerCase().includes(duaSearch.toLowerCase()) ||
+                d.translation.toLowerCase().includes(duaSearch.toLowerCase()) ||
+                d.transliteration.toLowerCase().includes(duaSearch.toLowerCase());
+              return matchCat && matchSearch;
+            });
+            return (
+              <>
+                {/* Search bar */}
+                <div className="flex gap-3 items-center">
+                  <input
+                    type="text"
+                    placeholder="Search duas…"
+                    value={duaSearch}
+                    onChange={(e) => setDuaSearch(e.target.value)}
+                    className="flex-1 h-10 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                  />
+                </div>
+                {/* Category pills */}
+                <div className="flex flex-wrap gap-2">
+                  {['All', ...allTags].map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => setDuaCategory(tag)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors border ${
+                        duaCategory === tag
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-background text-foreground border-border hover:bg-accent'
+                      }`}
+                    >
+                      {tag}
+                      {tag !== 'All' && (
+                        <span className="ml-1 text-xs opacity-70">
+                          ({duas.filter((d) => d.tags.includes(tag)).length})
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+                {filteredDuas.length === 0 && (
+                  <Card className="border-dashed">
+                    <CardContent className="p-6 text-center text-muted-foreground">
+                      No duas match your search.
+                    </CardContent>
+                  </Card>
+                )}
+                <div className="grid gap-4 md:grid-cols-2">
+                  {filteredDuas.map((dua) => (
+                    <Card key={dua.id} className="hover:shadow-lg transition-all flex flex-col">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base leading-snug">{dua.title}</CardTitle>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {dua.tags.map((tag) => (
+                            <button
+                              key={tag}
+                              onClick={() => { setDuaCategory(tag); setDuaSearch(''); }}
+                              className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                            >
+                              {tag}
+                            </button>
+                          ))}
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3 flex-1">
+                        <div
+                          className="text-2xl text-right leading-loose text-primary p-3 bg-primary/5 rounded-lg select-all"
+                          dir="rtl"
+                        >
+                          {dua.arabic}
+                        </div>
+                        <p className="text-sm italic text-muted-foreground">{dua.transliteration}</p>
+                        <p className="text-sm">{dua.translation}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </>
+            );
+          })()}
+          {!duasLoading && duas.length === 0 && !duasError && (
+            <Card className="border-dashed">
+              <CardContent className="p-6 text-center">No duas available yet.</CardContent>
+            </Card>
+          )}
         </TabsContent>
+
       </Tabs>
     </div>
   );

@@ -1,6 +1,5 @@
-export const dynamic = "force-dynamic";
-import { Card, CardContent } from "@/components/ui/card";
-import { ScrollText } from "lucide-react";
+import { ScrollText } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function WasiyaPage() {
   return (
@@ -10,16 +9,16 @@ export default function WasiyaPage() {
         <div>
           <h1 className="text-2xl font-bold">Wasiya (Will) Generator</h1>
           <p className="text-muted-foreground">
-            Create a legally valid Islamic will based on the Fara'id Algorithm.
+            Create a legally valid Islamic will based on the Fara&apos;id Algorithm.
           </p>
         </div>
       </div>
-       <Card className="shadow-lg">
+      <Card className="shadow-lg">
         <CardContent className="p-12 text-center">
-            <h3 className="text-xl font-semibold">Feature Under Development</h3>
-            <p className="text-muted-foreground mt-2">
-                The Wasiya generator is coming soon.
-            </p>
+          <h3 className="text-xl font-semibold">Feature Under Development</h3>
+          <p className="text-muted-foreground mt-2">
+            The Wasiya generator is coming soon.
+          </p>
         </CardContent>
       </Card>
     </div>

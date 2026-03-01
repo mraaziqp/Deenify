@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { QuranMediaManager } from '@/components/admin/quran-media-manager';
 import { LearningAdminManager } from '@/components/admin/learning-admin-manager';
+import { AudioLibraryManager } from '@/components/admin/audio-library-manager';
 import PDFBookList from '@/components/admin/pdf-book-list';
 import PDFBookUploadForm from '@/components/admin/pdf-book-upload-form';
 import { 
@@ -196,6 +197,7 @@ export default function AdminDashboard() {
           <TabsTrigger value="alerts">System Alerts</TabsTrigger>
           <TabsTrigger value="users">User Management</TabsTrigger>
           <TabsTrigger value="quran-media" data-tab="quran-media">Quran Media</TabsTrigger>
+          <TabsTrigger value="audio-library">🎙 Audio Library</TabsTrigger>
           <TabsTrigger value="learning">Learning Library</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
           <TabsTrigger value="pdf-books">PDF Book Upload</TabsTrigger>
@@ -525,6 +527,18 @@ export default function AdminDashboard() {
         {/* Quran Media Tab */}
         <TabsContent value="quran-media" className="space-y-4" data-tab="quran-media">
           <QuranMediaManager />
+        </TabsContent>
+
+        {/* Audio Library Tab */}
+        <TabsContent value="audio-library" className="space-y-4">
+          <div className="mb-2">
+            <h2 className="text-xl font-bold">Audio Library Manager</h2>
+            <p className="text-muted-foreground text-sm">
+              Add audio tracks for Surahs, Hadith narrations, Duas, Lectures, Dhikr and more.
+              Paste any direct audio URL — mp3, m4a, archive.org, Dropbox, or CDN links.
+            </p>
+          </div>
+          <AudioLibraryManager />
         </TabsContent>
 
         {/* Learning Library Tab */}
