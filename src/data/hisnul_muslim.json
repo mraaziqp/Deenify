@@ -1,290 +1,315 @@
-{
-	"English": [
-		{
-			"TITLE": "After Salah #1",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "Astaghfiru-llah (x3), Allahumma Anta-s-Salam, wa minka-s-salam, tabarakta ya Dha-l-Jalali wa-l-Ikram.",
-					"TRANSLITERATION": "Astaghfiru-llah (x3), Allahumma Anta-s-Salam, wa minka-s-salam, tabarakta ya Dha-l-Jalali wa-l-Ikram.",
-					"TRANSLATED_TEXT": "I seek the forgiveness of Allah. O Allah, You are The Flawless and The Source of Peace, and from You comes peace. Blessed are You, full of Majesty and Honour.",
-					"REFERENCE": "Thawban (raḍiy Allahu ‘anhu) reported that when the Messenger of Allah ﷺ finished his prayer, he would seek forgiveness three times and say [the above]. (Muslim 591)"
-				}
-			]
-		}
-	]
-}
-							"TRANSLATED_TEXT": "O Allah, send upon Sayyidinā Muhammad a prayer through which You deliver us from all tribulations and harm; and through which You fulfill for us every need; and through which You purify us from every bad thing; and through which You raise us to the loftiest of degrees in Your sight; and through which You cause us to reach the highest limit of every goodness, in this life and after death."
-						}
-					]
-				},
-				{
-					"TITLE": "Dua for knowledge",
-					"TEXT": [
-						{"TRANSLATED_TEXT": "Oh Allah, I ask you for knowledge that is of benefit, a good provision, and deeds that will be accepted.", "REFERENCE": "Ibn Majah and others"}
-					]
-				},
-				{
-					"TITLE": "Dua for taqwa",
-					"TEXT": [
-						{
-							"ARABIC_TEXT": "اللهم آت نفسي تقواها وزكها أنت خير من زكاها أنت وليها ومولاها",
-							"TRANSLITERATION": "Allahumma ati nafsi taqwaha wa-zakkiha anta khayru man zakkaha anta waliyuha wa-mawlaha.",
-							"TRANSLATED_TEXT": "O Allah, give my soul (nafs) its God-fearing righteousness (taqwa) and purify it, for You are the best to purify it. You are its Protector and its Guardian.",
-							"REFERENCE": "Muslim"
-						}
-					]
-				},
-				{
-					"TITLE": "Dua for success",
-					"TEXT": [
-						{
-							"ARABIC_TEXT": "ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار",
-							"TRANSLITERATION": "Rabbana atina fi dunya hasanatan wa fil akhirati hasanatan wa qina adhaba an-nar.",
-							"TRANSLATED_TEXT": "Our Lord! Grant us the good of this world and the Hereafter, and protect us from the torment of the Fire.",
-							"REFERENCE": "2:201"
-						}
-					]
-				},
-				{
-					"TITLE": "Dua for good character",
-					"TEXT": [
-						{
-							"ARABIC_TEXT": "اللهم كما أحسنت خلقي فحسن خلقي",
-							"TRANSLITERATION": "Allahumma kama ahsanta khulqi fahassin kholoqi.",
-							"TRANSLATED_TEXT": "O Allah! You have made my creation perfect, so make my moral characteristics also be the best.",
-							"REFERENCE": "Ahmad"
-						}
-					]
-				},
-				{
-					"TITLE": "Dua for blessed family",
-					"TEXT": [
-						{
-							"ARABIC_TEXT": "ربنا هب لنا من أزواجنا وذرياتنا قرة أعين واجعلنا للمتقين إماما",
-							"TRANSLITERATION": "Rabbana hab lana min azwajina wa dhurriyatina qurrata a’yunin waj-‘alna lilmuttaqina imama.",
-							"TRANSLATED_TEXT": "Our Lord! Grant unto us wives and offspring who will be the comfort of our eyes, and give us (the grace) to lead the righteous.",
-							"REFERENCE": "25:74"
-						}
-					]
-				},
-				{
-					"TITLE": "Dua for having children",
-					"TEXT": [
-						{
-							"ARABIC_TEXT": "رب هب لي من لدنك ذرية طيبة إنك سميع الدعاء",
-							"TRANSLITERATION": "Rabbi hab lee min ladunka thuriyyatan tayyibatan innak sami’u-dua.",
-							"TRANSLATED_TEXT": "My Lord, grant me from Yourself a good offspring. Indeed, You are the Hearer of supplication.",
-							"REFERENCE": "3:38"
-						}
-					]
-				},
-				{
-					"TITLE": "Dua for relief from distress, laziness, debts",
-					"TEXT": [
-						{"TRANSLATED_TEXT": "Oh Allah! I seek refuge with You from worry and grief, from incapacity and laziness, from cowardice and miserliness, from being heavily in debt and from being overpowered by (other) men.", "REFERENCE": "Sahih al-Bukhari"}
-					]
-				},
-				{
-					"TITLE": "Dua for healthy body",
-					"TEXT": [
-						{"TRANSLATED_TEXT": "Oh Allah! Grant me well-being in my body. Oh Allah! Grant me well-being in my hearing. Oh Allah! Grant me well-being in my sight. There is no true God but You.", "REFERENCE": "Abu Dawud"}
-					]
-				},
-				{
-					"TITLE": "Dua for the sick",
-					"TEXT": [
-						{
-							"ARABIC_TEXT": "‏اللهم رب الناس، أذهب البأس، واشف، أنت الشافي لا شفاء إلا شفاؤك، شفاء لا يغادر سقما",
-							"TRANSLITERATION": "Allahumma Rabban-nasi, adhhibil-ba’sa, washfi, antash-Shafi, la shifa’a illa shifa’uka, shifaan la yughadiru saqaman.",
-							"TRANSLATED_TEXT": "O Allah! The Rubb of mankind! Remove this disease and cure me! You are the Great Curer. There is no cure but through You, which leaves behind no disease.",
-							"REFERENCE": "Bukhari and Muslim"
-						}
-					]
-				},
-				{
-					"TITLE": "Dua for guidance and protection before leaving the home",
-					"TEXT": [
-						{"TRANSLATED_TEXT": "In the Name of Allah, I place my trust in Allah. There is no might nor power except with Allah.", "REFERENCE": "Abu Dawud, al-Tirmidhi, and al-Nasa’i"}
-					]
-				},
-				{
-					"TITLE": "Dua to avoid sudden afflictions",
-					"TEXT": [
-						{"TRANSLATED_TEXT": "In the Name of Allah, with Whose Name nothing is harmed on earth nor in heaven, and He is the All-Hearing, the All-Knowing. [Repeat three times]", "REFERENCE": "Abu Dawud and al-Tirmidhi"}
-					]
-				},
-				{
-					"TITLE": "Dua for preservation",
-					"TEXT": [
-						{
-							"ARABIC_TEXT": "ربنا لا تزغ قلوبنا بعد إذ هديتنا وهب لنا من لدنك رحمة إنك أنت الوهاب",
-							"TRANSLITERATION": "Rabbana La tuzigh Qulubana ba`da idh hadaytana wa hab lana min ladunka rahmatan innaka anta al-Wahhab.",
-							"TRANSLATED_TEXT": "Our Lord! Do not let our hearts deviate after you have guided us. Grant us Your mercy. You are indeed the Giver of all bounties.",
-							"REFERENCE": "3:8"
-						}
-					]
-				},
-				{
-					"TITLE": "Dua that removes anxiety",
-					"TEXT": [
-						{"TRANSLATED_TEXT": "Allah is enough for me. There is no true god but Him, in Him I put my trust, an He is the Lord of the Great Throne. [Repeat seven times]", "REFERENCE": "Abu Dawud"}
-					]
-				},
-				{
-					"TITLE": "Dua for protection in the evening",
-					"TEXT": [
-						{"TRANSLATED_TEXT": "I seek refuge in the Perfect Words of Allah from the evil of what He has created.⁣", "REFERENCE": "Muslim"}
-					]
-				},
-				{
-					"TITLE": "Dua for forgiveness of all sins",
-					"TEXT": [
-						{
-							"ARABIC_TEXT": "اللهم اغفر لي ذنبي كله دقه وجله أوله وأخره علانيته وسره",
-							"TRANSLITERATION": "Allahumma ighfir li dhanbi kullahu diqqahu wa-jillahu wa-awwalahu wa-akhirahu wa-ʿalaniyatahu wa-sirrahu.",
-							"TRANSLATED_TEXT": "O Allah, forgive all of my sins: the small and great, the first and the last, the public and the private.",
-							"REFERENCE": "Muslim"
-						}
-					]
-				},
-				{
-					"TITLE": "When you see the new moon",
-					"TEXT": [
-						{
-							"ARABIC_TEXT": "اللهم أهله علينا بالأمن والإيمان والسلامة والإسلام، ربي وربك الله",
-							"TRANSLITERATION": "Allahumma ahillahu alayna bil-amni wal-iman was-salaamati wal-islam Rabbi wa rabbuka Allah.",
-							"TRANSLATED_TEXT": "Oh Allah, make it a start full of peace and faith, safety and Islam. My Lord and your Lord is Allah.",
-						}
-					]
-				}
-			]
-		},
-		{
-			"TITLE": "After Salah #2",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "لَا إِلٰهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيْكَ لَهُ ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيْرٌ ، اَللّٰهُمَّ لَا مَانِعَ لِمَا أَعْطَيْتَ ، وَلَا مُعْطِيَ لِمَا مَنَعْتَ ، وَلَا يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ",
-					"TRANSLITERATION": "Lā ilāha illā-llāhu waḥdahū lā sharīka lah, lahu-l-mulku, wa lahu-l-ḥamd, wa Huwa ʿalā kulli shay’in Qadīr, Allāhumma lā māniʿa li-mā aʿaṭayt, wa lā muʿṭiya li-mā manʿat, wa lā yanfaʿu dha-l-jaddi minka-l-jadd.",
-					"TRANSLATED_TEXT": "There is no god but Allah. He is Alone and He has no partner whatsoever. To Him Alone belong all sovereignty and all praise. He is over all things All-Powerful. O Allah, there is none who can withhold what You give, and none can give what You withhold; and the wealth of the wealthy does not avail them against You."
-				}
-			]
-		},
-		{
-			"TITLE": "After Salah #3",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "لَا إِلٰهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيْكَ لَهُ ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيْرٌ ، لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ ، لَا إِلٰهَ إِلَّا اللهُ ، وَلَا نَعْبُدُ إِلَّا إيَّاهُ ، لَهُ النِّعْمَةُ وَلَهُ الْفَضْلُ وَلَهُ الثَّنَاءُ الْحَسَنُ ، لَا إِلٰهَ إِلَّا اللهُ مُخْلِصِيْنَ لَهُ الدِّيْنَ ، وَلَوْ كَرِهَ الْكَافِرُوْنَ",
-					"TRANSLITERATION": "Lā ilāha illā-llāhu waḥdahū lā sharīka lah, lahu-l-mulku, wa lahu-l-ḥamd, wa Huwa ʿalā kulli shay’in Qadīr, lā ḥawla wa lā quwwata illā bi-llāh, lā ilāha illā-llāh, wa lā naʿbudu illā iyyāh, lahu-n-nʿimatu wa lahu-l-faḍl, wa lahu-th-thanā’u-l-ḥasan, lā ilāha illā-llāhu mukhliṣīna lahu-d-dīn, wa law kariha-l-kāfirūn.",
-					"TRANSLATED_TEXT": "There is no god but Allah. He is Alone and He has no partner whatsoever. To Him Alone belong all sovereignty and all praise. He is over all things All-Powerful. There is no power (in averting evil) or strength (in attaining good) except through Allah. There is no god but Allah, and we do not worship any other besides Him. To Him Alone belong grace, bounteousness and noble praise. There is no god but Allah. We sincerely devote our religion for Him, even though the disbelievers may dislike it."
-				}
-			]
-		},
-		{
-			"TITLE": "After Salah #4",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "اَللَّٰهُمَّ أَعِنِّيْ عَلَىٰ ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
-					"TRANSLITERATION": "Allāhumma aʿinnī ʿalā dhikrika wa shukrika wa ḥusni ʿibādatik.",
-					"TRANSLATED_TEXT": "O Allah, help me in remembering You, in being grateful to You, and in worshipping You in an excellent manner.",
-					"REFERENCE": "Mu’ādh b. Jabal (raḍiy Allāhu ‘anhu) reported that the Messenger of Allah ﷺ took him by the hand and he said, “O Mu’ādh, I swear by Allah that I love you. I swear by Allah that I love you. O Mu’ādh, I advise you not to forget supplicating after every prayer by saying: [the above]. (Abū Dāwūd 1522)"
-				}
-			]
-		},
-		{
-			"TITLE": "After Salah #5",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "اَللّٰهُمَّ إِنِّيْ أَعُوْذُ بِكَ مِنَ الْبُخْلِ ، وَأَعُوْذُ بِكَ مِنَ الْجُبْنِ ، وَأَعُوْذُ بِكَ مِنْ أَنْ أُرَدَّ إِلََىٰ أَرْذَلِ الْعُمُرِ ، وَأَعُوْذُ بِكَ مِنْ فِتْنَةِ الدُّنْيَا ، وأَعُوْذُ بِكَ مِنْ عَذَابِ الْقَبْرِ",
-					"TRANSLITERATION": "Allāhumma innī aʿūdhu bika mina-l-bukhl, wa aʿūdhu bika mina-l-jubn, wa aʿūdhu bika min an uradda ilā ardhali-l-ʿumur, wa aʿūdhu bika min fitnati-d-dunyā, wa aʿūdhu bika min ʿadhābi-l-qabr.",
-					"TRANSLATED_TEXT": "O Allah, I seek Your protection from miserliness and I seek Your protection from cowardice. I seek Your protection from being sent back to a miserable old age. I seek Your protection from the trials of the world and I seek Your protection from the punishment of the grave."
-				}
-			]
-		},
-		{
-			"TITLE": "After Salah #6",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "سُبْحَانَ اللهِ (x33) ، اَلْحَمْدُ للهِ (x33)، اَللهُ أَكْبَرُ (x33)(x1) لَا إِلٰهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيْكَ لَهُ ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيْرٌ",
-					"TRANSLITERATION": "Subḥāna-llāh (x33), alḥamduli-llāh (x33), Allāhu akbar (x33), Lā ilāha illā Allāhu waḥdahū lā sharīka lah, lahu-l-mulku wa lahu-l-ḥamd, wa Huwa ʿalā kulli shay’in Qadīr. (x1)",
-					"TRANSLATED_TEXT": "Allah is free from imperfection. All praise be to Allah. Allah is the Greatest. There is no god but Allah. He is Alone and He has no partner whatsoever. To Him Alone belong all sovereignty and all praise. He is over all things All-Powerful.",
-					"REFERENCE": "Ka’b bin ‘Ujra (raḍiy Allāhu ‘anhu) reported the Messenger of Allah ﷺ as saying: “There are certain utterances, the repeaters of which or the performers of which at the end of every obligatory prayer will never be caused disappointment: ‘Subhānallah’ 33 times, ‘Alhamdulillah’ 33 times and ‘Allahu Akbar’ 34 times after every prayer. (Muslim 596)"
-				}
-			]
-		},
-		{
-			"TITLE": "After Salah #7",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "اَللهُ لَا إِلٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ، لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ، لَهُ مَا فِي السَّمٰوَاتِ وَمَا فِي الْأَرْضِ ، مَنْ ذَا الَّذِيْ يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ، يَعْلَمُ مَا بَيْنَ أَيْدِيْهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيْطُوْنَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ، وَسِعَ كُرْسِيُّهُ السَّمٰوَاتِ وَالْأَرْضَ وَلَا يَئُوْدُهُُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيْمُ",
-					"TRANSLITERATION": "Allāhu lā ilāha illā Huwa-l-Ḥayyu-l-Qayyūm, lā ta’khudhuhū sinatuw-wa lā nawm, lahū mā fi-s-samāwāti wa mā fi-l-arḍ, man dhā’lladhī yashfaʿu ʿindahū illā bi-idhnih, yaʿlamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shay’im-min ʿilmihī illā bi-mā shā’, wasiʿa kursiyyuhu-s-samāwāti wa-l-arḍ, wa lā ya’ūduhū ḥifẓuhumā wa Huwa-l-ʿAlliyu-l-ʿAẓīm.",
-					"TRANSLATED_TEXT": "Allah, there is no god but He, the Ever Living, the One Who sustains and protects all that exists. Neither drowsiness overtakes Him nor sleep. To Him Alone belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except with His permission? He knows what is before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursī extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great. (2:255)",
-					"REFERENCE": "Abū Umāmah (raḍiy Allāhu ‘anhu) narrates that the Messenger of Allah ﷺ said: “Whoever reads [Āyah al-Kursī] after every obligatory prayer, there is nothing that will prevent him from entering Paradise except death.” (Nasā’ī in ‘Amal al-Yawm wa-l-Laylah 100)"
-				}
-			]
-		},
-		{
-			"TITLE": "After Salah #8",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "قُلْ هُوَ اللهُ أَحَدٌ ، اَللهُ الصَّمَدُ ، لَمْ يَلِدْ وَلَمْ يُوْلَدْ ، وَلَمْ يَكُنْ لَّهُ كُفُوًا أَحَدٌقُلْ أَعُوْذُ بِرَبِّ الْفَلَقِ ، مِنْ شَرِّ مَا خَلَقَ ، وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ، وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ، وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَقُلْ أَعُوْذُ بِرَبِّ النَّاسِ ، مَلِكِ النَّاسِ ، إِلٰهِ النَّاسِ ، مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ، اَلَّذِيْ يُوَسْوِسُ فِيْ صُدُوْرِ النَّاسِ ، مِنَ الْجِنَّةِ وَالنَّاسِ",
-					"TRANSLITERATION": "Bismi-llāhi-r-Raḥmāni-r-Raḥīm Qul Huwa-llāhu Aḥad. Allāhu-ṣ-Ṣamad. Lam yalid wa lam yūlad. Wa lam yakul-lahū kufuwan aḥad. Bismi-llāhi-r-Raḥmāni-r-Raḥīm. Qul aʿūdhu bi Rabbi-l-falaq. Min sharri mā khalaq. Wa min sharri ghāsiqin idhā waqab. Wa min sharri-n-naffāthāti fi-l-ʿuqad. Wa min sharri ḥāsidin idhā ḥasad. Bismi-llāhi-r-Raḥmāni-r-Raḥīm Qul aʿūdhu bi rabbi-n-nās. Maliki-n-nās. Ilāh-hin-nās. Min sharri-l-waswāsi-l-khannās. Al-ladhī yuwaswisu fī ṣudūri-n-nās. Mina-l-jinnati wa-n-nās.",
-					"TRANSLATED_TEXT": "Say, He is Allah, the One, the Self-Sufficient Master, Who has not given birth and was not born, and to Whom no one is equal. (112)\nSay, I seek protection of the Lord of the daybreak, from the evil of what He has created, and from the evil of the darkening night when it settles, and from the evil of the blowers in knots, and from the evil of the envier when he envies. (113)\nSay, I seek protection of the Lord of mankind, the King of mankind, the God of mankind, from the evil of the whisperer who withdraws, who whispers in the hearts of mankind, whether they be Jinn or people. (114)",
-					"REFERENCE": "‘Uqbah bin ‘Āmir (raḍiy Allāhu ‘anhu) said: “The Messenger of Allah ﷺ commanded me to recite ‘al-Mu’awwidhāt’ at the end of every prayer.” (Abū Dāwūd 1523)"
-				}
-			]
-		},
-		{
-			"TITLE": "After Salah #9",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "سُبْحَانَكَ وَبِحَمْدِكَ ، لَا إِلٰه إِلَّا أَنْتَ ، أَسْتَغْفِرُكَ وَأَتُوْبُ إِلَيْكَ",
-					"TRANSLITERATION": "Subḥānaka wa bi ḥamdik, lā ilāha illā Ant, astaghfiruka wa atūbu ilayk.",
-					"TRANSLATED_TEXT": "You are free from imperfection, and all praise is to You. There is no god but You. I seek Your forgiveness and turn to You in repentance."
-				}
-			]
-		},
-		{
-			"TITLE": "To be Read after Fajr & Maghrib #1",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "(10X) لَا إِلٰهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيْكَ لَهُ ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِيْ وَيُمِيْتُ ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيْرٌ",
-					"TRANSLITERATION": "Lā ilāha illā-llāhu waḥdahū lā sharīka lah, lahu-l-mulku wa lahu-l-ḥamdu yuḥyī wa yumīt, wa Huwa ʿalā kulli shay’in Qadīr",
-					"TRANSLATED_TEXT": "There is no god but Allah. He is Alone and He has no partner whatsoever. To Him Alone belong all sovereignty and all praise. He gives life and He gives death. He is over all things All-Powerful."
-				}
-			]
-		},
-		{
-			"TITLE": "To be Read after Fajr & Maghrib #2",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "اَللّٰهُمَّ أَجِرْنِيْ مِنَ النَّارِ",
-					"TRANSLITERATION": "Allāhumma ajirnī mina-n-nār.",
-					"TRANSLATED_TEXT": "O Allah, protect me from the Hell-fire.",
-					"REFERENCE": "Muslim bin Hārith al-Tamīmī (raḍiy Allāhu ‘anhu) narrates that the Messenger of Allah ﷺ secretly said to him: “When you finish Maghrib, say [the above] seven times. If you say that and then die during that night, it will be a protection for you. And after praying Fajr, say the same. If you die on that day, it will be a protection for you.” (Abū Dāwūd 5079)"
-				}
-			]
-		},
-		{
-			"TITLE": "To be Read after Fajr",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "اَللّٰهُمَّ إِنِّيْ أَسْأَلُكَ عِلْمًا نَافِعًا ، وَرِزْقًا طَيِّبًا ، وَعَمَلًا مُتَقَبَّلًا",
-					"TRANSLITERATION": "Allāhumma innī as’aluka ʿilma-n-nāfiʿā, wa rizqan ṭayyibā, wa ʿamalam-mutaqabbalā.",
-					"TRANSLATED_TEXT": "O Allah, I ask You for beneficial knowledge, wholesome sustenance, and deeds which are accepted.",
-					"REFERENCE": "Umm Salamah (raḍiy Allāhu ‘anhā) narrated that when the Prophet ﷺ performed the Fajr Salah, he would say [the above], while he said the Salam. (Ibn Mājah 925)"
-				}
-			]
-		},
-		{
-			"TITLE": "To be Read after Witr",
-			"TEXT": [
-				{
-					"ARABIC_TEXT": "(3X) سُبْحَانَ الْمَلِكِ الْقُدُّوْسِ",
-					"TRANSLITERATION": "Subḥāna-l-Maliki-l-Quddūs.",
-					"TRANSLATED_TEXT": "How perfect is the Sovereign, the Most Holy.",
-					"REFERENCE": "Ubayy bin Ka’b (raḍiy Allāhu ‘anhu) narrated that the Messenger of Allah ﷺ used to pray the Witr with three rak’ahs. In the first he would recite: [Surah al-A’la] in the second: [Surah al-Kafirun], and in the third: [Surah al-Ikhlas]. And he would say the Qunut before bowing, and when he finished he would say [the above], and would raise and extend his voice the third time. (Nasā’ī 1699)"
-				}
-			]
-		}
-	]
+﻿{
+  "English": [
+    {
+      "TITLE": "5 Duas of Prophet Muhammad ï·º",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø¥ÙÙ†ÙÙ‘ÙŠ Ø£ÙŽØ³Ù’Ø£ÙŽÙ„ÙÙƒÙŽ Ø§Ù„Ù’Ù‡ÙØ¯ÙŽÙ‰ ÙˆÙŽØ§Ù„ØªÙÙ‘Ù‚ÙŽÙ‰ ÙˆÙŽØ§Ù„Ù’Ø¹ÙŽÙÙŽØ§ÙÙŽ ÙˆÙŽØ§Ù„Ù’ØºÙÙ†ÙŽÙ‰",
+          "TRANSLITERATION": "Allahumma inni as'aluka-l-huda wa-t-tuqa wa-l-'afafa wa-l-ghina.",
+          "TRANSLATED_TEXT": "O Allah, I ask You for guidance, piety, chastity, and self-sufficiency.",
+          "REFERENCE": "Muslim 2721"
+        },
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø¥ÙÙ†ÙÙ‘ÙŠ Ø£ÙŽØ¹ÙÙˆØ°Ù Ø¨ÙÙƒÙŽ Ù…ÙÙ†ÙŽ Ø§Ù„Ù’Ù‡ÙŽÙ…ÙÙ‘ ÙˆÙŽØ§Ù„Ù’Ø­ÙŽØ²ÙŽÙ†Ù ÙˆÙŽØ§Ù„Ù’Ø¹ÙŽØ¬Ù’Ø²Ù ÙˆÙŽØ§Ù„Ù’ÙƒÙŽØ³ÙŽÙ„Ù",
+          "TRANSLITERATION": "Allahumma inni a'udhu bika mina-l-hammi wa-l-hazan wa-l-'ajzi wa-l-kasal.",
+          "TRANSLATED_TEXT": "O Allah, I seek refuge in You from anxiety, sorrow, incapacity, and laziness.",
+          "REFERENCE": "Bukhari 6369"
+        },
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø£ÙŽØ¹ÙÙ†ÙÙ‘ÙŠ Ø¹ÙŽÙ„ÙŽÙ‰ Ø°ÙÙƒÙ’Ø±ÙÙƒÙŽ ÙˆÙŽØ´ÙÙƒÙ’Ø±ÙÙƒÙŽ ÙˆÙŽØ­ÙØ³Ù’Ù†Ù Ø¹ÙØ¨ÙŽØ§Ø¯ÙŽØªÙÙƒÙŽ",
+          "TRANSLITERATION": "Allahumma a'inni 'ala dhikrika wa shukrika wa husni 'ibadatik.",
+          "TRANSLATED_TEXT": "O Allah, help me in remembering You, in being grateful to You, and in worshipping You in an excellent manner.",
+          "REFERENCE": "Abu Dawud 1522"
+        },
+        {
+          "ARABIC_TEXT": "Ø±ÙŽØ¨ÙÙ‘ Ø§Ø¬Ù’Ø¹ÙŽÙ„Ù’Ù†ÙÙŠ Ù…ÙÙ‚ÙÙŠÙ…ÙŽ Ø§Ù„ØµÙŽÙ‘Ù„ÙŽØ§Ø©Ù ÙˆÙŽÙ…ÙÙ† Ø°ÙØ±ÙÙ‘ÙŠÙŽÙ‘ØªÙÙŠ Ø±ÙŽØ¨ÙŽÙ‘Ù†ÙŽØ§ ÙˆÙŽØªÙŽÙ‚ÙŽØ¨ÙŽÙ‘Ù„Ù’ Ø¯ÙØ¹ÙŽØ§Ø¡Ù",
+          "TRANSLITERATION": "Rabbi ij'alni muqima-s-salati wa min dhurriyyati rabbana wa taqabbal du'a.",
+          "TRANSLATED_TEXT": "My Lord, make me an establisher of prayer, and [many] from my descendants. Our Lord, and accept my supplication.",
+          "REFERENCE": "Quran 14:40"
+        },
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ ØµÙŽÙ„ÙÙ‘ Ø¹ÙŽÙ„ÙŽÙ‰ Ù…ÙØ­ÙŽÙ…ÙŽÙ‘Ø¯Ù ÙˆÙŽØ¹ÙŽÙ„ÙŽÙ‰ Ø¢Ù„Ù Ù…ÙØ­ÙŽÙ…ÙŽÙ‘Ø¯Ù ÙƒÙŽÙ…ÙŽØ§ ØµÙŽÙ„ÙŽÙ‘ÙŠÙ’ØªÙŽ Ø¹ÙŽÙ„ÙŽÙ‰ Ø¥ÙØ¨Ù’Ø±ÙŽØ§Ù‡ÙÙŠÙ…ÙŽ",
+          "TRANSLITERATION": "Allahumma salli 'ala Muhammadin wa 'ala ali Muhammadin kama sallayta 'ala Ibrahima.",
+          "TRANSLATED_TEXT": "O Allah, send prayers upon Muhammad and upon the family of Muhammad, just as You sent prayers upon Ibrahim.",
+          "REFERENCE": "Bukhari 3370"
+        }
+      ]
+    },
+    {
+      "TITLE": "After Salah #1",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø£ÙŽØ³Ù’ØªÙŽØºÙ’ÙÙØ±Ù Ø§Ù„Ù„Ù‡ÙŽ (x3) Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø£ÙŽÙ†Ù’ØªÙŽ Ø§Ù„Ø³ÙŽÙ‘Ù„ÙŽØ§Ù…Ù ÙˆÙŽÙ…ÙÙ†Ù’ÙƒÙŽ Ø§Ù„Ø³ÙŽÙ‘Ù„ÙŽØ§Ù…Ù ØªÙŽØ¨ÙŽØ§Ø±ÙŽÙƒÙ’ØªÙŽ ÙŠÙŽØ§ Ø°ÙŽØ§ Ø§Ù„Ù’Ø¬ÙŽÙ„ÙŽØ§Ù„Ù ÙˆÙŽØ§Ù„Ù’Ø¥ÙÙƒÙ’Ø±ÙŽØ§Ù…Ù",
+          "TRANSLITERATION": "Astaghfiru-llah (x3). Allahumma Anta-s-Salam, wa minka-s-salam, tabarakta ya Dha-l-Jalali wa-l-Ikram.",
+          "TRANSLATED_TEXT": "I seek the forgiveness of Allah (x3). O Allah, You are The Flawless and The Source of Peace, and from You comes peace. Blessed are You, full of Majesty and Honour.",
+          "REFERENCE": "Muslim 591"
+        }
+      ]
+    },
+    {
+      "TITLE": "After Salah #2",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ù„ÙŽØ§ Ø¥ÙÙ„Ù°Ù‡ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ø§Ù„Ù„Ù‡Ù ÙˆÙŽØ­Ù’Ø¯ÙŽÙ‡Ù Ù„ÙŽØ§ Ø´ÙŽØ±ÙÙŠÙƒÙŽ Ù„ÙŽÙ‡Ù Ù„ÙŽÙ‡Ù Ø§Ù„Ù’Ù…ÙÙ„Ù’ÙƒÙ ÙˆÙŽÙ„ÙŽÙ‡Ù Ø§Ù„Ù’Ø­ÙŽÙ…Ù’Ø¯Ù ÙˆÙŽÙ‡ÙÙˆÙŽ Ø¹ÙŽÙ„ÙŽÙ‰ ÙƒÙÙ„ÙÙ‘ Ø´ÙŽÙŠÙ’Ø¡Ù Ù‚ÙŽØ¯ÙÙŠØ±ÙŒ Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ù„ÙŽØ§ Ù…ÙŽØ§Ù†ÙØ¹ÙŽ Ù„ÙÙ…ÙŽØ§ Ø£ÙŽØ¹Ù’Ø·ÙŽÙŠÙ’ØªÙŽ ÙˆÙŽÙ„ÙŽØ§ Ù…ÙØ¹Ù’Ø·ÙÙŠÙŽ Ù„ÙÙ…ÙŽØ§ Ù…ÙŽÙ†ÙŽØ¹Ù’ØªÙŽ ÙˆÙŽÙ„ÙŽØ§ ÙŠÙŽÙ†Ù’ÙÙŽØ¹Ù Ø°ÙŽØ§ Ø§Ù„Ù’Ø¬ÙŽØ¯ÙÙ‘ Ù…ÙÙ†Ù’ÙƒÙŽ Ø§Ù„Ù’Ø¬ÙŽØ¯ÙÙ‘",
+          "TRANSLITERATION": "La ilaha illa-llahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa Huwa 'ala kulli shay'in Qadir. Allahumma la mani'a lima a'tayta wa la mu'tiya lima mana'ta wa la yanfa'u dhal-jaddi minkal-jadd.",
+          "TRANSLATED_TEXT": "There is no god but Allah. He is Alone and has no partner. To Him belong sovereignty and praise. He is over all things All-Powerful. O Allah, there is none who can withhold what You give, and none who can give what You withhold; and the wealth of the wealthy avails them not against You.",
+          "REFERENCE": "Bukhari 844, Muslim 593"
+        }
+      ]
+    },
+    {
+      "TITLE": "After Salah #3",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ù„ÙŽØ§ Ø¥ÙÙ„Ù°Ù‡ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ø§Ù„Ù„Ù‡Ù ÙˆÙŽØ­Ù’Ø¯ÙŽÙ‡Ù Ù„ÙŽØ§ Ø´ÙŽØ±ÙÙŠÙƒÙŽ Ù„ÙŽÙ‡Ù Ù„ÙŽÙ‡Ù Ø§Ù„Ù’Ù…ÙÙ„Ù’ÙƒÙ ÙˆÙŽÙ„ÙŽÙ‡Ù Ø§Ù„Ù’Ø­ÙŽÙ…Ù’Ø¯Ù ÙˆÙŽÙ‡ÙÙˆÙŽ Ø¹ÙŽÙ„ÙŽÙ‰ ÙƒÙÙ„ÙÙ‘ Ø´ÙŽÙŠÙ’Ø¡Ù Ù‚ÙŽØ¯ÙÙŠØ±ÙŒ Ù„ÙŽØ§ Ø­ÙŽÙˆÙ’Ù„ÙŽ ÙˆÙŽÙ„ÙŽØ§ Ù‚ÙÙˆÙŽÙ‘Ø©ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ø¨ÙØ§Ù„Ù„Ù‡Ù",
+          "TRANSLITERATION": "La ilaha illa-llahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa Huwa 'ala kulli shay'in Qadir. La hawla wa la quwwata illa bi-llah.",
+          "TRANSLATED_TEXT": "There is no god but Allah. He is Alone and has no partner. To Him belong sovereignty and praise. He is over all things All-Powerful. There is no power or strength except through Allah.",
+          "REFERENCE": "Muslim 597"
+        }
+      ]
+    },
+    {
+      "TITLE": "After Salah #4 â€” Tasbih",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø³ÙØ¨Ù’Ø­ÙŽØ§Ù†ÙŽ Ø§Ù„Ù„Ù‡Ù (Ã—33) Ø§Ù„Ù’Ø­ÙŽÙ…Ù’Ø¯Ù Ù„ÙÙ„Ù‡Ù (Ã—33) Ø§Ù„Ù„Ù‡Ù Ø£ÙŽÙƒÙ’Ø¨ÙŽØ±Ù (Ã—33) Ù„ÙŽØ§ Ø¥ÙÙ„Ù°Ù‡ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ø§Ù„Ù„Ù‡Ù ÙˆÙŽØ­Ù’Ø¯ÙŽÙ‡Ù Ù„ÙŽØ§ Ø´ÙŽØ±ÙÙŠÙƒÙŽ Ù„ÙŽÙ‡Ù Ù„ÙŽÙ‡Ù Ø§Ù„Ù’Ù…ÙÙ„Ù’ÙƒÙ ÙˆÙŽÙ„ÙŽÙ‡Ù Ø§Ù„Ù’Ø­ÙŽÙ…Ù’Ø¯Ù ÙˆÙŽÙ‡ÙÙˆÙŽ Ø¹ÙŽÙ„ÙŽÙ‰ ÙƒÙÙ„ÙÙ‘ Ø´ÙŽÙŠÙ’Ø¡Ù Ù‚ÙŽØ¯ÙÙŠØ±ÙŒ",
+          "TRANSLITERATION": "Subhana-llah (x33), Alhamdu-llilah (x33), Allahu Akbar (x33). La ilaha illa-llahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa Huwa 'ala kulli shay'in Qadir.",
+          "TRANSLATED_TEXT": "Glory be to Allah (x33). All praise is due to Allah (x33). Allah is the Greatest (x33). There is no god but Allah. He is alone, with no partner. To Him belong all sovereignty and all praise. He is over all things All-Powerful.",
+          "REFERENCE": "Muslim 596"
+        }
+      ]
+    },
+    {
+      "TITLE": "After Salah #5 â€” Ayatul Kursi",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„Ù‡Ù Ù„ÙŽØ§ Ø¥ÙÙ„Ù°Ù‡ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ù‡ÙÙˆÙŽ Ø§Ù„Ù’Ø­ÙŽÙŠÙÙ‘ Ø§Ù„Ù’Ù‚ÙŽÙŠÙÙ‘ÙˆÙ…Ù Ù„ÙŽØ§ ØªÙŽØ£Ù’Ø®ÙØ°ÙÙ‡Ù Ø³ÙÙ†ÙŽØ©ÙŒ ÙˆÙŽÙ„ÙŽØ§ Ù†ÙŽÙˆÙ’Ù…ÙŒ Ù„ÙŽÙ‡Ù Ù…ÙŽØ§ ÙÙÙŠ Ø§Ù„Ø³ÙŽÙ‘Ù…ÙŽØ§ÙˆÙŽØ§ØªÙ ÙˆÙŽÙ…ÙŽØ§ ÙÙÙŠ Ø§Ù„Ù’Ø£ÙŽØ±Ù’Ø¶Ù",
+          "TRANSLITERATION": "Allahu la ilaha illa Huwal-Hayyul-Qayyum. La ta'khudhuhu sinatun wa la nawm. Lahu ma fi-s-samawati wa ma fi-l-ard.",
+          "TRANSLATED_TEXT": "Allah â€” there is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth.",
+          "REFERENCE": "NasÄ'Ä« in 'Amal al-Yawm 100 â€” recite after each obligatory prayer"
+        }
+      ]
+    },
+    {
+      "TITLE": "After Salah #6 â€” Al-Mu'awwidhatayn",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ù‚ÙÙ„Ù’ Ù‡ÙÙˆÙŽ Ø§Ù„Ù„Ù‡Ù Ø£ÙŽØ­ÙŽØ¯ÙŒ (Surah Al-Ikhlas) â€¢ Ù‚ÙÙ„Ù’ Ø£ÙŽØ¹ÙÙˆØ°Ù Ø¨ÙØ±ÙŽØ¨ÙÙ‘ Ø§Ù„Ù’ÙÙŽÙ„ÙŽÙ‚Ù (Surah Al-Falaq) â€¢ Ù‚ÙÙ„Ù’ Ø£ÙŽØ¹ÙÙˆØ°Ù Ø¨ÙØ±ÙŽØ¨ÙÙ‘ Ø§Ù„Ù†ÙŽÙ‘Ø§Ø³Ù (Surah An-Nas)",
+          "TRANSLITERATION": "Qul Huwa-llahu Ahad... Qul a'udhu bi Rabbi-l-falaq... Qul a'udhu bi rabbi-n-nas...",
+          "TRANSLATED_TEXT": "Recite Surah Al-Ikhlas, Surah Al-Falaq, and Surah An-Nas after each obligatory prayer.",
+          "REFERENCE": "Abu Dawud 1523 â€” 'Uqbah bin 'Amir reported the Prophet ï·º commanded reciting al-Mu'awwidhatayn after every prayer."
+        }
+      ]
+    },
+    {
+      "TITLE": "Morning Adhkar #1",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø£ÙŽØµÙ’Ø¨ÙŽØ­Ù’Ù†ÙŽØ§ ÙˆÙŽØ£ÙŽØµÙ’Ø¨ÙŽØ­ÙŽ Ø§Ù„Ù’Ù…ÙÙ„Ù’ÙƒÙ Ù„ÙÙ„Ù‡Ù ÙˆÙŽØ§Ù„Ù’Ø­ÙŽÙ…Ù’Ø¯Ù Ù„ÙÙ„Ù‡Ù Ù„ÙŽØ§ Ø¥ÙÙ„Ù°Ù‡ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ø§Ù„Ù„Ù‡Ù ÙˆÙŽØ­Ù’Ø¯ÙŽÙ‡Ù Ù„ÙŽØ§ Ø´ÙŽØ±ÙÙŠÙƒÙŽ Ù„ÙŽÙ‡Ù",
+          "TRANSLITERATION": "Asbahna wa asbahal-mulku lillah, walhamdu lillah, la ilaha illa-llahu wahdahu la sharika lah.",
+          "TRANSLATED_TEXT": "We have entered the morning and the entire sovereignty belongs to Allah. All praise is for Allah. There is none worthy of worship except Allah, Alone, without partner.",
+          "REFERENCE": "Abu Dawud 5076"
+        }
+      ]
+    },
+    {
+      "TITLE": "Morning Adhkar #2 â€” Sayyid al-Istighfar",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø£ÙŽÙ†Ù’ØªÙŽ Ø±ÙŽØ¨ÙÙ‘ÙŠ Ù„ÙŽØ§ Ø¥ÙÙ„Ù°Ù‡ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ø£ÙŽÙ†Ù’ØªÙŽ Ø®ÙŽÙ„ÙŽÙ‚Ù’ØªÙŽÙ†ÙÙŠ ÙˆÙŽØ£ÙŽÙ†ÙŽØ§ Ø¹ÙŽØ¨Ù’Ø¯ÙÙƒÙŽ ÙˆÙŽØ£ÙŽÙ†ÙŽØ§ Ø¹ÙŽÙ„ÙŽÙ‰ Ø¹ÙŽÙ‡Ù’Ø¯ÙÙƒÙŽ ÙˆÙŽÙˆÙŽØ¹Ù’Ø¯ÙÙƒÙŽ Ù…ÙŽØ§ Ø§Ø³Ù’ØªÙŽØ·ÙŽØ¹Ù’ØªÙ",
+          "TRANSLITERATION": "Allahumma anta Rabbi la ilaha illa anta, khalaqtani wa ana 'abduka, wa ana 'ala 'ahdika wa wa'dika masta-ta'tu.",
+          "TRANSLATED_TEXT": "O Allah, You are my Lord. There is no deity except You. You created me and I am Your servant. I am upon Your covenant and promise to the best of my ability.",
+          "REFERENCE": "Bukhari 6306 â€” Master of Istighfar; whoever says it in the morning with conviction and dies that day will be of the people of Jannah."
+        }
+      ]
+    },
+    {
+      "TITLE": "Evening Adhkar",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø£ÙŽÙ…Ù’Ø³ÙŽÙŠÙ’Ù†ÙŽØ§ ÙˆÙŽØ£ÙŽÙ…Ù’Ø³ÙŽÙ‰ Ø§Ù„Ù’Ù…ÙÙ„Ù’ÙƒÙ Ù„ÙÙ„Ù‡Ù ÙˆÙŽØ§Ù„Ù’Ø­ÙŽÙ…Ù’Ø¯Ù Ù„ÙÙ„Ù‡Ù Ù„ÙŽØ§ Ø¥ÙÙ„Ù°Ù‡ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ø§Ù„Ù„Ù‡Ù ÙˆÙŽØ­Ù’Ø¯ÙŽÙ‡Ù Ù„ÙŽØ§ Ø´ÙŽØ±ÙÙŠÙƒÙŽ Ù„ÙŽÙ‡Ù Ù„ÙŽÙ‡Ù Ø§Ù„Ù’Ù…ÙÙ„Ù’ÙƒÙ ÙˆÙŽÙ„ÙŽÙ‡Ù Ø§Ù„Ù’Ø­ÙŽÙ…Ù’Ø¯Ù ÙˆÙŽÙ‡ÙÙˆÙŽ Ø¹ÙŽÙ„ÙŽÙ‰ ÙƒÙÙ„ÙÙ‘ Ø´ÙŽÙŠÙ’Ø¡Ù Ù‚ÙŽØ¯ÙÙŠØ±ÙŒ",
+          "TRANSLITERATION": "Amsayna wa amsal-mulku lillah, walhamdu lillah, la ilaha illa-llahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa Huwa 'ala kulli shay'in Qadir.",
+          "TRANSLATED_TEXT": "We have entered the evening and the entire sovereignty belongs to Allah. All praise is for Allah. There is no deity except Allah, Alone with no partner. To Him belongs all dominion and praise, and He is powerful over all things.",
+          "REFERENCE": "Abu Dawud 5077"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua Before Sleeping",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø¨ÙØ§Ø³Ù’Ù…ÙÙƒÙŽ Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø£ÙŽÙ…ÙÙˆØªÙ ÙˆÙŽØ£ÙŽØ­Ù’ÙŠÙŽØ§",
+          "TRANSLITERATION": "Bismika Allahumma amutu wa ahya.",
+          "TRANSLATED_TEXT": "In Your name, O Allah, I die and I live.",
+          "REFERENCE": "Bukhari 6312"
+        },
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ù‚ÙÙ†ÙÙŠ Ø¹ÙŽØ°ÙŽØ§Ø¨ÙŽÙƒÙŽ ÙŠÙŽÙˆÙ’Ù…ÙŽ ØªÙŽØ¨Ù’Ø¹ÙŽØ«Ù Ø¹ÙØ¨ÙŽØ§Ø¯ÙŽÙƒÙŽ",
+          "TRANSLITERATION": "Allahumma qini 'adhabaka yawma tab'athu 'ibadak.",
+          "TRANSLATED_TEXT": "O Allah, protect me from Your punishment on the Day You resurrect Your servants.",
+          "REFERENCE": "Abu Dawud 5045"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua Upon Waking",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù’Ø­ÙŽÙ…Ù’Ø¯Ù Ù„ÙÙ„Ù‡Ù Ø§Ù„ÙŽÙ‘Ø°ÙÙŠ Ø£ÙŽØ­Ù’ÙŠÙŽØ§Ù†ÙŽØ§ Ø¨ÙŽØ¹Ù’Ø¯ÙŽ Ù…ÙŽØ§ Ø£ÙŽÙ…ÙŽØ§ØªÙŽÙ†ÙŽØ§ ÙˆÙŽØ¥ÙÙ„ÙŽÙŠÙ’Ù‡Ù Ø§Ù„Ù†ÙÙ‘Ø´ÙÙˆØ±Ù",
+          "TRANSLITERATION": "Alhamdu lillahi-lladhi ahyana ba'da ma amatana wa ilayhi-n-nushur.",
+          "TRANSLATED_TEXT": "All praise is due to Allah who gave us life after having taken it from us, and unto Him is the resurrection.",
+          "REFERENCE": "Bukhari 6312"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Entry into the Masjid",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø§ÙÙ’ØªÙŽØ­Ù’ Ù„ÙÙŠ Ø£ÙŽØ¨Ù’ÙˆÙŽØ§Ø¨ÙŽ Ø±ÙŽØ­Ù’Ù…ÙŽØªÙÙƒÙŽ",
+          "TRANSLITERATION": "Allahumma-ftah li abwaba rahmatik.",
+          "TRANSLATED_TEXT": "O Allah, open the gates of Your mercy for me.",
+          "REFERENCE": "Muslim 713"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Leaving the Masjid",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø¥ÙÙ†ÙÙ‘ÙŠ Ø£ÙŽØ³Ù’Ø£ÙŽÙ„ÙÙƒÙŽ Ù…ÙÙ†Ù’ ÙÙŽØ¶Ù’Ù„ÙÙƒÙŽ",
+          "TRANSLITERATION": "Allahumma inni as'aluka min fadlik.",
+          "TRANSLATED_TEXT": "O Allah, I ask of You from Your bounty.",
+          "REFERENCE": "Muslim 713"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Leaving Home",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø¨ÙØ³Ù’Ù…Ù Ø§Ù„Ù„Ù‡Ù ØªÙŽÙˆÙŽÙƒÙŽÙ‘Ù„Ù’ØªÙ Ø¹ÙŽÙ„ÙŽÙ‰ Ø§Ù„Ù„Ù‡Ù ÙˆÙŽÙ„ÙŽØ§ Ø­ÙŽÙˆÙ’Ù„ÙŽ ÙˆÙŽÙ„ÙŽØ§ Ù‚ÙÙˆÙŽÙ‘Ø©ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ø¨ÙØ§Ù„Ù„Ù‡Ù",
+          "TRANSLITERATION": "Bismillah, tawakkaltu 'ala-llah, wa la hawla wa la quwwata illa bi-llah.",
+          "TRANSLATED_TEXT": "In the Name of Allah. I place my trust in Allah. There is no power or strength except through Allah.",
+          "REFERENCE": "Abu Dawud 5095, al-Tirmidhi 3426"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for the Sick",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø±ÙŽØ¨ÙŽÙ‘ Ø§Ù„Ù†ÙŽÙ‘Ø§Ø³Ù Ø£ÙŽØ°Ù’Ù‡ÙØ¨Ù Ø§Ù„Ù’Ø¨ÙŽØ£Ù’Ø³ÙŽ ÙˆÙŽØ§Ø´Ù’ÙÙ Ø£ÙŽÙ†Ù’ØªÙŽ Ø§Ù„Ø´ÙŽÙ‘Ø§ÙÙÙŠ Ù„ÙŽØ§ Ø´ÙÙÙŽØ§Ø¡ÙŽ Ø¥ÙÙ„ÙŽÙ‘Ø§ Ø´ÙÙÙŽØ§Ø¤ÙÙƒÙŽ Ø´ÙÙÙŽØ§Ø¡Ù‹ Ù„ÙŽØ§ ÙŠÙØºÙŽØ§Ø¯ÙØ±Ù Ø³ÙŽÙ‚ÙŽÙ…Ù‹Ø§",
+          "TRANSLITERATION": "Allahumma Rabbi-n-nas, adhhib-il-ba's, washfi, anta-sh-Shafi, la shifa'a illa shifa'uka, shifa'an la yughadiru saqama.",
+          "TRANSLATED_TEXT": "O Allah! Lord of mankind! Remove this disease and cure. You are the Great Curer. There is no cure but through You, which leaves behind no disease.",
+          "REFERENCE": "Bukhari 5675, Muslim 2191"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Forgiveness of All Sins",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø§ØºÙ’ÙÙØ±Ù’ Ù„ÙÙŠ Ø°ÙŽÙ†Ù’Ø¨ÙÙŠ ÙƒÙÙ„ÙŽÙ‘Ù‡Ù Ø¯ÙÙ‚ÙŽÙ‘Ù‡Ù ÙˆÙŽØ¬ÙÙ„ÙŽÙ‘Ù‡Ù Ø£ÙŽÙˆÙŽÙ‘Ù„ÙŽÙ‡Ù ÙˆÙŽØ¢Ø®ÙØ±ÙŽÙ‡Ù Ø¹ÙŽÙ„ÙŽØ§Ù†ÙÙŠÙŽØªÙŽÙ‡Ù ÙˆÙŽØ³ÙØ±ÙŽÙ‘Ù‡Ù",
+          "TRANSLITERATION": "Allahumma-ghfir li dhanbi kullahu diqqahu wa jillahu wa awwalahu wa akhirahu wa 'alaniyatahu wa sirrahu.",
+          "TRANSLATED_TEXT": "O Allah, forgive all of my sins: the small and great, the first and the last, the public and the private.",
+          "REFERENCE": "Muslim 483"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Taqwa",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø¢ØªÙ Ù†ÙŽÙÙ’Ø³ÙÙŠ ØªÙŽÙ‚Ù’ÙˆÙŽØ§Ù‡ÙŽØ§ ÙˆÙŽØ²ÙŽÙƒÙÙ‘Ù‡ÙŽØ§ Ø£ÙŽÙ†Ù’ØªÙŽ Ø®ÙŽÙŠÙ’Ø±Ù Ù…ÙŽÙ†Ù’ Ø²ÙŽÙƒÙŽÙ‘Ø§Ù‡ÙŽØ§ Ø£ÙŽÙ†Ù’ØªÙŽ ÙˆÙŽÙ„ÙÙŠÙÙ‘Ù‡ÙŽØ§ ÙˆÙŽÙ…ÙŽÙˆÙ’Ù„ÙŽØ§Ù‡ÙŽØ§",
+          "TRANSLITERATION": "Allahumma ati nafsi taqwaha wa zakkiha anta khayru man zakkaha anta waliyyuha wa mawlaha.",
+          "TRANSLATED_TEXT": "O Allah, give my soul its taqwa (God-consciousness), and purify it, for You are the best to purify it. You are its Protector and its Guardian.",
+          "REFERENCE": "Muslim 2722"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Success & Well-being",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø±ÙŽØ¨ÙŽÙ‘Ù†ÙŽØ§ Ø¢ØªÙÙ†ÙŽØ§ ÙÙÙŠ Ø§Ù„Ø¯ÙÙ‘Ù†Ù’ÙŠÙŽØ§ Ø­ÙŽØ³ÙŽÙ†ÙŽØ©Ù‹ ÙˆÙŽÙÙÙŠ Ø§Ù„Ù’Ø¢Ø®ÙØ±ÙŽØ©Ù Ø­ÙŽØ³ÙŽÙ†ÙŽØ©Ù‹ ÙˆÙŽÙ‚ÙÙ†ÙŽØ§ Ø¹ÙŽØ°ÙŽØ§Ø¨ÙŽ Ø§Ù„Ù†ÙŽÙ‘Ø§Ø±Ù",
+          "TRANSLITERATION": "Rabbana atina fi-d-dunya hasanatan wa fi-l-akhirati hasanatan wa qina 'adhaba-n-nar.",
+          "TRANSLATED_TEXT": "Our Lord! Grant us the good of this world and the Hereafter, and protect us from the torment of the Fire.",
+          "REFERENCE": "Quran 2:201"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Blessed Family",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø±ÙŽØ¨ÙŽÙ‘Ù†ÙŽØ§ Ù‡ÙŽØ¨Ù’ Ù„ÙŽÙ†ÙŽØ§ Ù…ÙÙ†Ù’ Ø£ÙŽØ²Ù’ÙˆÙŽØ§Ø¬ÙÙ†ÙŽØ§ ÙˆÙŽØ°ÙØ±ÙÙ‘ÙŠÙŽÙ‘Ø§ØªÙÙ†ÙŽØ§ Ù‚ÙØ±ÙŽÙ‘Ø©ÙŽ Ø£ÙŽØ¹Ù’ÙŠÙÙ†Ù ÙˆÙŽØ§Ø¬Ù’Ø¹ÙŽÙ„Ù’Ù†ÙŽØ§ Ù„ÙÙ„Ù’Ù…ÙØªÙŽÙ‘Ù‚ÙÙŠÙ†ÙŽ Ø¥ÙÙ…ÙŽØ§Ù…Ù‹Ø§",
+          "TRANSLITERATION": "Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yunin waj-'alna lil-muttaqina imama.",
+          "TRANSLATED_TEXT": "Our Lord! Grant us spouses and offspring who will be the comfort of our eyes, and give us the grace to lead the righteous.",
+          "REFERENCE": "Quran 25:74"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Preservation of Faith",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø±ÙŽØ¨ÙŽÙ‘Ù†ÙŽØ§ Ù„ÙŽØ§ ØªÙØ²ÙØºÙ’ Ù‚ÙÙ„ÙÙˆØ¨ÙŽÙ†ÙŽØ§ Ø¨ÙŽØ¹Ù’Ø¯ÙŽ Ø¥ÙØ°Ù’ Ù‡ÙŽØ¯ÙŽÙŠÙ’ØªÙŽÙ†ÙŽØ§ ÙˆÙŽÙ‡ÙŽØ¨Ù’ Ù„ÙŽÙ†ÙŽØ§ Ù…ÙÙ†Ù’ Ù„ÙŽØ¯ÙÙ†Ù’ÙƒÙŽ Ø±ÙŽØ­Ù’Ù…ÙŽØ©Ù‹ Ø¥ÙÙ†ÙŽÙ‘ÙƒÙŽ Ø£ÙŽÙ†Ù’ØªÙŽ Ø§Ù„Ù’ÙˆÙŽÙ‡ÙŽÙ‘Ø§Ø¨Ù",
+          "TRANSLITERATION": "Rabbana la tuzigh qulubana ba'da idh hadaytana wa hab lana min ladunka rahmatan innaka anta-l-Wahhab.",
+          "TRANSLATED_TEXT": "Our Lord! Do not let our hearts deviate after You have guided us. Grant us Your mercy. You are indeed the Giver of all bounties.",
+          "REFERENCE": "Quran 3:8"
+        }
+      ]
+    },
+    {
+      "TITLE": "To be Read after Fajr",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø¥ÙÙ†ÙÙ‘ÙŠ Ø£ÙŽØ³Ù’Ø£ÙŽÙ„ÙÙƒÙŽ Ø¹ÙÙ„Ù’Ù…Ù‹Ø§ Ù†ÙŽØ§ÙÙØ¹Ù‹Ø§ ÙˆÙŽØ±ÙØ²Ù’Ù‚Ù‹Ø§ Ø·ÙŽÙŠÙÙ‘Ø¨Ù‹Ø§ ÙˆÙŽØ¹ÙŽÙ…ÙŽÙ„Ù‹Ø§ Ù…ÙØªÙŽÙ‚ÙŽØ¨ÙŽÙ‘Ù„Ù‹Ø§",
+          "TRANSLITERATION": "Allahumma inni as'aluka 'ilman nafi'an wa rizqan tayyiban wa 'amalan mutaqabbala.",
+          "TRANSLATED_TEXT": "O Allah, I ask You for beneficial knowledge, wholesome sustenance, and deeds which are accepted.",
+          "REFERENCE": "Ibn Majah 925"
+        }
+      ]
+    },
+    {
+      "TITLE": "To be Read after Maghrib",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø£ÙŽØ¬ÙØ±Ù’Ù†ÙÙŠ Ù…ÙÙ†ÙŽ Ø§Ù„Ù†ÙŽÙ‘Ø§Ø±Ù",
+          "TRANSLITERATION": "Allahumma ajirnÄ« mina-n-nar.",
+          "TRANSLATED_TEXT": "O Allah, protect me from the Hell-fire. (Recite 7 times after Maghrib and Fajr)",
+          "REFERENCE": "Abu Dawud 5079"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Knowledge & Guidance",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø±ÙŽØ¨ÙÙ‘ Ø²ÙØ¯Ù’Ù†ÙÙŠ Ø¹ÙÙ„Ù’Ù…Ù‹Ø§",
+          "TRANSLITERATION": "Rabbi zidni 'ilma.",
+          "TRANSLATED_TEXT": "My Lord, increase me in knowledge.",
+          "REFERENCE": "Quran 20:114"
+        },
+        {
+          "ARABIC_TEXT": "Ø§Ù„Ù„ÙŽÙ‘Ù‡ÙÙ…ÙŽÙ‘ Ø¥ÙÙ†ÙÙ‘ÙŠ Ø£ÙŽØ³Ù’Ø£ÙŽÙ„ÙÙƒÙŽ Ø¹ÙÙ„Ù’Ù…Ù‹Ø§ Ù†ÙŽØ§ÙÙØ¹Ù‹Ø§ ÙˆÙŽØ£ÙŽØ¹ÙÙˆØ°Ù Ø¨ÙÙƒÙŽ Ù…ÙÙ†Ù’ Ø¹ÙÙ„Ù’Ù…Ù Ù„ÙŽØ§ ÙŠÙŽÙ†Ù’ÙÙŽØ¹Ù",
+          "TRANSLITERATION": "Allahumma inni as'aluka 'ilman nafi'an wa a'udhu bika min 'ilmin la yanfa'.",
+          "TRANSLATED_TEXT": "O Allah, I ask You for beneficial knowledge and I seek refuge in You from knowledge that does not benefit.",
+          "REFERENCE": "Muslim 2722"
+        }
+      ]
+    },
+    {
+      "TITLE": "Dua for Protection â€” Morning & Evening",
+      "TEXT": [
+        {
+          "ARABIC_TEXT": "Ø¨ÙØ³Ù’Ù…Ù Ø§Ù„Ù„Ù‡Ù Ø§Ù„ÙŽÙ‘Ø°ÙÙŠ Ù„ÙŽØ§ ÙŠÙŽØ¶ÙØ±ÙÙ‘ Ù…ÙŽØ¹ÙŽ Ø§Ø³Ù’Ù…ÙÙ‡Ù Ø´ÙŽÙŠÙ’Ø¡ÙŒ ÙÙÙŠ Ø§Ù„Ù’Ø£ÙŽØ±Ù’Ø¶Ù ÙˆÙŽÙ„ÙŽØ§ ÙÙÙŠ Ø§Ù„Ø³ÙŽÙ‘Ù…ÙŽØ§Ø¡Ù ÙˆÙŽÙ‡ÙÙˆÙŽ Ø§Ù„Ø³ÙŽÙ‘Ù…ÙÙŠØ¹Ù Ø§Ù„Ù’Ø¹ÙŽÙ„ÙÙŠÙ…Ù",
+          "TRANSLITERATION": "Bismillahi-lladhi la yadurru ma'asmihi shay'un fi-l-ardi wa la fi-s-sama'i wa Huwa-s-Sami'ul-'Alim.",
+          "TRANSLATED_TEXT": "In the Name of Allah, with Whose Name nothing is harmed on earth nor in heaven, and He is the All-Hearing, the All-Knowing. (Recite 3 times)",
+          "REFERENCE": "Abu Dawud 5088, al-Tirmidhi 3388"
+        }
+      ]
+    }
+  ]
 }

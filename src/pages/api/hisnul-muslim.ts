@@ -1,30 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import path from 'path';
+import fs from 'fs';
 
-const prisma = new PrismaClient();
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const chapters = await prisma.awradChapter.findMany({
-      include: {
-        book: true,
-      },
-      where: {
-        book: {
-          title: 'Hisnul Muslim',
-        },
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    // Format for dashboard UI
-    const formatted = chapters.map(ch => ({
-      TITLE: ch.title,
-      TEXT: ch.text ? JSON.parse(ch.text) : [],
-    }));
-    res.status(200).json(formatted);
+    const filePath = path.join(process.cwd(), 'src', 'data', 'hisnul_muslim.json');
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    const data = JSON.parse(raw);
+    const chapters = data.English ?? [];
+    res.status(200).json(chapters);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch Hisnul Muslim dataset.' });
+    console.error('Hisnul Muslim read error:', error);
+    res.status(500).json({ error: 'Failed to fetch Hisnul Muslim data.' });
   }
 }
