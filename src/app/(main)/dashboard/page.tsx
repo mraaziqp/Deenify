@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from 'react';
+import hisnulMuslimData from '@/data/hisnul_muslim.json';
+const HISNUL_CHAPTERS = (hisnulMuslimData as { English: { TITLE: string; TEXT: { ARABIC_TEXT?: string; TRANSLITERATION?: string; TRANSLATED_TEXT?: string; REFERENCE?: string }[] }[] }).English;
 import {
   Card,
   CardContent,
@@ -100,7 +102,7 @@ export default function DashboardPage() {
   });
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [dailyFact, setDailyFact] = useState('');
-  const [hisnulMuslim, setHisnulMuslim] = useState<any[]>([]);
+
 
   // Helper: feature unlock logic (placeholder, always true)
   const isFeatureUnlocked = (_milestone: string) => true;
@@ -108,19 +110,6 @@ export default function DashboardPage() {
   const progressPercentage = stats.totalCourses
     ? Math.round((stats.coursesCompleted / stats.totalCourses) * 100)
     : 0;
-
-  useEffect(() => {
-    async function fetchHisnulMuslim() {
-      // Fetch from API or direct DB call (example placeholder)
-      // Replace with actual API endpoint or Prisma call
-      const res = await fetch('/api/hisnul-muslim');
-      if (res.ok) {
-        const data = await res.json();
-        setHisnulMuslim(data);
-      }
-    }
-    fetchHisnulMuslim();
-  }, []);
 
   return (
     <div className="container mx-auto px-2 py-3 sm:px-4 md:px-8 max-w-5xl">
@@ -430,7 +419,7 @@ export default function DashboardPage() {
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4 text-primary">Hisnul Muslim Duas</h2>
           <div className="grid gap-6 md:grid-cols-2">
-            {hisnulMuslim.map((chapter, idx) => (
+            {HISNUL_CHAPTERS.map((chapter, idx) => (
               <Card key={idx} className="shadow-md border-primary/20">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold text-primary">
