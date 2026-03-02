@@ -7,15 +7,6 @@ import { useEffect, useState } from 'react';
 import hisnulMuslimData from '@/data/hisnul_muslim.json';
 const HISNUL_CHAPTERS = (hisnulMuslimData as { English: { TITLE: string; TEXT: { ARABIC_TEXT?: string; TRANSLITERATION?: string; TRANSLATED_TEXT?: string; REFERENCE?: string }[] }[] }).English;
 
-// Fix mojibake: Arabic text was stored as UTF-8 bytes decoded as Latin-1
-function fixArabicEncoding(str?: string): string {
-  if (!str) return '';
-  try {
-    return decodeURIComponent(escape(str));
-  } catch {
-    return str;
-  }
-}
 import {
   Card,
   CardContent,
@@ -112,6 +103,9 @@ export default function DashboardPage() {
   });
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [dailyFact, setDailyFact] = useState('');
+
+  useEffect(() => { document.title = 'Dashboard | Deenify'; }, []);
+
 
 
   // Helper: feature unlock logic (placeholder, always true)
@@ -435,13 +429,13 @@ export default function DashboardPage() {
               <Card key={idx} className="shadow-md border-primary/20">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold text-primary">
-                    {fixArabicEncoding(chapter.TITLE)}
+                    {chapter.TITLE}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {chapter.TEXT.map((dua: any, i: number) => (
                     <div key={i} className="mb-4">
-                      <div className="text-xl font-bold text-right mb-2 font-arabic" dir="rtl">{fixArabicEncoding(dua.ARABIC_TEXT)}</div>
+                      <div className="text-xl font-bold text-right mb-2" dir="rtl">{dua.ARABIC_TEXT}</div>
                       <div className="text-sm italic text-muted-foreground mb-2">{dua.TRANSLITERATION}</div>
                       <div className="text-base mb-2">{dua.TRANSLATED_TEXT}</div>
                       <div className="text-xs text-muted-foreground">{dua.REFERENCE}</div>

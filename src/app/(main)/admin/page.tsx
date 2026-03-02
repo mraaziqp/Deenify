@@ -62,6 +62,9 @@ export default function AdminDashboard() {
     if (!isLoading && (!user || !hasRole('admin'))) {
       router.replace('/dashboard');
     }
+    if (!isLoading && user && hasRole('admin')) {
+      document.title = 'Admin Dashboard | Deenify';
+    }
   }, [user, hasRole, isLoading, router]);
 
   // Fetch admin data from real API

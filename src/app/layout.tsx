@@ -3,10 +3,14 @@
 
 import "./globals.css";
 import ClientAuthProvider from '@/components/client-auth-provider';
-
-
 import HeaderWrapper from '@/components/layout/header-wrapper';
 import { ReactNode } from 'react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Deenify',
+  description: 'Your Islamic learning and spiritual growth companion',
+};
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   // LayoutWithHeader is now handled by HeaderWrapper client component
