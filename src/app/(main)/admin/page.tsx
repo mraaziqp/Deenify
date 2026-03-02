@@ -12,6 +12,8 @@ import { LearningAdminManager } from '@/components/admin/learning-admin-manager'
 import { AudioLibraryManager } from '@/components/admin/audio-library-manager';
 import PDFBookList from '@/components/admin/pdf-book-list';
 import PDFBookUploadForm from '@/components/admin/pdf-book-upload-form';
+import { YaseenAudioManager } from '@/components/admin/yaseen-audio-manager';
+import { ContentManager } from '@/components/admin/content-manager';
 import { 
   Users, 
   BookOpen, 
@@ -25,7 +27,7 @@ import {
   Eye,
   Settings
 } from 'lucide-react';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import PDFReader from '@/components/pdf/PDFReader';
 
 interface SystemStats {
@@ -51,15 +53,16 @@ interface RecentActivity {
 
 export default function AdminDashboard() {
   const { user, hasRole, isLoading } = useAuth();
+  const router = useRouter();
   const [stats, setStats] = useState<SystemStats | null>(null);
   const [activities, setActivities] = useState<RecentActivity[]>([]);
 
   // Redirect if not admin (only after loading)
   useEffect(() => {
     if (!isLoading && (!user || !hasRole('admin'))) {
-      redirect('/dashboard');
+      router.replace('/dashboard');
     }
-  }, [user, hasRole, isLoading]);
+  }, [user, hasRole, isLoading, router]);
 
   // Fetch admin data from real API
   useEffect(() => {
@@ -196,6 +199,8 @@ export default function AdminDashboard() {
           <TabsTrigger value="activity">Recent Activity</TabsTrigger>
           <TabsTrigger value="alerts">System Alerts</TabsTrigger>
           <TabsTrigger value="users">User Management</TabsTrigger>
+          <TabsTrigger value="content-manager">📚 Content Manager</TabsTrigger>
+          <TabsTrigger value="yaseen-audio">🎵 Yaaseen Audio</TabsTrigger>
           <TabsTrigger value="quran-media" data-tab="quran-media">Quran Media</TabsTrigger>
           <TabsTrigger value="audio-library">🎙 Audio Library</TabsTrigger>
           <TabsTrigger value="learning">Learning Library</TabsTrigger>
@@ -302,6 +307,16 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Content Manager Tab */}
+        <TabsContent value="content-manager" className="space-y-4">
+          <ContentManager />
+        </TabsContent>
+
+        {/* Yaaseen Audio Tab */}
+        <TabsContent value="yaseen-audio" className="space-y-4">
+          <YaseenAudioManager />
         </TabsContent>
 
         {/* Recent Activity Tab */}

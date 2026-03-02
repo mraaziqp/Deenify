@@ -1,7 +1,3 @@
->(({ className, variant, ...props }, ref) => (
->(({ className, ...props }, ref) => (
->(({ className, ...props }, ref) => (
-
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons"

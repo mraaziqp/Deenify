@@ -30,6 +30,7 @@ import { cn } from '@/lib/utils';
 import { KeyboardShortcutsDialog } from '@/components/keyboard-shortcuts-dialog';
 import DeenifyLogo from '@/components/ui/deenify-logo';
 import { useAuth } from '@/lib/auth-context';
+import { ShieldCheck } from 'lucide-react';
 
 const navLinks: NavLink[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -154,6 +155,18 @@ function HeaderContent() {
               <DropdownMenuItem>
                 <Link href="/profile" className="w-full">Profile</Link>
               </DropdownMenuItem>
+              {/* Admin link – only shown to admins */}
+              {user && user.role === 'admin' && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" className="w-full flex items-center gap-2 font-semibold text-primary">
+                      <ShieldCheck className="h-4 w-4" />
+                      Admin Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -208,6 +221,15 @@ function MobileAccountButton() {
               <Button asChild variant="ghost" className="justify-start w-full text-[#7C6F57]">
                 <Link href="/settings">Settings</Link>
               </Button>
+              {/* Admin link in mobile – only shown to admins */}
+              {user.role === 'admin' && (
+                <Button asChild variant="outline" className="justify-start w-full font-semibold text-primary border-primary">
+                  <Link href="/admin" className="flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4" />
+                    Admin Dashboard
+                  </Link>
+                </Button>
+              )}
               <Button
                 onClick={async () => {
                   await signOut();

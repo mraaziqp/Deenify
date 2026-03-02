@@ -452,10 +452,20 @@ export default function LibraryPage() {
                   <p className="text-sm font-semibold text-primary text-right">
                     {reflection.reference}
                   </p>
-                  <Button variant="outline" className="w-full">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Read Tafsir
-                  </Button>
+                  {(() => {
+                    const match = reflection.reference?.match(/Quran\s+(\d+):(\d+)/i);
+                    const tafsirUrl = match
+                      ? `https://quran.com/${match[1]}/${match[2]}`
+                      : `https://quran.com/`;
+                    return (
+                      <Button variant="outline" className="w-full" asChild>
+                        <a href={tafsirUrl} target="_blank" rel="noopener noreferrer">
+                          <BookOpen className="h-4 w-4 mr-2" />
+                          Read Tafsir
+                        </a>
+                      </Button>
+                    );
+                  })()}
                 </CardContent>
               </Card>
             ))}

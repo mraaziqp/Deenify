@@ -6,6 +6,16 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from 'react';
 import hisnulMuslimData from '@/data/hisnul_muslim.json';
 const HISNUL_CHAPTERS = (hisnulMuslimData as { English: { TITLE: string; TEXT: { ARABIC_TEXT?: string; TRANSLITERATION?: string; TRANSLATED_TEXT?: string; REFERENCE?: string }[] }[] }).English;
+
+// Fix mojibake: Arabic text was stored as UTF-8 bytes decoded as Latin-1
+function fixArabicEncoding(str?: string): string {
+  if (!str) return '';
+  try {
+    return decodeURIComponent(escape(str));
+  } catch {
+    return str;
+  }
+}
 import {
   Card,
   CardContent,
@@ -162,40 +172,6 @@ export default function DashboardPage() {
               >
                 <Award className="inline h-5 w-5 mr-1 align-text-bottom" /> CCE Mag Portal
               </button>
-
-                        {selectedTab === 'ccemag' && (
-                          <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
-                            <CardHeader>
-                              <CardTitle className="flex items-center gap-2">
-                                <Award className="h-5 w-5 text-primary" />
-                                CCE Mag Quality of Life Portal
-                              </CardTitle>
-                              <CardDescription>
-                                Access the CCE Magazine portal for quality of life resources and opportunities.
-                              </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="w-full h-[60vh] rounded-lg overflow-hidden border shadow">
-                                <iframe
-                                  src="https://ccemagazine.web.za/ccemag/"
-                                  title="CCE Mag Portal"
-                                  className="w-full h-full border-0"
-                                  allowFullScreen
-                                />
-                              </div>
-                              <div className="mt-4 text-center">
-                                <a
-                                  href="https://ccemagazine.web.za/ccemag/"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-700 underline hover:text-blue-900"
-                                >
-                                  Open CCE Mag Portal in new tab
-                                </a>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )}
               {hasRole && hasRole('admin') && (
                 <button
                   className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'admin' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
@@ -245,6 +221,42 @@ export default function DashboardPage() {
                 <Button asChild variant="outline" className="w-full">
                   <Link href="https://quran.com/36" target="_blank" rel="noopener">Open on Quran.com</Link>
                 </Button>
+              </CardContent>
+            </Card>
+          )}
+          {selectedTab === 'ccemag' && (
+            <Card className="shadow-md flex flex-col">
+              <CardHeader>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Award className="h-5 w-5 text-primary" />
+                      CCE Mag Quality of Life Portal
+                    </CardTitle>
+                    <CardDescription className="mt-1">
+                      Access the CCE Magazine portal for quality of life resources and opportunities.
+                    </CardDescription>
+                  </div>
+                  <a
+                    href="https://ccemagazine.web.za/ccemag/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-600 underline hover:text-blue-800 whitespace-nowrap mt-1"
+                  >
+                    Open in new tab ↗
+                  </a>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="w-full rounded-b-xl overflow-hidden border-t" style={{ height: '65vh' }}>
+                  <iframe
+                    src="https://ccemagazine.web.za/ccemag/"
+                    title="CCE Mag Quality of Life Portal"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
+                </div>
               </CardContent>
             </Card>
           )}
@@ -423,13 +435,13 @@ export default function DashboardPage() {
               <Card key={idx} className="shadow-md border-primary/20">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold text-primary">
-                    {chapter.TITLE}
+                    {fixArabicEncoding(chapter.TITLE)}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {chapter.TEXT.map((dua: any, i: number) => (
                     <div key={i} className="mb-4">
-                      <div className="text-xl font-bold text-right mb-2">{dua.ARABIC_TEXT}</div>
+                      <div className="text-xl font-bold text-right mb-2 font-arabic" dir="rtl">{fixArabicEncoding(dua.ARABIC_TEXT)}</div>
                       <div className="text-sm italic text-muted-foreground mb-2">{dua.TRANSLITERATION}</div>
                       <div className="text-base mb-2">{dua.TRANSLATED_TEXT}</div>
                       <div className="text-xs text-muted-foreground">{dua.REFERENCE}</div>
