@@ -211,6 +211,7 @@ export default function AdminDashboard() {
           <TabsTrigger value="pdf-books">PDF Book Upload</TabsTrigger>
           <TabsTrigger value="cce-mag-portal">CCE Mag Portal</TabsTrigger>
           <TabsTrigger value="pdf-reader-demo">PDF Reader Demo</TabsTrigger>
+          <TabsTrigger value="media-upload">📁 Media Upload</TabsTrigger>
   </TabsList>
         <TabsContent value="cce-mag-portal" className="space-y-4">
           <Card>
@@ -308,6 +309,29 @@ export default function AdminDashboard() {
               <div className="w-full flex justify-center">
                 <PDFReader pdfUrl="https://arxiv.org/pdf/2203.15556.pdf" bookId="demo" />
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Media Upload Tab */}
+        <TabsContent value="media-upload" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>📁 Media Upload Manager</CardTitle>
+              <CardDescription>
+                Upload PDFs and audio files (Surah Yaaseen, Surah Baqarah, etc.) directly to the public folder.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Use the dedicated media upload page to upload and manage PDFs and audio files with drag-and-drop support.
+              </p>
+              <a
+                href="/admin/media"
+                className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
+              >
+                📁 Open Media Upload Manager →
+              </a>
             </CardContent>
           </Card>
         </TabsContent>

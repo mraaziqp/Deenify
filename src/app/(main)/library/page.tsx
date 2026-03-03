@@ -277,13 +277,20 @@ export default function LibraryPage() {
 
   return (
     <div className="container mx-auto">
-      <div className="flex items-center gap-3 mb-6">
-        <BookOpen className="h-8 w-8 text-primary" />
-        <div>
-          <h1 className="text-3xl font-bold">Content Library</h1>
-          <p className="text-muted-foreground">
-            Explore real classes, daily reflections, and opportunities to teach
-          </p>
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-3xl mb-6" style={{background:'linear-gradient(135deg,#1e1b4b 0%,#3730a3 50%,#1e40af 100%)',minHeight:'150px'}}>
+        <div className="absolute" style={{top:'-20px',right:'-20px',width:'180px',height:'180px',background:'radial-gradient(circle,rgba(251,191,36,0.12) 0%,transparent 70%)',pointerEvents:'none'}} />
+        <div className="absolute" style={{bottom:'-10px',left:'40px',width:'120px',height:'120px',background:'radial-gradient(circle,rgba(165,180,252,0.12) 0%,transparent 70%)',pointerEvents:'none'}} />
+        <div className="absolute select-none" style={{top:'10px',right:'16px',color:'rgba(251,191,36,0.2)',fontSize:'3.5rem',lineHeight:1}}>✦</div>
+        <div className="absolute select-none" style={{bottom:'6px',left:'14px',color:'rgba(251,191,36,0.12)',fontSize:'2rem',lineHeight:1}}>✦</div>
+        <div className="relative z-10 px-8 py-7">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full" style={{background:'rgba(251,191,36,0.2)',color:'#fbbf24',border:'1px solid rgba(251,191,36,0.3)'}}>
+              📚 المكتبة الإسلامية
+            </span>
+          </div>
+          <h1 className="text-white font-bold text-2xl md:text-3xl mb-1">Islamic Content Library</h1>
+          <p className="text-indigo-200 text-sm">Courses, reflections, reading material & dua library</p>
         </div>
       </div>
 

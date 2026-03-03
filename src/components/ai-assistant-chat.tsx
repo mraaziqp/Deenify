@@ -1,64 +1,157 @@
 "use client";
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const API_KEY = 'AIzaSyDRLDH5GUH-vmgdsBLNv0csrjuz8Bzhli8';
-const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + API_KEY;
+const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+
+const SYSTEM_INSTRUCTION = 'You are Deenify AI, an Islamic assistant. Answer questions about Islam based on the Quran, authentic Hadith, and established scholarly consensus. Be respectful, knowledgeable, and helpful. If asked about something not related to Islam, politely redirect to Islamic topics. Always cite authentic sources when possible.';
+
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+}
 
 export function AiAssistantChat() {
-  const [messages, setMessages] = useState([
-    { role: 'system', content: 'You are an Islamic AI Assistant. Answer questions about Islam based on authentic sources.' }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, loading]);
 
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim()) return;
     setLoading(true);
     setError('');
-    const userMsg = { role: 'user', content: input };
-    setMessages((msgs) => [...msgs, userMsg]);
+    const userMsg: Message = { role: 'user', content: input };
+    const updatedMessages = [...messages, userMsg];
+    setMessages(updatedMessages);
     setInput('');
     try {
+      // Build conversation history for Gemini
+      const contents = updatedMessages.map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }],
+      }));
+
       const res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: input }] }],
+          system_instruction: {
+            parts: [{ text: SYSTEM_INSTRUCTION }],
+          },
+          contents,
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 1024,
+          },
         }),
       });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error?.message || `API error ${res.status}`);
+      }
+
       const data = await res.json();
-      const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
+      const aiText =
+        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+        'Sorry, I could not generate a response. Please try again.';
       setMessages((msgs) => [...msgs, { role: 'assistant', content: aiText }]);
-    } catch (err) {
-      setError('Failed to get response. Please try again.');
+    } catch (err: any) {
+      setError(err?.message || 'Failed to get response. Please try again.');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow p-4 flex flex-col gap-4">
-      <div className="flex flex-col gap-2 max-h-96 overflow-y-auto">
-        {messages.filter(m => m.role !== 'system').map((msg, i) => (
-          <div key={i} className={`p-2 rounded ${msg.role === 'user' ? 'bg-blue-50 text-right' : 'bg-green-50 text-left'}`}>
-            <span className="font-semibold">{msg.role === 'user' ? 'You' : 'AI'}:</span> {msg.content}
+    <div className="w-full max-w-3xl mx-auto flex flex-col gap-0 rounded-2xl shadow-xl overflow-hidden border border-primary/20 bg-white">
+      {/* Header */}
+      <div className="relative overflow-hidden px-6 py-5" style={{background:'linear-gradient(135deg,#0a4a36 0%,#065f46 50%,#1e5f74 100%)'}}>
+        <div className="absolute top-1 right-5 select-none" style={{color:'rgba(251,191,36,0.2)',fontSize:'3.5rem',lineHeight:1}}>✦</div>
+        <div className="relative z-10">
+          <h2 className="text-white font-bold text-lg flex items-center gap-2">
+            <span className="text-2xl">🕌</span> Deenify AI Assistant
+          </h2>
+          <p className="text-emerald-200 text-sm mt-0.5">Ask about Islam, Quran, Hadith, Fiqh &amp; more</p>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex flex-col gap-3 h-[420px] overflow-y-auto px-4 py-4 bg-gradient-to-b from-teal-50/40 to-white">
+        {messages.length === 0 && (
+          <div className="text-center text-muted-foreground text-sm pt-8">
+            <div className="text-4xl mb-3">🌙</div>
+            <p className="font-medium text-base">Assalamu Alaykum!</p>
+            <p className="mt-1">Ask me anything about Islam. I&apos;m here to help.</p>
+            <div className="mt-4 grid grid-cols-2 gap-2 max-w-sm mx-auto text-xs">
+              {['What is Zakat?', 'How to perform Wudu?', 'What is Surah Al-Fatiha about?', 'Best dua for anxiety?'].map(q => (
+                <button
+                  key={q}
+                  onClick={() => setInput(q)}
+                  className="border border-teal-200 rounded-lg px-3 py-2 text-teal-700 hover:bg-teal-50 transition-colors text-left"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {messages.map((msg, i) => (
+          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {msg.role === 'assistant' && (
+              <div className="w-7 h-7 rounded-full bg-teal-600 flex items-center justify-center text-white text-xs mr-2 mt-1 flex-shrink-0">AI</div>
+            )}
+            <div
+              className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap shadow-sm ${
+                msg.role === 'user'
+                  ? 'bg-teal-600 text-white rounded-tr-sm'
+                  : 'bg-white border border-teal-100 text-gray-800 rounded-tl-sm'
+              }`}
+            >
+              {msg.content}
+            </div>
           </div>
         ))}
-        {loading && <div className="text-center text-muted-foreground">Thinking...</div>}
-        {error && <div className="text-center text-red-500">{error}</div>}
+        {loading && (
+          <div className="flex justify-start">
+            <div className="w-7 h-7 rounded-full bg-teal-600 flex items-center justify-center text-white text-xs mr-2 mt-1 flex-shrink-0">AI</div>
+            <div className="bg-white border border-teal-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+              <div className="flex gap-1 items-center">
+                <span className="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="text-center text-red-500 text-sm bg-red-50 rounded-lg p-3">{error}</div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
-      <form onSubmit={sendMessage} className="flex gap-2">
+
+      {/* Input */}
+      <form onSubmit={sendMessage} className="flex gap-2 p-4 border-t border-teal-100 bg-white">
         <input
-          className="flex-1 border rounded px-3 py-2"
-          placeholder="Ask a question about Islam..."
+          className="flex-1 border border-teal-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent"
+          placeholder="Ask about Islam..."
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
           disabled={loading}
         />
-        <button type="submit" className="bg-primary text-white px-4 py-2 rounded" disabled={loading || !input.trim()}>
-          Send
+        <button
+          type="submit"
+          className="bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
+          disabled={loading || !input.trim()}
+        >
+          {loading ? '...' : 'Send'}
         </button>
       </form>
     </div>

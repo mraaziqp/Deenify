@@ -1,7 +1,8 @@
 'use client';
 export const dynamic = "force-dynamic";
 
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -173,7 +174,8 @@ const saveReaderSettings = (settings: QuranReaderSettings) => {
   localStorage.setItem(READER_SETTINGS_KEY, JSON.stringify(settings));
 };
 
-export default function QuranPage() {
+function QuranPageInner() {
+  const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTab, setSelectedTab] = useState('surahs');
   const [savedSurahs, setSavedSurahs] = useState<number[]>([]);
@@ -201,11 +203,11 @@ export default function QuranPage() {
   const [readingProgressLoaded, setReadingProgressLoaded] = useState(false);
   const [readerSettingsLoaded, setReaderSettingsLoaded] = useState(false);
 
-  // Get audio URL for a surah (using selected recitation from Islamic.Network CDN)
+  // Get audio URL for a surah (using selected recitation from Islamic.Network CDN - audio-surah endpoint)
   const getAudioUrl = (surahNumber: number): string => {
-    // Pad the number if needed (e.g., 1 -> 001)
-    const paddedNumber = surahNumber.toString().padStart(3, '0');
-    return `https://cdn.islamic.network/quran/audio/128/${selectedReciter.slug}/${paddedNumber}.mp3`;
+    // audio-surah endpoint takes plain surah number (no padding)
+    const primary = `https://cdn.islamic.network/quran/audio-surah/128/${selectedReciter.slug}/${surahNumber}.mp3`;
+    return primary;
   };
 
   // Play/Pause audio handler
@@ -261,6 +263,18 @@ export default function QuranPage() {
       }
     };
   }, []);
+
+  // Handle URL surah parameter (e.g. /quran?surah=36 for Surah Yaaseen)
+  useEffect(() => {
+    const surahParam = searchParams?.get('surah');
+    if (surahParam) {
+      const surahNum = Number(surahParam);
+      if (Number.isFinite(surahNum) && surahNum >= 1 && surahNum <= 114) {
+        setReaderSurah(surahNum);
+        setSelectedTab('reader');
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const progress = loadReadingProgress();
@@ -599,48 +613,42 @@ export default function QuranPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Quran & Recitations</h1>
-        <p className="text-muted-foreground">
-          Read, listen, and learn from the word of Allah
-        </p>
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-3xl" style={{background:'linear-gradient(135deg,#0a4a36 0%,#065f46 45%,#1e5f74 100%)',minHeight:'160px'}}>
+        <div className="absolute" style={{top:'-30px',right:'-30px',width:'200px',height:'200px',background:'radial-gradient(circle,rgba(251,191,36,0.12) 0%,transparent 70%)',pointerEvents:'none'}} />
+        <div className="absolute" style={{bottom:'-20px',left:'60px',width:'150px',height:'150px',background:'radial-gradient(circle,rgba(52,211,153,0.1) 0%,transparent 70%)',pointerEvents:'none'}} />
+        <div className="absolute select-none" style={{top:'12px',right:'18px',color:'rgba(251,191,36,0.25)',fontSize:'3.5rem',lineHeight:1}}>✦</div>
+        <div className="absolute select-none" style={{bottom:'8px',left:'16px',color:'rgba(251,191,36,0.15)',fontSize:'2rem',lineHeight:1}}>✦</div>
+        <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none" style={{fontFamily:"'Scheherazade New',serif",fontSize:'5rem',color:'rgba(255,255,255,0.04)',fontWeight:700}}>القرآن الكريم</div>
+        <div className="relative z-10 px-8 py-7">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full" style={{background:'rgba(251,191,36,0.2)',color:'#fbbf24',border:'1px solid rgba(251,191,36,0.3)'}}>
+              ☪️ كتاب الله
+            </span>
+          </div>
+          <h1 className="text-white font-bold text-2xl md:text-3xl mb-1">القرآن الكريم</h1>
+          <p className="font-semibold text-emerald-200 text-base mb-1">The Noble Quran</p>
+          <p className="text-emerald-300 text-sm">Read, listen and reflect on the words of Allah ﷻ</p>
+        </div>
       </div>
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Chapters</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">114</div>
-            <p className="text-xs text-muted-foreground">Complete Quran</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Verses</CardTitle>
-            <Volume2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">6,236</div>
-            <p className="text-xs text-muted-foreground">Words of guidance</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Saved Chapters</CardTitle>
-            <Bookmark className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{savedSurahs.length}</div>
-            <p className="text-xs text-muted-foreground">Your favorites</p>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl p-5" style={{background:'linear-gradient(135deg,#ecfdf5,#d1fae5)',border:'1px solid rgba(16,185,129,0.2)'}}>
+          <div className="text-2xl mb-1">📖</div>
+          <div className="text-2xl font-bold text-emerald-800">114</div>
+          <div className="text-xs text-emerald-600 font-medium">Chapters (Surahs)</div>
+        </div>
+        <div className="rounded-2xl p-5" style={{background:'linear-gradient(135deg,#fffbeb,#fef3c7)',border:'1px solid rgba(245,158,11,0.2)'}}>
+          <div className="text-2xl mb-1">✨</div>
+          <div className="text-2xl font-bold text-amber-800">6,236</div>
+          <div className="text-xs text-amber-600 font-medium">Verses (Ayaat)</div>
+        </div>
+        <div className="rounded-2xl p-5" style={{background:'linear-gradient(135deg,#eff6ff,#dbeafe)',border:'1px solid rgba(59,130,246,0.2)'}}>
+          <div className="text-2xl mb-1">🔖</div>
+          <div className="text-2xl font-bold text-blue-800">{savedSurahs.length}</div>
+          <div className="text-xs text-blue-600 font-medium">Saved Chapters</div>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -1003,16 +1011,16 @@ export default function QuranPage() {
                   </div>
                 </div>
 
-                <ScrollArea className="h-[520px]">
-                  <div className="space-y-4 p-4">
+                <ScrollArea className="h-[560px]">
+                  <div className="space-y-0 p-2">
                     {readerError && (
-                      <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                      <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 m-2">
                         {readerError}
                       </div>
                     )}
 
                     {!readerError && readerAyahs.length === 0 && !readerLoading && (
-                      <div className="text-sm text-muted-foreground">No verses available.</div>
+                      <div className="text-sm text-muted-foreground p-4">No verses available.</div>
                     )}
 
                     {readerAyahs.map((ayah) => {
@@ -1020,46 +1028,68 @@ export default function QuranPage() {
                       const verseId = `${surahNumber}:${ayah.numberInSurah}`;
                       const isCompleted = Boolean(readingProgress.completedVerses[verseId]);
                       return (
-                        <div key={verseId} className="flex gap-3 border-b pb-4">
-                          <Checkbox
-                            checked={isCompleted}
-                            onCheckedChange={(checked) =>
-                              handleToggleVerse(verseId, ayah.page, checked === true)
-                            }
-                          />
+                        <div
+                          key={verseId}
+                          className={`group flex gap-3 p-4 rounded-xl transition-colors mb-1 ${
+                            isCompleted ? 'bg-teal-50/60 border border-teal-100' : 'hover:bg-muted/30'
+                          }`}
+                        >
+                          <div className="flex flex-col items-center gap-1 pt-1">
+                            <Checkbox
+                              checked={isCompleted}
+                              onCheckedChange={(checked) =>
+                                handleToggleVerse(verseId, ayah.page, checked === true)
+                              }
+                            />
+                            <div className="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-xs font-bold text-teal-700">
+                              {ayah.numberInSurah}
+                            </div>
+                          </div>
                           <div className="flex-1">
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between mb-2">
                               <p className="text-xs text-muted-foreground">
                                 {readerMode === 'page' && ayah.surahName
-                                  ? `${ayah.surahName} ${ayah.numberInSurah}`
-                                  : `Ayah ${ayah.numberInSurah}`} • Page {ayah.page}
+                                  ? `${ayah.surahName} — Āyah ${ayah.numberInSurah}`
+                                  : `Āyah ${ayah.numberInSurah}`}
+                                {' '}• Page {ayah.page}
                               </p>
-                              {isCompleted && <Badge variant="secondary">Completed</Badge>}
+                              {isCompleted && <Badge variant="secondary" className="text-xs gap-1">✓ Read</Badge>}
                             </div>
                             {!translationOnly && (
-                              <p className="text-right text-xl leading-loose">{ayah.text}</p>
+                              <p
+                                className="text-right leading-[2.6] mb-3 text-gray-900 select-text"
+                                dir="rtl"
+                                lang="ar"
+                                style={{
+                                  fontFamily: "'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                  fontSize: '1.6rem',
+                                  lineHeight: '2.6',
+                                }}
+                              >
+                                {ayah.text}
+                              </p>
                             )}
                             {!translationOnly && showTransliteration && ayah.transliterationText && (
-                              <p className="mt-2 text-sm italic text-muted-foreground">
+                              <p className="mt-1 mb-2 text-sm italic text-teal-700 leading-relaxed">
                                 {ayah.transliterationText}
                               </p>
                             )}
                             {showTranslation && ayah.translationText && (
                               <div className={`mt-2 grid gap-3 ${compareTranslations ? 'md:grid-cols-2' : ''}`}>
-                                <div>
-                                  <p className="text-xs font-semibold text-muted-foreground">
+                                <div className="bg-blue-50/50 rounded-lg p-2.5">
+                                  <p className="text-xs font-semibold text-blue-600 mb-1">
                                     {translationLabelById[selectedTranslation] || 'Translation'}
                                   </p>
-                                  <p className="text-sm text-muted-foreground">
+                                  <p className="text-sm text-gray-700 leading-relaxed">
                                     {ayah.translationText}
                                   </p>
                                 </div>
                                 {compareTranslations && ayah.compareTranslationText && (
-                                  <div>
-                                    <p className="text-xs font-semibold text-muted-foreground">
+                                  <div className="bg-purple-50/50 rounded-lg p-2.5">
+                                    <p className="text-xs font-semibold text-purple-600 mb-1">
                                       {translationLabelById[compareTranslation] || 'Translation'}
                                     </p>
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="text-sm text-gray-700 leading-relaxed">
                                       {ayah.compareTranslationText}
                                     </p>
                                   </div>
@@ -1139,5 +1169,12 @@ export default function QuranPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+export default function QuranPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-64 text-primary animate-pulse">Loading Quran...</div>}>
+      <QuranPageInner />
+    </Suspense>
   );
 }

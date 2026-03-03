@@ -118,25 +118,60 @@ export default function DashboardPage() {
   return (
     <div className="container mx-auto px-2 py-3 sm:px-4 md:px-8 max-w-5xl">
       <div className="space-y-4 md:space-y-6">
-        <Card className="shadow-lg border-l-4 border-l-primary bg-gradient-to-r from-primary/5 to-transparent">
-          <CardHeader>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <div>
-                <CardTitle className="text-2xl md:text-3xl font-bold text-primary flex items-center gap-2">
-                  <Sparkles className="h-8 w-8" />
-                  As-salamu alaykum!
-                </CardTitle>
-                <CardDescription className="text-base md:text-lg mt-2">
-                  Your journey of knowledge and spiritual growth continues
-                </CardDescription>
-              </div>
-              <Badge variant="secondary" className="text-sm md:text-base px-3 md:px-4 py-1.5 md:py-2">
-                <Heart className="h-4 w-4 mr-1 fill-red-500 text-red-500" />
-                Level {Math.floor(stats.totalDaysActive / 30) + 1}
-              </Badge>
+        {/* ── Islamic Hero Banner ─────────────────────── */}
+        <div className="relative overflow-hidden rounded-3xl shadow-2xl" style={{background:'linear-gradient(135deg,#0a4a36 0%,#0d6e50 45%,#1e5f74 100%)',minHeight:'9rem'}}>
+          {/* Geometric ornaments */}
+          <div className="absolute -top-6 -right-6 w-36 h-36 rounded-full" style={{background:'radial-gradient(circle,rgba(212,175,55,0.18) 0%,transparent 70%)'}} />
+          <div className="absolute top-1/2 left-1/3 w-48 h-48 rounded-full" style={{background:'radial-gradient(circle,rgba(16,185,129,0.1) 0%,transparent 70%)',transform:'translateY(-50%)'}} />
+          <div className="absolute top-3 right-8 select-none" style={{color:'rgba(251,191,36,0.22)',fontSize:'4rem',lineHeight:1}}>✦</div>
+          <div className="absolute bottom-3 right-32 select-none" style={{color:'rgba(251,191,36,0.1)',fontSize:'2.5rem',lineHeight:1}}>✦</div>
+          <div className="absolute bottom-4 left-6 select-none" style={{color:'rgba(255,255,255,0.06)',fontSize:'5rem',fontFamily:'Scheherazade New,Amiri,serif',lineHeight:1}}>بسم الله</div>
+
+          <div className="relative z-10 px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-emerald-200 text-sm font-medium mb-0.5 flex items-center gap-1.5">
+                <span>☪️</span>
+                <span>Ramadan Mubarak 1447 · {new Date().toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'long'})}</span>
+              </p>
+              <h1 className="text-white font-bold" style={{fontSize:'clamp(1.4rem,3vw,2.1rem)',letterSpacing:'-0.02em',lineHeight:1.15}}>
+                السلام عليكم ورحمة الله
+              </h1>
+              <p className="text-emerald-100 mt-1" style={{fontSize:'0.95rem',opacity:0.85}}>May Allah bless your day with peace, barakah &amp; remembrance.</p>
             </div>
-          </CardHeader>
-        </Card>
+            <div className="flex flex-col items-end gap-2">
+              <div className="flex items-center gap-2 bg-white/10 rounded-2xl px-4 py-2.5 border border-white/15">
+                <span className="text-2xl">🔥</span>
+                <div className="text-right">
+                  <p className="text-white/65 text-xs">Daily Streak</p>
+                  <p className="text-white font-bold text-xl tabular-nums">{stats.currentStreak || 1}</p>
+                </div>
+              </div>
+              <span className="text-yellow-300 text-xs font-medium" style={{fontFamily:'Scheherazade New,Amiri,serif',fontSize:'1.1rem'}}>
+                بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Quick-access feature tiles ───────────────── */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {([
+            { icon:'📖', label:'Quran',       sub:'Read & listen',  href:'/quran',          bg:'#e6f4f0',iconBg:'#059669',color:'#065f46' },
+            { icon:'🤲', label:'Duas',         sub:'Hisnul Muslim',  href:'/hisnul-muslim',  bg:'#fdf6e3',iconBg:'#d97706',color:'#92400e' },
+            { icon:'🕌', label:'Prayer Times', sub:'Cape Town',       href:'#prayer-times',   bg:'#eef2ff',iconBg:'#4f46e5',color:'#312e81' },
+            { icon:'🥗', label:'Halal Food',   sub:'Guide',          href:'/halal-food',     bg:'#f0fdf4',iconBg:'#16a34a',color:'#14532d' },
+            { icon:'🤖', label:'AI Assistant', sub:'Ask anything',   href:'/ai-assistant',   bg:'#faf5ff',iconBg:'#7c3aed',color:'#4c1d95' },
+            { icon:'💰', label:'Zakat',        sub:'Calculator',     href:'/zakat',          bg:'#fff7ed',iconBg:'#ea580c',color:'#7c2d12' },
+            { icon:'📚', label:'Library',      sub:'Books & PDFs',   href:'/library',        bg:'#f0f9ff',iconBg:'#0284c7',color:'#0c4a6e' },
+            { icon:'📿', label:'Dhikr',        sub:'Circle',         href:'/dhikr',          bg:'#fdf2f8',iconBg:'#db2777',color:'#831843' },
+          ] as const).map(t=>(
+            <a key={t.label} href={t.href} className="block rounded-2xl p-3.5 card-hover" style={{background:t.bg,textDecoration:'none'}}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl mb-2" style={{background:t.iconBg}}>{t.icon}</div>
+              <p className="font-semibold text-sm" style={{color:t.color}}>{t.label}</p>
+              <p className="text-xs" style={{color:t.color+'99'}}>{t.sub}</p>
+            </a>
+          ))}
+        </div>
 
         {/* Dashboard Tabs */}
         <div className="w-full mt-2">
@@ -213,7 +248,7 @@ export default function DashboardPage() {
                   <Link href="/quran?surah=36">Read Surah Yaaseen (in-app)</Link>
                 </Button>
                 <Button asChild variant="outline" className="w-full">
-                  <Link href="https://quran.com/36" target="_blank" rel="noopener">Open on Quran.com</Link>
+                  <Link href="/quran">Open Full Quran Reader</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -424,31 +459,30 @@ export default function DashboardPage() {
 
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4 text-primary">Hisnul Muslim Duas</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            {HISNUL_CHAPTERS.map((chapter, idx) => (
-              <Card key={idx} className="shadow-md border-primary/20">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-primary">
-                    {chapter.TITLE}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {chapter.TEXT.map((dua: any, i: number) => (
-                    <div key={i} className="mb-4">
-                      <div className="text-xl font-bold text-right mb-2" dir="rtl">{dua.ARABIC_TEXT}</div>
-                      <div className="text-sm italic text-muted-foreground mb-2">{dua.TRANSLITERATION}</div>
-                      <div className="text-base mb-2">{dua.TRANSLATED_TEXT}</div>
-                      <div className="text-xs text-muted-foreground">{dua.REFERENCE}</div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {/* Featured dua card */}
+          <Card className="shadow-md border-primary/20 mb-4 bg-gradient-to-r from-teal-50 to-emerald-50/30">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-primary flex items-center gap-2">
+                🤲 {HISNUL_CHAPTERS[0]?.TITLE}
+              </CardTitle>
+              <CardDescription>Featured duas from Hisnul Muslim</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {HISNUL_CHAPTERS[0]?.TEXT.slice(0, 2).map((dua: any, i: number) => (
+                <div key={i} className="mb-4 p-3 bg-white/70 rounded-xl">
+                  <div className="text-xl font-bold text-right mb-1 text-gray-800" dir="rtl" lang="ar" style={{ fontFamily: "'Scheherazade New', serif", lineHeight: '2' }}>{dua.ARABIC_TEXT}</div>
+                  <div className="text-sm italic text-teal-700 mb-1">{dua.TRANSLITERATION}</div>
+                  <div className="text-sm text-gray-700 mb-1">{dua.TRANSLATED_TEXT}</div>
+                  {dua.REFERENCE && <div className="text-xs text-muted-foreground bg-teal-50 px-2 py-0.5 rounded inline-block">📚 {dua.REFERENCE}</div>}
+                </div>
+              ))}
+              <Button asChild className="w-full mt-2">
+                <Link href="/hisnul-muslim">📖 Open Full Hisnul Muslim ({HISNUL_CHAPTERS.length} chapters)</Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
   );
 }
-
-// ...existing code...

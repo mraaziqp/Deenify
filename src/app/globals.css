@@ -1,58 +1,77 @@
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: none; }
-}
-.animate-fade-in {
-  animation: fade-in 0.7s cubic-bezier(.4,0,.2,1);
-}
+/* ============================================================
+   DEENIFY — Islamic Design System
+   Inspired by Islamic geometric art, calligraphy & architecture
+   ============================================================ */
+
+/* Google Fonts — Body + Arabic */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;500;600;700&family=Lateef:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 180 75% 92.5%; /* Light Teal */
-    --foreground: 224 71.4% 4.1%;
-    --card: 180 60% 98%;
-    --card-foreground: 224 71.4% 4.1%;
-    --popover: 180 60% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
-    --primary: 180 100% 25.1%; /* Saturated Teal */
-    --primary-foreground: 0 0% 98%;
-    --secondary: 180 20% 90%;
-    --secondary-foreground: 180 100% 25.1%;
-    --muted: 180 20% 95%;
-    --muted-foreground: 224 71.4% 25%;
-    --accent: 207 44% 49%; /* Steel Blue */
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 180 20% 88%;
-    --input: 180 20% 91%;
-    --ring: 180 100% 25.1%;
-    --radius: 0.5rem;
+    /* ── Islamic color palette ─────────────────── */
+    --background:    152 35% 96%;   /* Moonlit ivory — soft sage-white */
+    --foreground:    215 35% 13%;   /* Deep ink */
+
+    --card:          0 0% 100%;
+    --card-foreground: 215 35% 13%;
+    --popover:       0 0% 100%;
+    --popover-foreground: 215 35% 13%;
+
+    --primary:       162 72% 26%;   /* Emerald of the Quran */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary:     162 30% 91%;
+    --secondary-foreground: 162 72% 26%;
+
+    --muted:         152 20% 93%;
+    --muted-foreground: 215 18% 46%;
+
+    --accent:        40 90% 50%;    /* Gold of the minaret */
+    --accent-foreground: 0 0% 10%;
+
+    --destructive:   0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border:        152 20% 84%;
+    --input:         152 20% 92%;
+    --ring:          162 72% 26%;
+
+    --radius:        0.85rem;
+
+    /* ── Custom Islamic palette tokens ─────────── */
+    --islamic-green:  #0f6b4f;
+    --islamic-gold:   #c8922a;
+    --islamic-teal:   #0d6e6e;
+    --islamic-maroon: #7a2c37;
+    --islamic-blue:   #1a4f7a;
+    --islamic-cream:  #f8f3e8;
+    --islamic-sand:   #e8dcc8;
   }
 
   .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 0 0% 98%;
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 0 0% 98%;
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 180 100% 25.1%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 224 71.4% 10%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 224 71.4% 10%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 207.7 44.2% 49.4%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 224 71.4% 10%;
-    --input: 224 71.4% 10%;
-    --ring: 180 100% 25.1%;
+    --background:    215 40% 8%;
+    --foreground:    210 38% 94%;
+    --card:          215 40% 11%;
+    --card-foreground: 210 38% 94%;
+    --popover:       215 40% 11%;
+    --popover-foreground: 210 38% 94%;
+    --primary:       162 72% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary:     215 40% 17%;
+    --secondary-foreground: 210 38% 94%;
+    --muted:         215 40% 17%;
+    --muted-foreground: 215 20% 62%;
+    --accent:        40 90% 50%;
+    --accent-foreground: 0 0% 10%;
+    --destructive:   0 63% 31%;
+    --destructive-foreground: 0 0% 100%;
+    --border:        215 40% 20%;
+    --input:         215 40% 20%;
+    --ring:          162 72% 38%;
   }
 }
 
@@ -60,71 +79,318 @@
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.65;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── Arabic/Quran typography ─────────────────── */
+  [lang="ar"], [dir="rtl"], .arabic-text {
+    font-family: 'Scheherazade New', 'Amiri', 'Lateef', 'Traditional Arabic', serif;
+    letter-spacing: 0.03em;
+    line-height: 2.4;
+  }
+
+  /* ── Headings ─────────────────────────────────── */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  /* ── Scrollbars ──────────────────────────────── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.3);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.6);
+  }
+
+  /* ── Selection colour ────────────────────────── */
+  ::selection {
+    background: hsl(var(--primary) / 0.2);
+    color: hsl(var(--foreground));
   }
 }
 
+/* ================================================================
+   ANIMATIONS
+   ================================================================ */
 @layer utilities {
-  /* Smooth fade-in animation */
+
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
+  .animate-fade-in { animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
   }
+  .animate-fade-in-scale { animation: fadeInScale 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-  /* Pulse animation for attention */
-  @keyframes subtlePulse {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.9;
-      transform: scale(1.02);
-    }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
+  .animate-slide-up { animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-  .animate-subtle-pulse {
-    animation: subtlePulse 2s ease-in-out infinite;
-  }
-
-  /* Slide in from right */
   @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(18px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .animate-slide-in-right { animation: slideInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+  @keyframes subtlePulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.88; }
+  }
+  .animate-subtle-pulse { animation: subtlePulse 2.8s ease-in-out infinite; }
+
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--muted) / 0.45) 50%,
+      hsl(var(--muted)) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite;
+    border-radius: 8px;
   }
 
-  .animate-slide-in-right {
-    animation: slideInRight 0.4s ease-out;
+  @keyframes crescent {
+    0%   { transform: rotate(0deg) scale(1); }
+    50%  { transform: rotate(8deg) scale(1.05); }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+  .animate-crescent { animation: crescent 4s ease-in-out infinite; }
+
+  /* ── Glow ─────────────────────────────────── */
+  .glow-primary { box-shadow: 0 0 28px hsl(var(--primary) / 0.28); }
+  .glow-gold    { box-shadow: 0 0 28px hsl(40 90% 50% / 0.35); }
+  .glow-white   { box-shadow: 0 0 24px rgba(255,255,255,0.45); }
+
+  /* ================================================================
+     ISLAMIC BACKGROUND PATTERNS (pure CSS — no external images)
+     ================================================================ */
+
+  /* Subtle star/cross geometric tile */
+  .bg-islamic-pattern {
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.07) 1px, transparent 0);
+    background-size: 32px 32px;
   }
 
-  /* Glow effect */
-  .glow-primary {
-    box-shadow: 0 0 20px rgba(0, 128, 128, 0.3);
+  /* Rich hero gradient used on header areas */
+  .bg-hero-islamic {
+    background: linear-gradient(
+      135deg,
+      hsl(162 72% 16%) 0%,
+      hsl(162 68% 22%) 40%,
+      hsl(40 90% 30%) 100%
+    );
   }
 
-  .glow-accent {
-    box-shadow: 0 0 20px rgba(70, 130, 180, 0.3);
+  /* Golden shimmer hero */
+  .bg-hero-gold {
+    background: linear-gradient(
+      135deg,
+      hsl(215 40% 12%) 0%,
+      hsl(162 68% 20%) 50%,
+      hsl(40 90% 25%) 100%
+    );
   }
 
-  /* Smooth scroll */
-  html {
-    scroll-behavior: smooth;
+  /* Soft card tint — Islamic cream */
+  .bg-islamic-cream { background-color: var(--islamic-cream); }
+
+  /* Mosque silhouette gradient (for prayer times header) */
+  .bg-mosque-gradient {
+    background: linear-gradient(
+      160deg,
+      hsl(162 72% 14%) 0%,
+      hsl(162 65% 21%) 60%,
+      hsl(200 60% 20%) 100%
+    );
+  }
+
+  /* ================================================================
+     TYPOGRAPHY UTILITIES
+     ================================================================ */
+
+  .text-gradient-emerald {
+    background: linear-gradient(135deg, #0f6b4f 0%, #0d9488 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-teal {
+    background: linear-gradient(135deg, #0d6e6e 0%, #0f766e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-white {
+    background: linear-gradient(135deg, #ffffff 0%, #d1fae5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Arabic text classes */
+  .arabic-sm {
+    font-family: 'Scheherazade New', 'Amiri', serif;
+    font-size: 1.35rem;
+    line-height: 2.2;
+    direction: rtl;
+    text-align: right;
+  }
+  .arabic-text {
+    font-family: 'Scheherazade New', 'Amiri', serif;
+    font-size: 1.7rem;
+    line-height: 2.5;
+    direction: rtl;
+    text-align: right;
+  }
+  .arabic-text-lg {
+    font-family: 'Scheherazade New', 'Amiri', serif;
+    font-size: 2.2rem;
+    line-height: 2.6;
+    direction: rtl;
+    text-align: right;
+  }
+  .arabic-xl {
+    font-family: 'Scheherazade New', 'Amiri', serif;
+    font-size: 2.8rem;
+    line-height: 2.8;
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* Quran verse highlight band */
+  .verse-band {
+    background: linear-gradient(
+      to right,
+      hsl(162 72% 26% / 0.06) 0%,
+      hsl(162 72% 26% / 0.03) 100%
+    );
+    border-right: 3px solid hsl(162 72% 26% / 0.4);
+    padding: 1rem 1rem 1rem 0.75rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  /* ================================================================
+     CARD VARIANTS
+     ================================================================ */
+
+  .card-flat    { @apply bg-white border border-gray-100 rounded-2xl; }
+  .card-raised  { @apply bg-white border border-gray-100 rounded-2xl shadow-md; }
+  .card-floating { @apply bg-white border border-gray-100 rounded-3xl shadow-xl; }
+
+  .card-islamic {
+    background: linear-gradient(145deg, #ffffff 0%, hsl(162 40% 98%) 100%);
+    border: 1px solid hsl(162 30% 88%);
+    border-radius: 1.25rem;
+    box-shadow:
+      0 1px 3px rgba(0,0,0,0.04),
+      0 4px 16px hsl(162 72% 26% / 0.06),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  .card-gold-accent {
+    border-left: 4px solid hsl(40 90% 50%);
+  }
+
+  .card-emerald-accent {
+    border-left: 4px solid hsl(162 72% 26%);
+  }
+
+  /* ================================================================
+     BUTTON EFFECTS
+     ================================================================ */
+
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 30%;
+    height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.55s;
+  }
+  .btn-shine:hover::after { left: 130%; }
+
+  /* ================================================================
+     PRAYER TIMES CARD SPECIFICS
+     ================================================================ */
+  .prayer-row-active {
+    background: linear-gradient(
+      to right,
+      hsl(162 72% 26% / 0.12) 0%,
+      hsl(162 72% 26% / 0.06) 100%
+    );
+    border: 1px solid hsl(162 72% 26% / 0.25);
+    border-radius: 0.75rem;
+  }
+
+  /* ================================================================
+     NAVIGATION
+     ================================================================ */
+  .nav-link-active {
+    @apply text-primary font-semibold;
+    text-shadow: 0 0 24px hsl(var(--primary) / 0.3);
+  }
+
+  /* ================================================================
+     FOCUS RINGS
+     ================================================================ */
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  button:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* ================================================================
+     HOVER CARD
+     ================================================================ */
+  .card-hover {
+    @apply transition-all duration-200;
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px hsl(var(--primary) / 0.12);
   }
 }

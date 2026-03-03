@@ -21,6 +21,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <link rel="icon" href="/icon-192.png" />
           <link rel="apple-touch-icon" href="/icon-192.png" />
           <meta name="theme-color" content="#0d9488" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;500;600;700&family=Lateef:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
           <script dangerouslySetInnerHTML={{
             __html: `if ('serviceWorker' in navigator) { window.addEventListener('load', function() { navigator.serviceWorker.register('/service-worker.js'); }); }`
           }} />

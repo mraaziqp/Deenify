@@ -42,6 +42,7 @@ const navLinks: NavLink[] = [
   { href: '/zakat', label: 'Zakat Calculator', icon: CircleDollarSign },
   { href: '/halal-food', label: 'Halal Food', icon: Apple },
   { href: '/quran', label: 'Quran & Recitations', icon: BookOpen },
+  { href: '/hisnul-muslim', label: 'Hisnul Muslim Duas', icon: HeartHandshake },
   { href: '/ccemag', label: 'CCE Mag Portal', icon: Landmark },
   { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
 ];
