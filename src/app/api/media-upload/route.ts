@@ -1,18 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
+import { put } from '@vercel/blob';
 
 export const runtime = 'nodejs';
 
-const BOOKS_DIR = path.join(process.cwd(), 'public', 'books');
-const AUDIO_DIR = path.join(process.cwd(), 'public', 'audio');
-
 // POST /api/media-upload
-// Accepts multipart/form-data with:
-//   - file: the file to upload (PDF or audio)
-//   - type: 'pdf' | 'audio'
-//   - name: desired filename (without extension, optional)
+// Accepts multipart/form-data: file, type ('pdf'|'audio'), name (optional)
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
@@ -24,29 +16,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file uploaded.' }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const uploadDir = type === 'audio' ? AUDIO_DIR : BOOKS_DIR;
-
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
-
-    // Determine filename
+    // Build a clean filename
     const ext = file.name.split('.').pop() || (type === 'audio' ? 'mp3' : 'pdf');
     const baseName = name
       ? name.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
       : file.name.replace(/\.[^/.]+$/, '').toLowerCase().replace(/[^a-z0-9-]/g, '-');
     const filename = `${baseName}.${ext}`;
-    const filePath = path.join(uploadDir, filename);
 
-    await writeFile(filePath, buffer);
+    // Folder prefix so audio/pdf are organised in Vercel Blob
+    const folder = type === 'audio' ? 'audio' : 'books';
+    const pathname = `${folder}/${filename}`;
 
-    const publicUrl = `/${type === 'audio' ? 'audio' : 'books'}/${filename}`;
+    const blob = await put(pathname, file, {
+      access: 'public',
+      addRandomSuffix: false, // keep predictable URL
+    });
+
     return NextResponse.json({
       success: true,
       filename,
-      url: publicUrl,
-      message: `File uploaded successfully to ${publicUrl}`,
+      url: blob.url,
+      pathname: blob.pathname,
+      message: `Uploaded to Vercel Blob: ${blob.url}`,
     });
   } catch (err: any) {
     console.error('Upload error:', err);
@@ -55,5 +46,5 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-  return NextResponse.json({ message: 'POST a file with multipart/form-data. Fields: file, type (pdf|audio), name (optional).' });
+  return NextResponse.json({ message: 'POST multipart/form-data with: file, type (pdf|audio), name (optional).' });
 }

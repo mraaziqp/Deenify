@@ -1,4 +1,6 @@
-'use client';
+import { writeFileSync } from 'fs';
+
+const content = `'use client';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
@@ -25,9 +27,9 @@ const PRESET_UPLOADS = [
 ];
 
 function formatBytes(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / 1048576).toFixed(1)} MB`;
+  if (bytes < 1024) return \`\${bytes} B\`;
+  if (bytes < 1048576) return \`\${(bytes / 1024).toFixed(1)} KB\`;
+  return \`\${(bytes / 1048576).toFixed(1)} MB\`;
 }
 
 function UploadSlot({ preset, onUploaded }: { preset: typeof PRESET_UPLOADS[0]; onUploaded: () => void }) {
@@ -55,20 +57,20 @@ function UploadSlot({ preset, onUploaded }: { preset: typeof PRESET_UPLOADS[0]; 
   const isTeal = preset.color === 'teal';
   return (
     <div
-      className={`relative bg-white rounded-2xl border-2 overflow-hidden transition-all ${dragOver ? (isTeal ? 'border-teal-400 bg-teal-50' : 'border-blue-400 bg-blue-50') : 'border-gray-200 hover:border-gray-300'}`}
+      className={\`relative bg-white rounded-2xl border-2 overflow-hidden transition-all \${dragOver ? (isTeal ? 'border-teal-400 bg-teal-50' : 'border-blue-400 bg-blue-50') : 'border-gray-200 hover:border-gray-300'}\`}
       onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
       onDragLeave={() => setDragOver(false)}
       onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) doUpload(f); }}
     >
-      <div className={`h-1.5 ${isTeal ? 'bg-teal-500' : 'bg-blue-500'}`} />
+      <div className={\`h-1.5 \${isTeal ? 'bg-teal-500' : 'bg-blue-500'}\`} />
       {loading && (
         <div className="absolute top-1.5 left-0 right-0 h-1" style={{background:'rgba(0,0,0,0.05)'}}>
-          <div className={`h-full transition-all duration-500 ${isTeal ? 'bg-teal-400' : 'bg-blue-400'}`} style={{width:`${progress}%`}} />
+          <div className={\`h-full transition-all duration-500 \${isTeal ? 'bg-teal-400' : 'bg-blue-400'}\`} style={{width:\`\${progress}%\`}} />
         </div>
       )}
       <div className="p-5">
         <div className="flex items-start gap-3 mb-3">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${isTeal ? 'bg-teal-100' : 'bg-blue-100'}`}>{preset.icon}</div>
+          <div className={\`w-10 h-10 rounded-xl flex items-center justify-center text-xl \${isTeal ? 'bg-teal-100' : 'bg-blue-100'}\`}>{preset.icon}</div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-gray-800 text-sm">{preset.label}</h3>
             <p className="text-xs text-gray-500 mt-0.5">{preset.description}</p>
@@ -77,12 +79,12 @@ function UploadSlot({ preset, onUploaded }: { preset: typeof PRESET_UPLOADS[0]; 
         <input ref={inputRef} type="file" accept={preset.accept} className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) doUpload(f); }} />
         <button
           onClick={() => inputRef.current?.click()} disabled={loading}
-          className={`w-full py-2.5 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 ${loading ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : isTeal ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'}`}
+          className={\`w-full py-2.5 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 \${loading ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : isTeal ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'}\`}
         >
-          {loading ? <><span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" /> Uploading…</> : <>{dragOver ? '📥 Drop to Upload' : `⬆️ Choose ${preset.type === 'pdf' ? 'PDF' : 'Audio'} File`}</>}
+          {loading ? <><span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" /> Uploading…</> : <>{dragOver ? '📥 Drop to Upload' : \`⬆️ Choose \${preset.type === 'pdf' ? 'PDF' : 'Audio'} File\`}</>}
         </button>
         {result && (
-          <div className={`mt-3 p-3 rounded-xl text-xs ${result.success ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-700'}`}>
+          <div className={\`mt-3 p-3 rounded-xl text-xs \${result.success ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-700'}\`}>
             {result.success ? (
               <div>
                 <p className="font-semibold">✅ Uploaded!</p>
@@ -138,7 +140,7 @@ function FileBrowser({ refreshKey }: { refreshKey: number }) {
         <div className="flex items-center gap-2">
           <div className="flex rounded-xl overflow-hidden border border-gray-200 text-xs font-medium">
             {(['all', 'audio', 'books'] as const).map(f => (
-              <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 transition-colors ${filter === f ? 'bg-teal-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+              <button key={f} onClick={() => setFilter(f)} className={\`px-3 py-1.5 transition-colors \${filter === f ? 'bg-teal-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}\`}>
                 {f === 'all' ? 'All' : f === 'audio' ? '🎵 Audio' : '📄 PDFs'}
               </button>
             ))}
@@ -164,8 +166,8 @@ function FileBrowser({ refreshKey }: { refreshKey: number }) {
             const isAudio = blob.pathname.startsWith('audio/');
             const isPDF = blob.pathname.endsWith('.pdf');
             return (
-              <div key={blob.url} className={`flex items-center gap-3 px-4 py-3 ${i < filtered.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors`}>
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0 ${isAudio ? 'bg-blue-100' : 'bg-teal-100'}`}>
+              <div key={blob.url} className={\`flex items-center gap-3 px-4 py-3 \${i < filtered.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors\`}>
+                <div className={\`w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0 \${isAudio ? 'bg-blue-100' : 'bg-teal-100'}\`}>
                   {isAudio ? '🎵' : isPDF ? '📄' : '📁'}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -234,7 +236,7 @@ export default function MediaUploadPage() {
         <h2 className="text-base font-bold text-gray-700 mb-3">📌 Quick Upload — Common Files</h2>
         <div className="grid gap-4 md:grid-cols-2 mb-8">
           {PRESET_UPLOADS.map(p => (
-            <UploadSlot key={`${p.type}-${p.name}`} preset={p} onUploaded={() => setRefreshKey(k => k + 1)} />
+            <UploadSlot key={\`\${p.type}-\${p.name}\`} preset={p} onUploaded={() => setRefreshKey(k => k + 1)} />
           ))}
         </div>
 
@@ -262,7 +264,7 @@ export default function MediaUploadPage() {
             {customLoading ? '⏳ Uploading…' : '⬆️ Upload File'}
           </button>
           {customResult && (
-            <div className={`mt-4 p-3 rounded-xl text-sm ${customResult.success ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-700'}`}>
+            <div className={\`mt-4 p-3 rounded-xl text-sm \${customResult.success ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-700'}\`}>
               {customResult.success ? (
                 <div>
                   <p className="font-semibold">✅ {customResult.message}</p>
@@ -282,3 +284,7 @@ export default function MediaUploadPage() {
     </div>
   );
 }
+`;
+
+writeFileSync('src/app/(main)/admin/media/page.tsx', content, 'utf8');
+console.log('Written successfully');
