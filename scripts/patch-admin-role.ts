@@ -7,7 +7,7 @@ async function main() {
     console.error('User not found:', email);
     process.exit(1);
   }
-  await prisma.user.update({ where: { email }, data: { role: 'admin' } });
+  await prisma.user.update({ where: { email }, data: { role: 'ADMIN' } });
   console.log('User role updated to admin:', email);
 }
 

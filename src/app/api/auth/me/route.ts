@@ -14,8 +14,9 @@ export async function GET(req: NextRequest) {
     // Fetch user from DB
     const user = await prisma.user.findUnique({ where: { id: decoded.id } });
     if (!user) return NextResponse.json({ user: null });
-    // Ensure role is present (prefer DB, fallback to JWT)
-    const userWithRole = { ...user, role: user.role || decoded.role || 'user' };
+    // Ensure role is present and normalise to lowercase for client-side hasRole() checks
+    const rawRole = user.role || decoded.role || 'USER';
+    const userWithRole = { ...user, role: rawRole.toLowerCase() };
     return NextResponse.json({ user: userWithRole });
   } catch (err) {
     console.error('JWT verify or user fetch failed:', err);
