@@ -18,8 +18,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <html lang="en" data-scroll-behavior="smooth">
         <head>
           <link rel="manifest" href="/manifest.json" />
-          <link rel="icon" href="/icon-192.png" />
-          <link rel="apple-touch-icon" href="/icon-192.png" />
+          <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+          <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/icon-96.png" />
+          <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png" />
+          <link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png" />
+          <link rel="apple-touch-icon" sizes="144x144" href="/icon-144.png" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+          <meta name="apple-mobile-web-app-title" content="Deenify" />
+          <meta name="mobile-web-app-capable" content="yes" />
           <meta name="theme-color" content="#0d9488" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
