@@ -1,10 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
 
-const API_KEY = 'AIzaSyDRLDH5GUH-vmgdsBLNv0csrjuz8Bzhli8';
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
-
-const SYSTEM_INSTRUCTION = 'You are Deenify AI, an Islamic assistant. Answer questions about Islam based on the Quran, authentic Hadith, and established scholarly consensus. Be respectful, knowledgeable, and helpful. If asked about something not related to Islam, politely redirect to Islamic topics. Always cite authentic sources when possible.';
+// API calls go through /api/ai-chat (server-side) — key is never exposed to the browser
 
 interface Message {
   role: 'user' | 'assistant';
@@ -32,36 +29,19 @@ export function AiAssistantChat() {
     setMessages(updatedMessages);
     setInput('');
     try {
-      // Build conversation history for Gemini
-      const contents = updatedMessages.map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }],
-      }));
-
-      const res = await fetch(ENDPOINT, {
+      const res = await fetch('/api/ai-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{ text: SYSTEM_INSTRUCTION }],
-          },
-          contents,
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1024,
-          },
-        }),
+        body: JSON.stringify({ messages: updatedMessages }),
       });
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData?.error?.message || `API error ${res.status}`);
+        throw new Error(errData?.error || `API error ${res.status}`);
       }
 
       const data = await res.json();
-      const aiText =
-        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-        'Sorry, I could not generate a response. Please try again.';
+      const aiText = data?.text || 'Sorry, I could not generate a response. Please try again.';
       setMessages((msgs) => [...msgs, { role: 'assistant', content: aiText }]);
     } catch (err: any) {
       setError(err?.message || 'Failed to get response. Please try again.');
