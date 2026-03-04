@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Sparkles, CheckCircle2, Star } from 'lucide-react';
@@ -39,7 +38,6 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [applyScholar, setApplyScholar] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const router = useRouter();
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -62,7 +60,7 @@ export default function SignUpPage() {
         body: JSON.stringify({ email, password, role: applyScholar ? 'SCHOLAR' : undefined }),
       });
       if (!res.ok) throw new Error('Sign up failed. This email may already be in use.');
-      router.push('/dashboard');
+      window.location.href = '/dashboard';
     } catch (err: any) {
       setError(err.message || 'Sign up failed. Please try again.');
     } finally {
