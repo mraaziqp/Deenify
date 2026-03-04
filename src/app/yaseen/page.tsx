@@ -6,16 +6,10 @@ import { useState, useRef } from 'react';
 const LOCAL_PDF = '/books/surah-yaseen.pdf';
 
 const RECITERS = [
-  { label: 'Mishary al-Afasy', slug: 'ar.alafasy' },
-  { label: 'Abdur-Rahman as-Sudais', slug: 'ar.abdurrahmaansudais' },
-  { label: 'Saad al-Ghamidi', slug: 'ar.saadalghamadi' },
-  { label: 'Muhammad Ayyoub', slug: 'ar.muhammadayyoub' },
-  { label: 'Hani ar-Rifai', slug: 'ar.hanirifai' },
+  { label: 'Mishary al-Afasy',        url: 'https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/36.mp3' },
+  { label: 'Abdur-Rahman as-Sudais', url: 'https://download.quranicaudio.com/quran/abdurrahmaan_as-sudays/036.mp3' },
+  { label: 'Muhammad Ayyoub',        url: 'https://download.quranicaudio.com/quran/muhammad_ayyoob/036.mp3' },
 ];
-
-function audioUrl(slug: string) {
-  return `https://cdn.islamic.network/quran/audio-surah/128/${slug}/36.mp3`;
-}
 
 export default function SurahYaseenReader() {
   const [reciterIdx, setReciterIdx] = useState(0);
@@ -82,7 +76,7 @@ export default function SurahYaseenReader() {
           <div className="flex flex-wrap gap-2 mb-4">
             {RECITERS.map((r, i) => (
               <button
-                key={r.slug}
+                key={r.url}
                 onClick={() => changeReciter(i)}
                 className="px-3 py-1.5 rounded-xl text-xs font-medium transition-all"
                 style={{
@@ -103,9 +97,9 @@ export default function SurahYaseenReader() {
             onEnded={() => setPlaying(false)}
             onPause={() => setPlaying(false)}
             onPlay={() => setPlaying(true)}
-            key={RECITERS[reciterIdx].slug}
+            key={RECITERS[reciterIdx].url}
           >
-            <source src={audioUrl(RECITERS[reciterIdx].slug)} type="audio/mpeg" />
+            <source src={RECITERS[reciterIdx].url} type="audio/mpeg" />
           </audio>
 
           {/* Controls */}
@@ -125,8 +119,8 @@ export default function SurahYaseenReader() {
             <audio
               controls
               className="flex-1 rounded-xl h-9"
-              src={audioUrl(RECITERS[reciterIdx].slug)}
-              key={`ctrl-${RECITERS[reciterIdx].slug}`}
+              src={RECITERS[reciterIdx].url}
+              key={`ctrl-${RECITERS[reciterIdx].url}`}
               style={{accentColor:'#059669'}}
             />
           </div>
