@@ -4,6 +4,4 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(self.clients.claim());
 });
-self.addEventListener('fetch', event => {
-  // You can add custom caching logic here
-});
+// No fetch handler - requests go directly to the network
