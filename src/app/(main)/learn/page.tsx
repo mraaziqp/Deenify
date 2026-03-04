@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import LiteYoutubeEmbed from '@/components/lite-youtube-embed';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card } from '@/components/ui/card';
-import { PlayCircle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { PlayCircle, Search } from 'lucide-react';
 
 type Playlist = {
   id: string;
@@ -30,6 +31,7 @@ function PlaylistSkeleton() {
 export default function LearnPage() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     document.title = 'Video Library | Deenify';
@@ -40,8 +42,19 @@ export default function LearnPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Group playlists by category
-  const grouped = playlists.reduce<Record<string, Playlist[]>>((acc, p) => {
+  // Filter by search
+  const q = search.trim().toLowerCase();
+  const filtered = q
+    ? playlists.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.instructor.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q)
+      )
+    : playlists;
+
+  // Group filtered playlists by category
+  const grouped = filtered.reduce<Record<string, Playlist[]>>((acc, p) => {
     const cat = p.category || 'General';
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(p);
@@ -53,7 +66,7 @@ export default function LearnPage() {
   return (
     <div className="container mx-auto px-3 py-4 max-w-4xl">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center flex-shrink-0">
           <PlayCircle className="w-6 h-6 text-white" />
         </div>
@@ -61,6 +74,17 @@ export default function LearnPage() {
           <h1 className="text-2xl font-bold leading-tight">Video Library</h1>
           <p className="text-sm text-muted-foreground">Curated Islamic content — tap to watch</p>
         </div>
+      </div>
+
+      {/* Search */}
+      <div className="relative mb-6">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Search playlists, instructors, categories..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-9 rounded-xl"
+        />
       </div>
 
       {loading && (
@@ -85,6 +109,13 @@ export default function LearnPage() {
           <div className="text-5xl mb-4">📺</div>
           <p className="text-muted-foreground">No playlists available yet — check back soon.</p>
           <p className="text-xs text-muted-foreground mt-2">Admins can add playlists via the Admin panel.</p>
+        </div>
+      )}
+
+      {!loading && playlists.length > 0 && filtered.length === 0 && (
+        <div className="text-center py-20">
+          <div className="text-4xl mb-3">🔍</div>
+          <p className="text-muted-foreground">No playlists match “{search}”</p>
         </div>
       )}
 

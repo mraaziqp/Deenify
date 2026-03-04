@@ -13,6 +13,7 @@ type Article = {
   pubDate: string;
   source: string;
   imageUrl: string | null;
+  excerpt: string | null;
 };
 
 function ArticleSkeleton() {
@@ -33,6 +34,7 @@ export default function NewsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [activeSource, setActiveSource] = useState<string>('All');
 
   const fetchNews = async () => {
     setLoading(true);
@@ -66,6 +68,8 @@ export default function NewsPage() {
     }
   };
 
+  const filtered = activeSource === 'All' ? articles : articles.filter((a) => a.source === activeSource);
+
   return (
     <div className="container mx-auto px-3 py-4 max-w-2xl">
       {/* Header */}
@@ -88,10 +92,18 @@ export default function NewsPage() {
         </Button>
       </div>
 
-      {/* Source badges */}
+      {/* Source filter pills */}
       <div className="flex gap-2 mb-4 flex-wrap">
-        <Badge variant="secondary" className="rounded-full">Muslim Village</Badge>
-        <Badge variant="secondary" className="rounded-full">Muslim Matters</Badge>
+        {['All', 'Muslim Village', 'Muslim Matters'].map((src) => (
+          <Badge
+            key={src}
+            variant={activeSource === src ? 'default' : 'secondary'}
+            className="rounded-full cursor-pointer select-none transition-colors"
+            onClick={() => setActiveSource(src)}
+          >
+            {src}
+          </Badge>
+        ))}
       </div>
 
       {/* Content */}
@@ -108,15 +120,15 @@ export default function NewsPage() {
         </div>
       )}
 
-      {!loading && !error && articles.length === 0 && (
+      {!loading && !error && filtered.length === 0 && (
         <div className="text-center py-16 text-muted-foreground text-sm">
-          No articles found — check back soon.
+          {activeSource === 'All' ? 'No articles found — check back soon.' : `No articles from ${activeSource} yet.`}
         </div>
       )}
 
-      {!loading && !error && articles.length > 0 && (
+      {!loading && !error && filtered.length > 0 && (
         <div className="space-y-3">
-          {articles.map((article, i) => (
+          {filtered.map((article, i) => (
             <a
               key={`${article.link}-${i}`}
               href={article.link}
@@ -147,6 +159,11 @@ export default function NewsPage() {
                   <p className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-emerald-700 transition-colors">
                     {article.title}
                   </p>
+                  {article.excerpt && (
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                      {article.excerpt}
+                    </p>
+                  )}
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0 rounded-full">
                       {article.source}

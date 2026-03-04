@@ -4,8 +4,6 @@ import { useRouter } from 'next/navigation';
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from 'react';
-import hisnulMuslimData from '@/data/hisnul_muslim.json';
-const HISNUL_CHAPTERS = (hisnulMuslimData as { English: { TITLE: string; TEXT: { ARABIC_TEXT?: string; TRANSLITERATION?: string; TRANSLATED_TEXT?: string; REFERENCE?: string }[] }[] }).English;
 
 import {
   Card,
@@ -16,19 +14,9 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import {
-  Lock,
-  CircleDollarSign,
   BookOpen,
-  Sparkles,
   Award,
-  Target,
-  Clock,
-  Heart,
-  BookMarked,
-  Apple,
-  Lightbulb,
   Compass,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -47,48 +35,6 @@ type DashboardStats = {
   dhikrCount: number;
 };
 
-type ActivityItem = {
-  id: string;
-  message: string;
-  type: 'lesson' | 'course';
-  timestamp: string;
-};
-
-const features = [
-  {
-    id: 'zakat',
-    title: 'Zakat Calculator',
-    description: 'Calculate your Zakat on various assets.',
-    icon: CircleDollarSign,
-    requiredMilestone: 'islamic_finance_intro',
-    href: '/zakat',
-  },
-  {
-    id: 'halal_food',
-    title: 'Halal Food Guide',
-    description: 'Learn about permissible and forbidden foods.',
-    icon: Apple,
-    requiredMilestone: 'quran_intro',
-    href: '/halal-food',
-  },
-  {
-    id: 'quran_page',
-    title: 'Quran & Recitations',
-    description: 'Read and listen to the Quran with renowned reciters.',
-    icon: BookOpen,
-    requiredMilestone: 'quran_intro',
-    href: '/quran',
-  },
-];
-
-const selectDailyFact = (facts: string[], dateKey: string) => {
-  if (!facts.length) return '';
-  let hash = 0;
-  for (const char of dateKey) {
-    hash = (hash * 31 + char.charCodeAt(0)) % facts.length;
-  }
-  return facts[hash];
-};
 
 export default function DashboardPage() {
   const { user, hasRole, isLoading } = useAuth();
@@ -101,19 +47,7 @@ export default function DashboardPage() {
     totalCourses: 0,
     dhikrCount: 0,
   });
-  const [activity, setActivity] = useState<ActivityItem[]>([]);
-  const [dailyFact, setDailyFact] = useState('');
-
   useEffect(() => { document.title = 'Dashboard | Deenify'; }, []);
-
-
-
-  // Helper: feature unlock logic (placeholder, always true)
-  const isFeatureUnlocked = (_milestone: string) => true;
-  // Helper: progress percentage
-  const progressPercentage = stats.totalCourses
-    ? Math.round((stats.coursesCompleted / stats.totalCourses) * 100)
-    : 0;
 
   return (
     <div className="container mx-auto px-2 py-3 sm:px-4 md:px-8 max-w-5xl">
@@ -317,20 +251,6 @@ export default function DashboardPage() {
                 <Button asChild className="w-full">
                   <Link href="/qiblah">Open Qiblah Compass</Link>
                 </Button>
-              </CardContent>
-            </Card>
-          )}
-          {selectedTab === 'fact' && (
-            <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Lightbulb className="h-5 w-5 text-primary" />
-                  Islamic Fact of the Day
-                </CardTitle>
-                <CardDescription>Small, steady learning every day</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{dailyFact}</p>
               </CardContent>
             </Card>
           )}
