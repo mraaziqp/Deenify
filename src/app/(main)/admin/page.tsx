@@ -29,6 +29,249 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import PDFReader from '@/components/pdf/PDFReader';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+// ─── Inline Admin Sub-Components ────────────────────────────────────────────
+
+function AdManagerTab() {
+  const [banners, setBanners] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [form, setForm] = useState({ businessName: '', imageUrl: '', targetUrl: '' });
+  const [saving, setSaving] = useState(false);
+
+  const load = () => {
+    setLoading(true);
+    fetch('/api/banners?admin=true')
+      .then(r => r.json())
+      .then(d => setBanners(d.banners ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const totalViews = banners.reduce((s, b) => s + b.views, 0);
+  const totalClicks = banners.reduce((s, b) => s + b.clicks, 0);
+  const avgCtr = totalViews > 0 ? ((totalClicks / totalViews) * 100).toFixed(1) : '0.0';
+
+  const handleAdd = async () => {
+    if (!form.businessName || !form.imageUrl) return;
+    setSaving(true);
+    await fetch('/api/banners', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    setForm({ businessName: '', imageUrl: '', targetUrl: '' });
+    setShowAdd(false);
+    setSaving(false);
+    load();
+  };
+
+  const toggleActive = async (id: string, current: boolean) => {
+    await fetch(`/api/banners?id=${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isActive: !current }),
+    });
+    load();
+  };
+
+  const deleteBanner = async (id: string) => {
+    if (!confirm('Delete this banner?')) return;
+    await fetch(`/api/banners?id=${id}`, { method: 'DELETE' });
+    load();
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Summary */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: 'Active Banners', value: banners.filter(b => b.isActive).length },
+          { label: 'Total Views', value: totalViews.toLocaleString() },
+          { label: 'Total Clicks', value: totalClicks.toLocaleString() },
+          { label: 'Avg CTR', value: `${avgCtr}%` },
+        ].map(s => (
+          <Card key={s.label} className="p-3">
+            <p className="text-xs text-muted-foreground">{s.label}</p>
+            <p className="text-xl font-bold">{s.value}</p>
+          </Card>
+        ))}
+      </div>
+
+      {/* Add Banner */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-bold">Sponsored Banners</h2>
+        <Button onClick={() => setShowAdd(!showAdd)} variant={showAdd ? 'outline' : 'default'} size="sm">
+          {showAdd ? 'Cancel' : '+ Add Banner'}
+        </Button>
+      </div>
+
+      {showAdd && (
+        <Card className="p-4 space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="space-y-1">
+              <Label>Business Name *</Label>
+              <Input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))} placeholder="Cape Town Halaal Butchery" />
+            </div>
+            <div className="space-y-1">
+              <Label>Image URL * <span className="text-xs text-muted-foreground">(1200×400px recommended)</span></Label>
+              <Input value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} placeholder="https://cloudinary.com/..." />
+            </div>
+            <div className="space-y-1">
+              <Label>Target URL (optional)</Label>
+              <Input value={form.targetUrl} onChange={e => setForm(f => ({ ...f, targetUrl: e.target.value }))} placeholder="https://business-website.co.za" />
+            </div>
+          </div>
+          <Button onClick={handleAdd} disabled={saving || !form.businessName || !form.imageUrl}>
+            {saving ? 'Saving...' : 'Create Banner'}
+          </Button>
+        </Card>
+      )}
+
+      {/* Banner List */}
+      {loading ? (
+        <p className="text-sm text-muted-foreground">Loading...</p>
+      ) : banners.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No banners yet. Add your first sponsor above.</p>
+      ) : (
+        <div className="space-y-2">
+          {banners.map(b => (
+            <Card key={b.id} className="p-3">
+              <div className="flex items-center gap-3 flex-wrap">
+                <img src={b.imageUrl} alt={b.businessName} className="w-20 h-10 object-cover rounded-lg flex-shrink-0" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm">{b.businessName}</p>
+                  <p className="text-xs text-muted-foreground truncate">{b.targetUrl || 'No link'}</p>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <span>👁 {b.views}</span>
+                  <span>🖱 {b.clicks}</span>
+                  <span>CTR: {b.views > 0 ? ((b.clicks / b.views) * 100).toFixed(1) : 0}%</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" onClick={() => toggleActive(b.id, b.isActive)}>
+                    {b.isActive ? '✅ Active' : '⏸ Paused'}
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={() => deleteBanner(b.id)}>Delete</Button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Pricing reminder */}
+      <div className="text-xs text-muted-foreground bg-muted/50 rounded-xl p-3 mt-2">
+        💡 Pricing guide: Free for first 3 months (launch partners) · R200/month per banner slot after. Tell businesses to send a 1200×400px image, then paste the Cloudinary/Firebase URL above.
+      </div>
+    </div>
+  );
+}
+
+function VideoPlaylistsTab() {
+  const [playlists, setPlaylists] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [form, setForm] = useState({ title: '', instructor: '', youtubePlaylistId: '', thumbnailUrl: '', category: 'General' });
+  const [saving, setSaving] = useState(false);
+
+  const load = () => {
+    setLoading(true);
+    fetch('/api/video-playlists')
+      .then(r => r.json())
+      .then(d => setPlaylists(d.playlists ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleAdd = async () => {
+    if (!form.title || !form.youtubePlaylistId || !form.thumbnailUrl) return;
+    setSaving(true);
+    await fetch('/api/video-playlists', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...form, instructor: form.instructor || 'Unknown' }),
+    });
+    setForm({ title: '', instructor: '', youtubePlaylistId: '', thumbnailUrl: '', category: 'General' });
+    setShowAdd(false);
+    setSaving(false);
+    load();
+  };
+
+  const deletePlaylist = async (id: string) => {
+    if (!confirm('Delete this playlist?')) return;
+    await fetch(`/api/video-playlists?id=${id}`, { method: 'DELETE' });
+    load();
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-bold">Video Playlists</h2>
+        <Button onClick={() => setShowAdd(!showAdd)} variant={showAdd ? 'outline' : 'default'} size="sm">
+          {showAdd ? 'Cancel' : '+ Add Playlist'}
+        </Button>
+      </div>
+
+      {showAdd && (
+        <Card className="p-4 space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label>Title *</Label>
+              <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="Stories of the Prophets" />
+            </div>
+            <div className="space-y-1">
+              <Label>Instructor</Label>
+              <Input value={form.instructor} onChange={e => setForm(f => ({ ...f, instructor: e.target.value }))} placeholder="Mufti Menk" />
+            </div>
+            <div className="space-y-1">
+              <Label>YouTube Playlist ID * <span className="text-xs text-muted-foreground">(from ?list=... in URL)</span></Label>
+              <Input value={form.youtubePlaylistId} onChange={e => setForm(f => ({ ...f, youtubePlaylistId: e.target.value }))} placeholder="PLxxxxxxxxxxxxxxxxx" />
+            </div>
+            <div className="space-y-1">
+              <Label>Thumbnail URL *</Label>
+              <Input value={form.thumbnailUrl} onChange={e => setForm(f => ({ ...f, thumbnailUrl: e.target.value }))} placeholder="https://img.youtube.com/vi/VIDEO_ID/mqdefault.jpg" />
+            </div>
+            <div className="space-y-1">
+              <Label>Category</Label>
+              <Input value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} placeholder="History, Fiqh, Tafseer..." />
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">💡 Get Thumbnail URL: Open any YouTube video → right-click thumbnail → Copy image address. Or use: https://img.youtube.com/vi/VIDEO_ID/mqdefault.jpg</p>
+          <Button onClick={handleAdd} disabled={saving || !form.title || !form.youtubePlaylistId || !form.thumbnailUrl}>
+            {saving ? 'Saving...' : 'Add Playlist'}
+          </Button>
+        </Card>
+      )}
+
+      {loading ? (
+        <p className="text-sm text-muted-foreground">Loading...</p>
+      ) : playlists.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No playlists yet. Add your first playlist above.</p>
+      ) : (
+        <div className="space-y-2">
+          {playlists.map(p => (
+            <Card key={p.id} className="p-3 flex items-center gap-3 flex-wrap">
+              <img src={p.thumbnailUrl} alt={p.title} className="w-20 h-12 object-cover rounded-lg flex-shrink-0" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm">{p.title}</p>
+                <p className="text-xs text-muted-foreground">{p.instructor} · {p.category}</p>
+                <p className="text-xs text-muted-foreground font-mono truncate">list={p.youtubePlaylistId}</p>
+              </div>
+              <Button size="sm" variant="destructive" onClick={() => deletePlaylist(p.id)}>Delete</Button>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface SystemStats {
   totalUsers: number;
@@ -211,6 +454,8 @@ export default function AdminDashboard() {
           <TabsTrigger value="pdf-books">PDF Book Upload</TabsTrigger>
           <TabsTrigger value="cce-mag-portal">CCE Mag Portal</TabsTrigger>
           <TabsTrigger value="pdf-reader-demo">PDF Reader Demo</TabsTrigger>
+          <TabsTrigger value="ad-manager">💰 Ad Manager</TabsTrigger>
+          <TabsTrigger value="video-playlists">📺 Video Library</TabsTrigger>
           <TabsTrigger value="media-upload">📁 Media Upload</TabsTrigger>
   </TabsList>
         <TabsContent value="cce-mag-portal" className="space-y-4">
@@ -586,6 +831,16 @@ export default function AdminDashboard() {
         {/* Learning Library Tab */}
         <TabsContent value="learning" className="space-y-4">
           <LearningAdminManager />
+        </TabsContent>
+
+        {/* Ad Manager Tab */}
+        <TabsContent value="ad-manager" className="space-y-4">
+          <AdManagerTab />
+        </TabsContent>
+
+        {/* Video Playlists Tab */}
+        <TabsContent value="video-playlists" className="space-y-4">
+          <VideoPlaylistsTab />
         </TabsContent>
       </Tabs>
     </div>

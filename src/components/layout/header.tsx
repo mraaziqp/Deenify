@@ -12,6 +12,8 @@ import {
   Apple,
   Landmark,
   Users,
+  Newspaper,
+  PlayCircle,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -39,6 +41,8 @@ const navLinks: NavLink[] = [
   { href: '/dhikr', label: 'Dhikr Circle', icon: HeartPulse },
   { href: '/khatm', label: 'Quran Khatm', icon: BookOpen },
   { href: '/groups', label: 'My Groups', icon: Users },
+  { href: '/news', label: 'News', icon: Newspaper },
+  { href: '/learn', label: 'Video Library', icon: PlayCircle },
   { type: 'divider' },
   { type: 'title', label: 'Tools' },
   { href: '/zakat', label: 'Zakat Calculator', icon: CircleDollarSign },

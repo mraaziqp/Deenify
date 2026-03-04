@@ -23,6 +23,8 @@ import {
   MapPin,
   Compass,
   Users,
+  Newspaper,
+  PlayCircle,
 } from 'lucide-react';
 import { Icons } from '@/components/icons';
 import type { NavLink } from '@/lib/types';
@@ -37,6 +39,8 @@ const mainNavLinks: NavLink[] = [
   { href: '/dhikr', label: 'Dhikr Circle', icon: HeartPulse },
   { href: '/khatm', label: 'Quran Khatm', icon: BookOpen },
   { href: '/groups', label: 'My Groups', icon: Users },
+  { href: '/news', label: 'News', icon: Newspaper },
+  { href: '/learn', label: 'Video Library', icon: PlayCircle },
 ];
 
 const toolNavLinks: NavLink[] = [

@@ -122,6 +122,29 @@ model PDFBook {
   filename    String
   uploadedAt  DateTime @default(now())
 }
+
+model SponsoredBanner {
+  id           String   @id @default(cuid())
+  businessName String
+  imageUrl     String
+  targetUrl    String?
+  isActive     Boolean  @default(true)
+  views        Int      @default(0)
+  clicks       Int      @default(0)
+  createdAt    DateTime @default(now())
+}
+
+model VideoPlaylist {
+  id                String   @id @default(cuid())
+  title             String
+  instructor        String
+  youtubePlaylistId String
+  thumbnailUrl      String
+  category          String   @default("General")
+  isActive          Boolean  @default(true)
+  sortOrder         Int      @default(0)
+  createdAt         DateTime @default(now())
+}
 generator client {
   provider = "prisma-client-js"
 }

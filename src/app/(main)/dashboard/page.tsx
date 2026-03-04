@@ -35,7 +35,7 @@ import Link from 'next/link';
 import { DailyHadithCard } from '@/components/daily-hadith-card';
 import { PrayerTimesCard } from '@/components/prayer-times-card';
 import TasbeehCounter from '@/components/dhikr/tasbeeh-counter';
-import { PrismaClient } from '@prisma/client';
+import SponsoredBannerCarousel from '@/components/sponsored-banner-carousel';
 
 // TODO: Implement DB-based progress management
 
@@ -93,7 +93,7 @@ const selectDailyFact = (facts: string[], dateKey: string) => {
 export default function DashboardPage() {
   const { user, hasRole, isLoading } = useAuth();
   const router = useRouter();
-  const [selectedTab, setSelectedTab] = useState<'learning' | 'yaseen' | 'qiblah' | 'ccemag' | 'fact' | 'admin'>('learning');
+  const [selectedTab, setSelectedTab] = useState<'learning' | 'yaseen' | 'qiblah' | 'ccemag' | 'daily' | 'worship' | 'fact' | 'admin'>('learning');
   const [stats, setStats] = useState<DashboardStats>({
     currentStreak: 0,
     totalDaysActive: 0,
@@ -173,10 +173,13 @@ export default function DashboardPage() {
           ))}
         </div>
 
+        {/* ── Sponsored Banner ─────────────────────── */}
+        <SponsoredBannerCarousel />
+
         {/* Dashboard Tabs */}
         <div className="w-full mt-2">
           <div className="border-b border-muted mb-4">
-            <div className="flex gap-2">
+            <div className="flex gap-2 overflow-x-auto pb-1" style={{scrollbarWidth:'none',msOverflowStyle:'none'}}>
               <button
                 className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'learning' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
                 onClick={() => setSelectedTab('learning')}
@@ -201,12 +204,24 @@ export default function DashboardPage() {
               >
                 <Award className="inline h-5 w-5 mr-1 align-text-bottom" /> CCE Mag Portal
               </button>
+              <button
+                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors whitespace-nowrap ${selectedTab === 'daily' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
+                onClick={() => setSelectedTab('daily')}
+              >
+                📅 Daily
+              </button>
+              <button
+                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors whitespace-nowrap ${selectedTab === 'worship' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
+                onClick={() => setSelectedTab('worship')}
+              >
+                📿 Worship
+              </button>
               {hasRole && hasRole('admin') && (
                 <button
-                  className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'admin' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
+                  className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors whitespace-nowrap ${selectedTab === 'admin' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
                   onClick={() => setSelectedTab('admin')}
                 >
-                  <Award className="inline h-5 w-5 mr-1 align-text-bottom" /> Admin Panel
+                  <Award className="inline h-5 w-5 mr-1 align-text-bottom" /> Admin
                 </button>
               )}
             </div>
@@ -326,9 +341,7 @@ export default function DashboardPage() {
                   <Award className="h-5 w-5 text-primary" />
                   Admin Dashboard
                 </CardTitle>
-                <CardDescription>
-                  Manage users, content, and settings.
-                </CardDescription>
+                <CardDescription>Manage users, content, and settings.</CardDescription>
               </CardHeader>
               <CardContent>
                 <Button asChild className="w-full">
@@ -337,151 +350,25 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           )}
-        </div>
-
-        <Card className="shadow-md mt-4">
-          <CardHeader>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-6 w-6 text-primary" />
-                Your Learning Journey
-              </CardTitle>
-              <span className="text-xl md:text-2xl font-bold text-primary">{progressPercentage}%</span>
+          {selectedTab === 'daily' && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <DailyHadithCard />
+              <PrayerTimesCard />
             </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={progressPercentage} className="h-3 mb-4" />
-            <p className="text-sm text-muted-foreground">
-              Keep going! Complete your next course to unlock advanced features.
-            </p>
-          </CardContent>
-        </Card>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          <DailyHadithCard />
-          <PrayerTimesCard />
+          )}
+          {selectedTab === 'worship' && (
+            <Card className="shadow-md">
+              <CardHeader>
+                <CardTitle>Tasbeeh Counter</CardTitle>
+                <CardDescription>Count your dhikr easily</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <TasbeehCounter />
+              </CardContent>
+            </Card>
+          )}
         </div>
 
-        <Card className="shadow-md mt-6">
-          <CardHeader>
-            <CardTitle>Tasbeeh Counter</CardTitle>
-            <CardDescription>Count your dhikr easily</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <TasbeehCounter />
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-md">
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Your latest learning updates</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {activity.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No activity yet. Complete a lesson to get started.</p>
-            ) : (
-              <div className="space-y-3">
-                {activity.map((item) => (
-                  <div key={item.id} className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-medium">{item.message}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {typeof window !== 'undefined' ? new Date(item.timestamp).toLocaleString() : ''}
-                      </p>
-                    </div>
-                    <Badge variant="outline" className="capitalize">
-                      {item.type}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Islamic Tools & Features</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => {
-              const unlocked = isFeatureUnlocked(feature.requiredMilestone);
-              const FeatureIcon = feature.icon;
-              return (
-                <Card
-                  key={feature.id}
-                  className={`transition-all duration-300 hover:shadow-lg hover:scale-105 ${
-                    !unlocked ? 'bg-muted/50 opacity-75' : 'border-primary/20'
-                  }`}
-                >
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <span className="flex items-center gap-2">
-                        <div className={`p-2 rounded-lg ${unlocked ? 'bg-primary/10' : 'bg-muted'}`}>
-                          <FeatureIcon className={`h-6 w-6 ${unlocked ? 'text-primary' : 'text-muted-foreground'}`} />
-                        </div>
-                        <span className="text-base">{feature.title}</span>
-                      </span>
-                      {!unlocked && (
-                        <Badge variant="secondary" className="gap-1">
-                          <Lock className="h-3 w-3" />
-                          Locked
-                        </Badge>
-                      )}
-                      {unlocked && (
-                        <Badge variant="default" className="gap-1">
-                          Active
-                        </Badge>
-                      )}
-                    </CardTitle>
-                    <CardDescription>{feature.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {unlocked ? (
-                      <Button asChild className="w-full">
-                        <Link href={feature.href}>Access Tool</Link>
-                      </Button>
-                    ) : (
-                      <div className="text-sm space-y-2">
-                        <div className="p-3 bg-muted/50 rounded-lg">
-                          <p className="font-semibold text-foreground">How to unlock:</p>
-                          <p className="text-muted-foreground mt-1">
-                            Complete the required learning milestone.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4 text-primary">Hisnul Muslim Duas</h2>
-          {/* Featured dua card */}
-          <Card className="shadow-md border-primary/20 mb-4 bg-gradient-to-r from-teal-50 to-emerald-50/30">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-primary flex items-center gap-2">
-                🤲 {HISNUL_CHAPTERS[0]?.TITLE}
-              </CardTitle>
-              <CardDescription>Featured duas from Hisnul Muslim</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {HISNUL_CHAPTERS[0]?.TEXT.slice(0, 2).map((dua: any, i: number) => (
-                <div key={i} className="mb-4 p-3 bg-white/70 rounded-xl">
-                  <div className="text-xl font-bold text-right mb-1 text-gray-800" dir="rtl" lang="ar" style={{ fontFamily: "'Scheherazade New', serif", lineHeight: '2' }}>{dua.ARABIC_TEXT}</div>
-                  <div className="text-sm italic text-teal-700 mb-1">{dua.TRANSLITERATION}</div>
-                  <div className="text-sm text-gray-700 mb-1">{dua.TRANSLATED_TEXT}</div>
-                  {dua.REFERENCE && <div className="text-xs text-muted-foreground bg-teal-50 px-2 py-0.5 rounded inline-block">📚 {dua.REFERENCE}</div>}
-                </div>
-              ))}
-              <Button asChild className="w-full mt-2">
-                <Link href="/hisnul-muslim">📖 Open Full Hisnul Muslim ({HISNUL_CHAPTERS.length} chapters)</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   );
