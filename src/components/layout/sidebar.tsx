@@ -22,6 +22,7 @@ import {
   Trophy,
   MapPin,
   Compass,
+  Users,
 } from 'lucide-react';
 import { Icons } from '@/components/icons';
 import type { NavLink } from '@/lib/types';
@@ -35,6 +36,7 @@ const mainNavLinks: NavLink[] = [
   { href: '/courses', label: 'Courses', icon: GraduationCap },
   { href: '/dhikr', label: 'Dhikr Circle', icon: HeartPulse },
   { href: '/khatm', label: 'Quran Khatm', icon: BookOpen },
+  { href: '/groups', label: 'My Groups', icon: Users },
 ];
 
 const toolNavLinks: NavLink[] = [

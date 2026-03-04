@@ -89,6 +89,7 @@ model Campaign {
   status       String @default("OPEN")
   group        Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
   khatmJuz     KhatmJuz[]
+  dhikrContributions DhikrContribution[]
 }
 
 model KhatmJuz {
@@ -97,8 +98,20 @@ model KhatmJuz {
   juzNumber        Int
   claimedByUserId  String?
   status           KhatmJuzStatus @default(OPEN)
+  claimedAt        DateTime?
+  completedAt      DateTime?
   campaign         Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   claimedByUser    User?    @relation(fields: [claimedByUserId], references: [id])
+}
+
+model DhikrContribution {
+  id         String   @id @default(cuid())
+  campaignId String
+  userId     String
+  count      Int
+  createdAt  DateTime @default(now())
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
 }
 model PDFBook {
   id          String   @id @default(cuid())
@@ -127,6 +140,8 @@ enum UserRole {
 model User {
   id       String  @id @default(cuid())
   email    String  @unique
+  username String? @unique
+  displayName String?
   password String
   createdAt DateTime @default(now())
   dhikrCount Int @default(0)
@@ -144,6 +159,7 @@ model User {
     groupsAdmin Group[] @relation("GroupAdmin")
     groupMemberships GroupMember[]
     claimedJuz KhatmJuz[]
+    dhikrContributions DhikrContribution[]
 }
 
 enum LiveSessionType {

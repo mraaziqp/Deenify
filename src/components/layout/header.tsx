@@ -11,6 +11,7 @@ import {
   BotMessageSquare,
   Apple,
   Landmark,
+  Users,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,7 @@ const navLinks: NavLink[] = [
   { href: '/library', label: 'Library', icon: BookOpen },
   { href: '/dhikr', label: 'Dhikr Circle', icon: HeartPulse },
   { href: '/khatm', label: 'Quran Khatm', icon: BookOpen },
+  { href: '/groups', label: 'My Groups', icon: Users },
   { type: 'divider' },
   { type: 'title', label: 'Tools' },
   { href: '/zakat', label: 'Zakat Calculator', icon: CircleDollarSign },

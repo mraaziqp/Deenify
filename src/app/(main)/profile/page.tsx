@@ -1,239 +1,192 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { CircleUser, Target, Clock, Award, BookOpen, Heart } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { CircleUser, Target, Award, BookOpen, Heart, Edit2, Check, X, Users } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function ProfilePage() {
-  // TEMP MOCK STATE for local build/test
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    name: 'John Doe',
-    madhab: 'Hanafi',
-    level: 'practicing',
-  });
-  const [streakData] = useState({
-    currentStreak: 5,
-    longestStreak: 12,
-    totalDaysActive: 30,
-  });
-  const [weeklyActivity] = useState([
-    { day: 'Mon', count: 3, active: true },
-    { day: 'Tue', count: 2, active: true },
-    { day: 'Wed', count: 0, active: false },
-    { day: 'Thu', count: 1, active: true },
-    { day: 'Fri', count: 4, active: true },
-    { day: 'Sat', count: 0, active: false },
-    { day: 'Sun', count: 2, active: true },
-  ]);
-  const [achievements] = useState([
-    { id: 1, icon: '🏆', title: 'Starter', description: 'Joined Deenify', unlocked: true },
-    { id: 2, icon: '🔥', title: 'Streaker', description: '5-day streak', unlocked: false },
-    { id: 3, icon: '📚', title: 'Learner', description: 'Completed a course', unlocked: true },
-  ]);
+  const [saving, setSaving] = useState(false);
+  const [editUsername, setEditUsername] = useState('');
+  const [editDisplayName, setEditDisplayName] = useState('');
+
+  const fetchProfile = useCallback(async () => {
+    try {
+      const res = await fetch('/api/profile');
+      if (!res.ok) return;
+      const data = await res.json();
+      setProfile(data);
+      setEditUsername(data.username || '');
+      setEditDisplayName(data.displayName || '');
+    } catch { /* ignore */ } finally { setLoading(false); }
+  }, []);
+
+  useEffect(() => { fetchProfile(); }, [fetchProfile]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: editUsername || null, displayName: editDisplayName || null }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save');
+      setProfile((prev: any) => ({ ...prev, username: data.username, displayName: data.displayName }));
+      setIsEditing(false);
+      toast.success('Profile updated!');
+    } catch (e: any) { toast.error(e.message); } finally { setSaving(false); }
+  };
+
+  if (loading) return (
+    <div className="container mx-auto max-w-4xl py-8 px-4">
+      <div className="space-y-4">{[1, 2, 3].map((i) => <div key={i} className="h-32 bg-muted rounded-xl animate-pulse" />)}</div>
+    </div>
+  );
+
+  const displayNameVal = profile?.displayName || profile?.username || profile?.email?.split('@')[0] || 'User';
+
   return (
-    <div className="container mx-auto max-w-6xl">
+    <div className="container mx-auto max-w-4xl py-8 px-4">
+      <Toaster />
       <div className="flex items-center gap-3 mb-6">
         <CircleUser className="h-8 w-8 text-primary" />
         <div>
           <h1 className="text-3xl font-bold">Your Profile</h1>
-          <p className="text-muted-foreground">
-            Track your progress and manage your learning journey
-          </p>
-        </div>
-      </div>
-      <div className="space-y-3">
-        <div>
-          <Label htmlFor="name" className="text-sm text-muted-foreground">Name</Label>
-          {isEditing ? (
-            <Input
-              id="name"
-              value={profile.name}
-              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-              className="mt-1"
-            />
-          ) : (
-            <p className="font-semibold">{profile.name}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="madhab" className="text-sm text-muted-foreground">Madhab</Label>
-          {isEditing ? (
-            <Input
-              id="madhab"
-              value={profile.madhab}
-              onChange={(e) => setProfile({ ...profile, madhab: e.target.value })}
-              className="mt-1"
-            />
-          ) : (
-            <p className="font-semibold">{profile.madhab}</p>
-          )}
-        </div>
-        <div>
-          <Label className="text-sm text-muted-foreground">Learning Level</Label>
-          <Badge variant="secondary" className="mt-1">
-            {profile.level}
-          </Badge>
+          <p className="text-muted-foreground">Manage your identity and track your journey</p>
         </div>
       </div>
 
-      {/* The rest of the profile page content (Cards, Stats, Activity, Achievements, Admin Panel, etc.) should follow here, all inside this parent <div> */}
-      {/* Streak Stats */}
-      <Card className="shadow-lg border-l-4 border-l-primary">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            Streak Stats
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
-            <div>
-              <p className="text-sm text-muted-foreground">Current Streak</p>
-              <p className="text-3xl font-bold text-primary">{streakData.currentStreak}</p>
-            </div>
-            <span className="text-4xl">🔥</span>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 bg-muted rounded-lg">
-              <p className="text-xs text-muted-foreground">Longest</p>
-              <p className="text-xl font-bold">{streakData.longestStreak}</p>
-            </div>
-            <div className="p-3 bg-muted rounded-lg">
-              <p className="text-xs text-muted-foreground">Total Days</p>
-              <p className="text-xl font-bold">{streakData.totalDaysActive}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Right Column - Activity & Achievements */}
-      <div className="lg:col-span-2 space-y-6">
-        {/* Weekly Activity */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-primary" />
-              This Week's Activity
-            </CardTitle>
-            <CardDescription>Your daily learning engagement</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-7 gap-2">
-              {weeklyActivity.map((day, index) => (
-                <div key={index} className="flex flex-col items-center gap-2">
-                  <div
-                    className={`w-full h-24 rounded-lg transition-all ${
-                      day.active 
-                        ? 'bg-primary hover:bg-primary/80' 
-                        : 'bg-muted'
-                    }`}
-                    style={{ height: `${Math.max(day.count / 1.5, 20)}px` }}
-                    title={`${day.count} activities`}
-                  />
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {day.day}
-                  </span>
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Identity card */}
+        <div className="lg:col-span-1 space-y-4">
+          <Card className="shadow-md">
+            <CardContent className="pt-6 pb-5">
+              <div className="flex flex-col items-center mb-5">
+                <div className="h-20 w-20 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-3xl mb-3">
+                  {displayNameVal[0].toUpperCase()}
                 </div>
-              ))}
-            </div>
-            <div className="mt-4 flex items-center justify-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-primary" />
-                Active
-              </span>
-              <span className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-muted" />
-                Inactive
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-          {/* Learning Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border-primary/20">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <BookOpen className="h-6 w-6 text-primary" />
+                <p className="font-bold text-lg text-center">{displayNameVal}</p>
+                {profile?.username && <p className="text-sm text-muted-foreground">@{profile.username}</p>}
+                <p className="text-xs text-muted-foreground mt-0.5">{profile?.email}</p>
+                <Badge variant="secondary" className="mt-2 capitalize">{(profile?.role || 'user').toLowerCase()}</Badge>
+              </div>
+              {isEditing ? (
+                <div className="space-y-3">
+                  <div>
+                    <Label htmlFor="displayName" className="text-xs text-muted-foreground">Display Name</Label>
+                    <Input id="displayName" value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)} placeholder="Your visible name" className="mt-1" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold">12</p>
-                    <p className="text-sm text-muted-foreground">Courses Started</p>
+                    <Label htmlFor="username" className="text-xs text-muted-foreground">Username</Label>
+                    <div className="relative mt-1">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">@</span>
+                      <Input id="username" value={editUsername} onChange={(e) => setEditUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))} placeholder="username" className="pl-7" maxLength={30} />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">3-30 chars. Used for group invites.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button onClick={handleSave} disabled={saving} size="sm" className="flex-1 bg-emerald-600 hover:bg-emerald-700 gap-1">
+                      <Check className="h-3.5 w-3.5" /> {saving ? 'Saving...' : 'Save'}
+                    </Button>
+                    <Button onClick={() => { setEditUsername(profile?.username || ''); setEditDisplayName(profile?.displayName || ''); setIsEditing(false); }} size="sm" variant="outline" className="gap-1">
+                      <X className="h-3.5 w-3.5" /> Cancel
+                    </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              ) : (
+                <Button onClick={() => setIsEditing(true)} variant="outline" size="sm" className="w-full gap-2">
+                  <Edit2 className="h-4 w-4" /> Edit Profile
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-4 pb-4">
+              <Button asChild variant="outline" className="w-full gap-2">
+                <Link href="/groups"><Users className="h-4 w-4" /> My Groups</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
 
-            <Card className="border-accent/20">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-accent/10 rounded-lg">
-                    <Award className="h-6 w-6 text-accent" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">3</p>
-                    <p className="text-sm text-muted-foreground">Achievements</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-primary/20">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <Heart className="h-6 w-6 text-red-500" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">1.2K</p>
-                    <p className="text-sm text-muted-foreground">Total Dhikr</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Achievements */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-5 w-5 text-primary" />
-                Achievements
-              </CardTitle>
-              <CardDescription>Unlock badges as you progress</CardDescription>
+        {/* Stats */}
+        <div className="lg:col-span-2 space-y-5">
+          <Card className="shadow-md border-l-4 border-l-primary">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base"><Target className="h-5 w-5 text-primary" /> Streak & Activity</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {achievements.map((achievement) => (
-                  <div
-                    key={achievement.id}
-                    className={`p-4 rounded-lg border-2 transition-all ${
-                      achievement.unlocked
-                        ? 'border-primary bg-primary/5 hover:shadow-md'
-                        : 'border-muted bg-muted/30 opacity-60'
-                    }`}
-                  >
-                    <div className="text-center">
-                      <div className="text-4xl mb-2">{achievement.icon}</div>
-                      <h3 className="font-semibold text-sm mb-1">{achievement.title}</h3>
-                      <p className="text-xs text-muted-foreground">{achievement.description}</p>
-                      {achievement.unlocked && (
-                        <Badge variant="default" className="mt-2 text-xs">
-                          Unlocked
-                        </Badge>
-                      )}
-                    </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="text-center p-3 bg-primary/10 rounded-xl">
+                  <p className="text-3xl font-bold text-primary">{profile?.currentStreak ?? 0}</p>
+                  <p className="text-xs text-muted-foreground mt-1">🔥 Current Streak</p>
+                </div>
+                <div className="text-center p-3 bg-muted rounded-xl">
+                  <p className="text-3xl font-bold">{profile?.totalDaysActive ?? 0}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Days Active</p>
+                </div>
+                <div className="text-center p-3 bg-muted rounded-xl">
+                  <p className="text-3xl font-bold">{profile?.dhikrCount ?? 0}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Total Dhikr</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <div className="grid grid-cols-2 gap-4">
+            <Card>
+              <CardContent className="pt-5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-primary/10 rounded-xl"><BookOpen className="h-5 w-5 text-primary" /></div>
+                  <div><p className="text-2xl font-bold">{profile?.coursesCompleted ?? 0}</p><p className="text-sm text-muted-foreground">Courses Completed</p></div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-rose-100 rounded-xl"><Heart className="h-5 w-5 text-rose-500" /></div>
+                  <div><p className="text-2xl font-bold">{(profile?.dhikrCount ?? 0).toLocaleString()}</p><p className="text-sm text-muted-foreground">Total Dhikr</p></div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <Card className="shadow-md">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base"><Award className="h-5 w-5 text-primary" /> Achievements</CardTitle>
+              <CardDescription>Unlock badges as you reach milestones</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {[
+                  { icon: '🏆', title: 'Starter', desc: 'Joined Deenify', unlocked: true },
+                  { icon: '🔥', title: 'Consistent', desc: '7-day streak', unlocked: (profile?.currentStreak ?? 0) >= 7 },
+                  { icon: '📿', title: 'Dhikr Master', desc: '1000 dhikr', unlocked: (profile?.dhikrCount ?? 0) >= 1000 },
+                  { icon: '📚', title: 'Scholar Seeker', desc: 'Completed a course', unlocked: (profile?.coursesCompleted ?? 0) > 0 },
+                  { icon: '🕌', title: 'Community', desc: 'Joined a group', unlocked: false },
+                  { icon: '📖', title: 'Khatm', desc: 'Completed a Khatm', unlocked: false },
+                ].map((a) => (
+                  <div key={a.title} className={`p-3 rounded-xl border-2 text-center transition-all ${a.unlocked ? 'border-primary bg-primary/5' : 'border-muted bg-muted/30 opacity-50'}`}>
+                    <div className="text-3xl mb-1">{a.icon}</div>
+                    <p className="font-semibold text-sm">{a.title}</p>
+                    <p className="text-xs text-muted-foreground">{a.desc}</p>
+                    {a.unlocked && <Badge variant="default" className="mt-1.5 text-xs">Unlocked ✓</Badge>}
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
+        </div>
+      </div>
     </div>
   );
 }
