@@ -4,6 +4,7 @@
 import "./globals.css";
 import ClientAuthProvider from '@/components/client-auth-provider';
 import HeaderWrapper from '@/components/layout/header-wrapper';
+import PwaInstallPrompt from '@/components/pwa-install-prompt';
 import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <ClientAuthProvider>
             <HeaderWrapper>{children}</HeaderWrapper>
           </ClientAuthProvider>
+          <PwaInstallPrompt />
         </body>
       </html>
     );
