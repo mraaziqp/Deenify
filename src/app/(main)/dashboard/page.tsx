@@ -1,6 +1,5 @@
 'use client';
 import { useAuth } from '@/lib/auth-context';
-import { useRouter } from 'next/navigation';
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from 'react';
@@ -12,12 +11,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   BookOpen,
   Award,
   Compass,
+  HelpCircle,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 import { DailyHadithCard } from '@/components/daily-hadith-card';
@@ -26,6 +26,59 @@ import TasbeehCounter from '@/components/dhikr/tasbeeh-counter';
 import SponsoredBannerCarousel from '@/components/sponsored-banner-carousel';
 
 // TODO: Implement DB-based progress management
+
+const GUIDE_CATEGORIES = [
+  {
+    title: '📖 Quran & Reading',
+    color: '#e6f4f0',
+    accent: '#059669',
+    items: [
+      { icon: '📖', name: 'Quran Reader', desc: 'Read the full Quran with translations, tafsir, and audio recitation.', href: '/quran' },
+      { icon: '📜', name: 'Surah Yaaseen', desc: 'Read Surah Yaaseen (36) individually or join a group Khatm recitation.', href: '/yaseen' },
+      { icon: '📚', name: 'Learning Library', desc: 'Browse Islamic PDFs, books, and educational resources.', href: '/library' },
+    ],
+  },
+  {
+    title: '🤲 Worship & Dhikr',
+    color: '#fdf6e3',
+    accent: '#d97706',
+    items: [
+      { icon: '🤲', name: 'Duas (Hisnul Muslim)', desc: 'Daily authenticated duas from Hisnul Muslim with Arabic, transliteration & translation.', href: '/hisnul-muslim' },
+      { icon: '📿', name: 'Dhikr Counter', desc: 'Digital tasbeeh — count SubhanAllah, Alhamdulillah, Allahu Akbar and more.', href: '/dhikr' },
+      { icon: '🌙', name: 'Awrad & Mawlid', desc: 'Daily awrad recitations and Mawlid programmes.', href: '/awrad' },
+    ],
+  },
+  {
+    title: '🕌 Prayer & Guidance',
+    color: '#eef2ff',
+    accent: '#4f46e5',
+    items: [
+      { icon: '🕌', name: 'Prayer Times', desc: 'Accurate daily prayer times for Cape Town. Displayed on your dashboard.', href: '/dashboard' },
+      { icon: '🧭', name: 'Qibla Compass', desc: 'Find the direction of the Kaabah from your current location.', href: '/qiblah' },
+      { icon: '📅', name: 'Ramadan Tracker', desc: 'Track fasting days, sehri & iftaar times during Ramadan.', href: '/ramadan' },
+    ],
+  },
+  {
+    title: '🥗 Halal & Community',
+    color: '#f0fdf4',
+    accent: '#16a34a',
+    items: [
+      { icon: '🥗', name: 'Halal Food Guide', desc: 'Check whether food products and additives are halal or haram.', href: '/halal-food' },
+      { icon: '👥', name: 'Groups', desc: 'Join or create Jamaah groups for Yaaseen Khatms and collective worship.', href: '/groups' },
+      { icon: '🎓', name: 'Scholar Q&A', desc: 'Browse answers to common Islamic questions from qualified scholars.', href: '/qna' },
+    ],
+  },
+  {
+    title: '🤖 AI & Tools',
+    color: '#faf5ff',
+    accent: '#7c3aed',
+    items: [
+      { icon: '🤖', name: 'AI Assistant', desc: 'Ask any Islamic question and get an AI-powered response with references.', href: '/ai-assistant' },
+      { icon: '💰', name: 'Zakat Calculator', desc: 'Calculate your Zakat obligations accurately using current nisab values.', href: '/zakat' },
+      { icon: '📰', name: 'CCE Mag Portal', desc: 'Access the CCE Magazine quality-of-life portal for resources and opportunities.', href: '/ccemag' },
+    ],
+  },
+];
 
 type DashboardStats = {
   currentStreak: number;
@@ -38,8 +91,8 @@ type DashboardStats = {
 
 export default function DashboardPage() {
   const { user, hasRole, isLoading } = useAuth();
-  const router = useRouter();
-  const [selectedTab, setSelectedTab] = useState<'learning' | 'yaseen' | 'qiblah' | 'ccemag' | 'daily' | 'worship' | 'fact' | 'admin'>('learning');
+  const [selectedTab, setSelectedTab] = useState<'learning' | 'yaseen' | 'qiblah' | 'ccemag' | 'daily' | 'worship' | 'admin'>('learning');
+  const [showGuide, setShowGuide] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     currentStreak: 0,
     totalDaysActive: 0,
@@ -49,8 +102,77 @@ export default function DashboardPage() {
   });
   useEffect(() => { document.title = 'Dashboard | Deenify'; }, []);
 
+  const displayName = user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || null;
+
   return (
     <div className="container mx-auto px-2 py-3 sm:px-4 md:px-8 max-w-5xl">
+
+      {/* ── App Guide Modal ─────────────────────── */}
+      {showGuide && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowGuide(false); }}
+        >
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl">
+            {/* Header */}
+            <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 rounded-t-3xl border-b" style={{ background: 'linear-gradient(135deg,#0a4a36 0%,#0d6e50 100%)' }}>
+              <div>
+                <h2 className="text-white font-bold text-xl">📘 App Guide</h2>
+                <p className="text-emerald-200 text-sm">Everything Deenify has to offer</p>
+              </div>
+              <button
+                onClick={() => setShowGuide(false)}
+                className="text-white/70 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Intro */}
+            <div className="px-6 pt-5 pb-2">
+              <p className="text-sm text-muted-foreground">Deenify is your all-in-one Islamic companion. Use the quick-access tiles on your dashboard, or explore the sidebar to navigate between features. Here&apos;s what you can find:</p>
+            </div>
+
+            {/* Categories */}
+            <div className="px-6 pb-6 space-y-5">
+              {GUIDE_CATEGORIES.map((cat) => (
+                <div key={cat.title}>
+                  <h3 className="font-bold text-sm uppercase tracking-wider mb-2" style={{ color: cat.accent }}>{cat.title}</h3>
+                  <div className="space-y-2">
+                    {cat.items.map((item) => (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setShowGuide(false)}
+                        className="flex items-start gap-3 rounded-2xl p-3 transition-all hover:shadow-sm cursor-pointer no-underline"
+                        style={{ background: cat.color }}
+                      >
+                        <span className="text-2xl mt-0.5 shrink-0">{item.icon}</span>
+                        <div>
+                          <p className="font-semibold text-sm" style={{ color: cat.accent }}>{item.name}</p>
+                          <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{item.desc}</p>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* Navigation tip */}
+              <div className="rounded-2xl p-4 border border-emerald-100 bg-emerald-50">
+                <p className="text-sm font-semibold text-emerald-800 mb-1">💡 Navigation Tips</p>
+                <ul className="text-xs text-emerald-700 space-y-1 list-disc list-inside">
+                  <li>Use the <strong>sidebar / bottom nav</strong> to jump between sections quickly.</li>
+                  <li>The <strong>dashboard tiles</strong> give one-tap access to your most-used features.</li>
+                  <li>Tap the <strong>Daily</strong> tab on your dashboard for today&apos;s hadith &amp; prayer times.</li>
+                  <li>Use <strong>Groups</strong> to coordinate Yaaseen Khatms with family and friends.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="space-y-4 md:space-y-6">
         {/* ── Islamic Hero Banner ─────────────────────── */}
         <div className="relative overflow-hidden rounded-3xl shadow-2xl" style={{background:'linear-gradient(135deg,#0a4a36 0%,#0d6e50 45%,#1e5f74 100%)',minHeight:'9rem'}}>
@@ -68,7 +190,7 @@ export default function DashboardPage() {
                 <span>Ramadan Mubarak 1447 · {new Date().toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'long'})}</span>
               </p>
               <h1 className="text-white font-bold" style={{fontSize:'clamp(1.4rem,3vw,2.1rem)',letterSpacing:'-0.02em',lineHeight:1.15}}>
-                السلام عليكم ورحمة الله
+                {displayName ? `السلام عليكم، ${displayName}` : 'السلام عليكم ورحمة الله'}
               </h1>
               <p className="text-emerald-100 mt-1" style={{fontSize:'0.95rem',opacity:0.85}}>May Allah bless your day with peace, barakah &amp; remembrance.</p>
             </div>
@@ -80,9 +202,15 @@ export default function DashboardPage() {
                   <p className="text-white font-bold text-xl tabular-nums">{stats.currentStreak || 1}</p>
                 </div>
               </div>
-              <span className="text-yellow-300 text-xs font-medium" style={{fontFamily:'Scheherazade New,Amiri,serif',fontSize:'1.1rem'}}>
+              <span className="text-yellow-300 text-xs font-medium" style={{fontFamily:'Scheherazade New,Amiri,serif',fontSize:'1.05rem'}}>
                 بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ
               </span>
+              <button
+                onClick={() => setShowGuide(true)}
+                className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 transition-colors rounded-xl px-3 py-1.5 border border-white/15 text-white text-xs font-medium"
+              >
+                <HelpCircle className="h-3.5 w-3.5" /> App Guide
+              </button>
             </div>
           </div>
         </div>
@@ -162,17 +290,24 @@ export default function DashboardPage() {
           </div>
           {/* Tab Content */}
           {selectedTab === 'learning' && (
-            <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
+            <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BookOpen className="h-5 w-5 text-primary" />
                   Learning Library
                 </CardTitle>
-                <CardDescription>Explore PDFs, books, and ask questions</CardDescription>
+                <CardDescription>Browse Islamic books, PDFs, and educational resources curated for Muslims of all levels.</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-col gap-2">
+                <div className="grid grid-cols-2 gap-2 text-sm mb-2">
+                  {[['📚','PDF Books'],['🎓','Scholar Texts'],['🔖','Bookmarks'],['🔍','Search & Filter']].map(([icon,label])=>(
+                    <div key={label as string} className="flex items-center gap-2 rounded-xl bg-muted/50 px-3 py-2">
+                      <span>{icon}</span><span className="text-muted-foreground">{label as string}</span>
+                    </div>
+                  ))}
+                </div>
                 <Button asChild className="w-full">
-                  <Link href="/learning">Open Learning Library</Link>
+                  <Link href="/library">Open Learning Library</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -239,15 +374,18 @@ export default function DashboardPage() {
             </Card>
           )}
           {selectedTab === 'qiblah' && (
-            <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
+            <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Compass className="h-5 w-5 text-primary" />
                   Qiblah Compass
                 </CardTitle>
-                <CardDescription>Find the Qiblah direction quickly</CardDescription>
+                <CardDescription>Find the exact direction of the Kaabah in Makkah from your current GPS location.</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-col gap-3">
+                <p className="text-sm text-muted-foreground rounded-xl bg-indigo-50 border border-indigo-100 px-4 py-3">
+                  🧭 Uses your device&apos;s location &amp; compass sensor. Make sure location permissions are enabled for accurate results.
+                </p>
                 <Button asChild className="w-full">
                   <Link href="/qiblah">Open Qiblah Compass</Link>
                 </Button>
@@ -255,15 +393,22 @@ export default function DashboardPage() {
             </Card>
           )}
           {selectedTab === 'admin' && hasRole && hasRole('admin') && (
-            <Card className="shadow-md min-h-[140px] flex flex-col justify-between">
+            <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Award className="h-5 w-5 text-primary" />
                   Admin Dashboard
                 </CardTitle>
-                <CardDescription>Manage users, content, and settings.</CardDescription>
+                <CardDescription>Manage users, content, system alerts, and all platform settings.</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-col gap-2">
+                <div className="grid grid-cols-2 gap-2 text-sm mb-2">
+                  {[['👥','User Management'],['📚','Content Manager'],['🎵','Audio Library'],['⚙️','Settings']].map(([icon,label])=>(
+                    <div key={label as string} className="flex items-center gap-2 rounded-xl bg-muted/50 px-3 py-2">
+                      <span>{icon}</span><span className="text-muted-foreground">{label as string}</span>
+                    </div>
+                  ))}
+                </div>
                 <Button asChild className="w-full">
                   <Link href="/admin">Go to Full Admin Dashboard</Link>
                 </Button>

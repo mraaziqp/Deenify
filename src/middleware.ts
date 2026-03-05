@@ -17,6 +17,7 @@ const PUBLIC_PREFIXES = [
   '/manifest.json',
   '/service-worker.js',
   '/books/',
+  '/join/',   // Magic invite join links — auth handled inside the page
 ];
 
 // Admin-only routes

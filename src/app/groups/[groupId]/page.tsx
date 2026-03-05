@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import {
   Users, Copy, Check, Plus, UserPlus, BookOpen, Heart,
   Clock, CheckCircle2, Circle, Loader2, ChevronLeft, Trophy,
-  Shield, Trash2, RefreshCw,
+  Shield, Trash2, RefreshCw, Share2, QrCode, X,
 } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -208,6 +209,7 @@ function DhikrPanel({ campaign, groupId, currentUserId, onUpdate }: {
 export default function GroupDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const groupId = (params?.groupId ?? '') as string;
 
@@ -215,6 +217,10 @@ export default function GroupDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+
+  // Invite modal
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   // Add member dialog
   const [addMemberOpen, setAddMemberOpen] = useState(false);
@@ -247,10 +253,28 @@ export default function GroupDetailPage() {
 
   useEffect(() => {
     fetchGroup();
-    // Live poll every 8 seconds
-    intervalRef.current = setInterval(fetchGroup, 8000);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    // Live poll every 5 seconds, but pause when tab is hidden to save DB compute
+    intervalRef.current = setInterval(() => {
+      if (!document.hidden) fetchGroup();
+    }, 5000);
+    const handleVisibility = () => {
+      if (!document.hidden) fetchGroup(); // immediate refresh on tab focus
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, [fetchGroup]);
+
+  // Show success toast when redirected from the magic join link
+  useEffect(() => {
+    if (searchParams?.get('joined') === '1' && group?.name) {
+      toast.success(`🎉 Successfully joined ${group.name}!`, { duration: 4000 });
+      // Clean the URL without a full reload
+      router.replace(`/groups/${groupId}`, { scroll: false });
+    }
+  }, [searchParams, group?.name, groupId, router]);
 
   // User search debounce
   useEffect(() => {
@@ -344,6 +368,30 @@ export default function GroupDetailPage() {
 
   const isAdmin = group.adminId === user?.id;
   const inviteCode = group.inviteCode;
+  const joinUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/join/${inviteCode}`
+    : `/join/${inviteCode}`;
+
+  const handleNativeShare = async () => {
+    const text = `As-salamu alaykum! Join my Dhikr/Khatm circle "${group.name}" on Deenify. Tap here to auto-join: ${joinUrl}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: `Join ${group.name} on Deenify`, text, url: joinUrl });
+      } catch {
+        // user cancelled — no-op
+      }
+    } else {
+      // Fallback: open WhatsApp
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+  };
+
+  const copyJoinLink = () => {
+    navigator.clipboard.writeText(joinUrl);
+    setLinkCopied(true);
+    toast.success('Join link copied!');
+    setTimeout(() => setLinkCopied(false), 2500);
+  };
 
   return (
     <div className="container mx-auto max-w-4xl py-6 px-4">
@@ -371,13 +419,21 @@ export default function GroupDetailPage() {
           </div>
           <div className="flex flex-col gap-2 items-end shrink-0">
             {inviteCode && (
-              <button
-                onClick={() => { navigator.clipboard.writeText(inviteCode); setCopied(true); toast.success('Invite code copied!'); setTimeout(() => setCopied(false), 2000); }}
-                className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 px-3 py-2 rounded-xl text-sm font-mono transition-colors"
-              >
-                {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                {inviteCode}
-              </button>
+              <>
+                <button
+                  onClick={() => setInviteOpen(true)}
+                  className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 px-3 py-2 rounded-xl text-sm font-semibold transition-colors"
+                >
+                  <Share2 className="h-3.5 w-3.5" /> Invite
+                </button>
+                <button
+                  onClick={() => { navigator.clipboard.writeText(inviteCode); setCopied(true); toast.success('Invite code copied!'); setTimeout(() => setCopied(false), 2000); }}
+                  className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 px-3 py-2 rounded-xl text-sm font-mono transition-colors"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  {inviteCode}
+                </button>
+              </>
             )}
             <button onClick={fetchGroup} className="text-emerald-200 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors" title="Refresh">
               <RefreshCw className="h-4 w-4" />
@@ -483,6 +539,78 @@ export default function GroupDetailPage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Invite Modal */}
+      {inviteCode && (
+        <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Share2 className="h-5 w-5 text-emerald-600" /> Invite to {group.name}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-2 space-y-5">
+              {/* QR Code */}
+              <div className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-2xl border">
+                <QRCodeSVG
+                  value={joinUrl}
+                  size={180}
+                  bgColor="#ffffff"
+                  fgColor="#065f46"
+                  level="M"
+                  includeMargin
+                />
+                <p className="text-xs text-muted-foreground text-center">Scan to join instantly</p>
+                <div className="flex items-center gap-1.5 bg-white border rounded-lg px-3 py-1.5">
+                  <span className="font-mono text-sm font-bold text-emerald-700 tracking-widest">{inviteCode}</span>
+                </div>
+              </div>
+
+              {/* Copy link */}
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Join Link</p>
+                <div className="flex gap-2">
+                  <input
+                    readOnly
+                    value={joinUrl}
+                    className="flex-1 text-xs rounded-lg border px-3 py-2 bg-muted font-mono truncate"
+                  />
+                  <button
+                    onClick={copyJoinLink}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors shrink-0"
+                  >
+                    {linkCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                    {linkCopied ? 'Copied!' : 'Copy'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Share buttons */}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleNativeShare}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-green-500 hover:bg-green-600 text-white text-sm font-semibold transition-colors"
+                >
+                  <span className="text-base">📲</span>
+                  {typeof navigator !== 'undefined' && 'share' in navigator ? 'Share' : 'WhatsApp'}
+                </button>
+                <button
+                  onClick={() => {
+                    const text = `As-salamu alaykum! Join my circle "${group.name}" on Deenify: ${joinUrl}`;
+                    window.open(
+                      `mailto:?subject=Join ${encodeURIComponent(group.name)} on Deenify&body=${encodeURIComponent(text)}`,
+                      '_blank'
+                    );
+                  }}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold transition-colors"
+                >
+                  <span className="text-base">✉️</span> Email
+                </button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Add Member Dialog */}
       <Dialog open={addMemberOpen} onOpenChange={setAddMemberOpen}>

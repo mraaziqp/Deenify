@@ -441,23 +441,25 @@ export default function AdminDashboard() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="activity" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-          <TabsTrigger value="alerts">System Alerts</TabsTrigger>
-          <TabsTrigger value="users">User Management</TabsTrigger>
-          <TabsTrigger value="content-manager">📚 Content Manager</TabsTrigger>
-          <TabsTrigger value="yaseen-audio">🎵 Yaaseen Audio</TabsTrigger>
-          <TabsTrigger value="quran-media" data-tab="quran-media">Quran Media</TabsTrigger>
-          <TabsTrigger value="audio-library">🎙 Audio Library</TabsTrigger>
-          <TabsTrigger value="learning">Learning Library</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-          <TabsTrigger value="pdf-books">PDF Book Upload</TabsTrigger>
-          <TabsTrigger value="cce-mag-portal">CCE Mag Portal</TabsTrigger>
-          <TabsTrigger value="pdf-reader-demo">PDF Reader Demo</TabsTrigger>
-          <TabsTrigger value="ad-manager">💰 Ad Manager</TabsTrigger>
-          <TabsTrigger value="video-playlists">📺 Video Library</TabsTrigger>
-          <TabsTrigger value="media-upload">📁 Media Upload</TabsTrigger>
-  </TabsList>
+        <div className="overflow-x-auto pb-1">
+          <TabsList className="flex w-max min-w-full flex-wrap gap-1 h-auto p-1">
+            <TabsTrigger value="activity">Recent Activity</TabsTrigger>
+            <TabsTrigger value="alerts">System Alerts</TabsTrigger>
+            <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="content-manager">📚 Content Manager</TabsTrigger>
+            <TabsTrigger value="yaseen-audio">🎵 Yaaseen Audio</TabsTrigger>
+            <TabsTrigger value="quran-media" data-tab="quran-media">Quran Media</TabsTrigger>
+            <TabsTrigger value="audio-library">🎙 Audio Library</TabsTrigger>
+            <TabsTrigger value="learning">Learning Library</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="pdf-books">PDF Book Upload</TabsTrigger>
+            <TabsTrigger value="cce-mag-portal">CCE Mag Portal</TabsTrigger>
+            <TabsTrigger value="pdf-reader-demo">PDF Reader Demo</TabsTrigger>
+            <TabsTrigger value="ad-manager">💰 Ad Manager</TabsTrigger>
+            <TabsTrigger value="video-playlists">📺 Video Library</TabsTrigger>
+            <TabsTrigger value="media-upload">📁 Media Upload</TabsTrigger>
+          </TabsList>
+        </div>
         <TabsContent value="cce-mag-portal" className="space-y-4">
           <Card>
             <CardHeader>
