@@ -144,6 +144,24 @@ export default function LibraryPage() {
     return () => controller.abort();
   }, []);
 
+  // Sync real enrollment status from localStorage after API data loads
+  useEffect(() => {
+    if (loading) return;
+    const enrolledIds: string[] = JSON.parse(localStorage.getItem('enrolled_courses') || '[]');
+    if (!enrolledIds.length) return;
+    setData((prev) => ({
+      ...prev,
+      freeCourses: prev.freeCourses.map((c) => ({
+        ...c,
+        enrolled: c.enrolled || enrolledIds.includes(c.id),
+      })),
+      specializedCourses: prev.specializedCourses.map((c) => ({
+        ...c,
+        enrolled: c.enrolled || enrolledIds.includes(c.id),
+      })),
+    }));
+  }, [loading]);
+
   const filteredFree = useMemo(() => {
     const list = data.freeCourses.filter((course) => (course.price ?? 0) <= 0);
     return selectedCategory === 'all'

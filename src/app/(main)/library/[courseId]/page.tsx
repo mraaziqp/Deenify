@@ -77,9 +77,10 @@ export default function CourseDetailPage() {
     try {
       setLoading(true);
       
-      // Check localStorage for existing progress
+      // Check localStorage for existing progress and enrollment
       const savedProgress = localStorage.getItem(`course_${courseId}`);
       const progress = savedProgress ? JSON.parse(savedProgress) : {};
+      const enrolledIds: string[] = JSON.parse(localStorage.getItem('enrolled_courses') || '[]');
 
       // Fetch course from API
       const res = await fetch('/api/library');
@@ -94,11 +95,15 @@ export default function CourseDetailPage() {
         return;
       }
 
+      // Merge enrollment from localStorage so it persists across page visits
+      const isEnrolled = foundCourse.enrolled || enrolledIds.includes(courseId);
+
       // Generate course modules and lessons
       const modules = generateModules(foundCourse, progress);
       
       const detailedCourse: CourseDetail = {
         ...foundCourse,
+        enrolled: isEnrolled,
         modules,
         overview: generateOverview(foundCourse),
         learningOutcomes: generateLearningOutcomes(foundCourse),
@@ -129,7 +134,7 @@ export default function CourseDetailPage() {
           return {
             id: lessonId,
             title: `Lesson ${moduleIdx * 3 + lessonIdx + 1}: ${getLessonTitle(course.category, moduleIdx, lessonIdx)}`,
-            duration: `${Math.floor(Math.random() * 20) + 10} min`,
+            duration: `${10 + ((moduleIdx * 3 + lessonIdx + 1) * 7) % 20} min`,
             content: getLessonContent(course.category, moduleIdx, lessonIdx),
             completed: progress[lessonId] || false,
           };
@@ -565,13 +570,22 @@ export default function CourseDetailPage() {
                   <Badge variant="outline">{currentLesson.duration}</Badge>
                 </div>
                 
-                <div className="prose prose-sm max-w-none">
-                  <div
-                    className="text-sm text-muted-foreground"
-                    dangerouslySetInnerHTML={{
-                      __html: currentLesson.content.replace(/\n/g, '<br />'),
-                    }}
-                  />
+                <div className="prose prose-sm max-w-none text-sm text-muted-foreground space-y-1">
+                  {currentLesson.content.split('\n').map((line, i) => {
+                    if (line.startsWith('# ')) return <h3 key={i} className="font-bold text-foreground text-base mt-3 mb-1">{line.slice(2)}</h3>;
+                    if (line.startsWith('## ')) return <h4 key={i} className="font-semibold text-foreground mb-1">{line.slice(3)}</h4>;
+                    if (/^\d+\.\s/.test(line)) return (
+                      <p key={i} className="ml-3">• {line.replace(/^\d+\.\s/, '').replace(/\*\*(.+?)\*\*/g, '$1')}</p>
+                    );
+                    if (line.startsWith('- ')) return (
+                      <p key={i} className="ml-3">• {line.slice(2).replace(/\*\*(.+?)\*\*/g, '$1')}</p>
+                    );
+                    if (line.trim() === '') return <br key={i} />;
+                    const formatted = line.split(/\*\*(.+?)\*\*/g).map((part, j) =>
+                      j % 2 === 1 ? <strong key={j} className="text-foreground">{part}</strong> : part
+                    );
+                    return <p key={i}>{formatted}</p>;
+                  })}
                 </div>
 
                 {!currentLesson.completed && (
