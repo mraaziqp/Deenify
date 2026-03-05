@@ -33,7 +33,7 @@ import { cn } from '@/lib/utils';
 import { KeyboardShortcutsDialog } from '@/components/keyboard-shortcuts-dialog';
 import DeenifyLogo from '@/components/ui/deenify-logo';
 import { useAuth } from '@/lib/auth-context';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, HelpCircle } from 'lucide-react';
 
 const navLinks: NavLink[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -131,6 +131,14 @@ function HeaderContent() {
 
       <div className="relative ml-auto flex-1 md:grow-0 flex items-center gap-1 md:gap-2">
         <KeyboardShortcutsDialog />
+        <Link
+          href="/dashboard"
+          title="App Guide"
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9"
+        >
+          <HelpCircle className="h-5 w-5" />
+          <span className="sr-only">App Guide</span>
+        </Link>
         <Link href="/dashboard" className="font-bold text-xl text-primary flex items-center gap-2">
           <DeenifyLogo />
           <span>Deenify</span>

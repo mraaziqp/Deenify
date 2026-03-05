@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PDFReader } from "@/components/ui/pdf-reader";
 import { Progress } from "@/components/ui/progress";
 import { 
@@ -295,7 +296,8 @@ export default function LibraryPage() {
       </div>
 
       <Tabs defaultValue="courses" className="space-y-6">
-        <TabsList className="grid w-full max-w-xl grid-cols-5">
+        <div className="overflow-x-auto pb-1">
+        <TabsList className="flex w-max min-w-full gap-1 h-auto p-1">
           <TabsTrigger value="courses" className="gap-2">
             <GraduationCap className="h-4 w-4" />
             Free Classes
@@ -317,6 +319,7 @@ export default function LibraryPage() {
             Dua Library
           </TabsTrigger>
         </TabsList>
+        </div>
 
         <TabsContent value="courses" className="space-y-6">
           <Card>
@@ -527,17 +530,24 @@ export default function LibraryPage() {
               </Card>
             ))}
           </div>
-          {selectedPDF && (
-            <div className="mt-8">
-              <PDFReader
-                url={selectedPDF.url ?? `/api/pdf-book?id=${selectedPDF.id}`}
-                title={selectedPDF.title}
-              />
-              <Button className="mt-4" variant="secondary" onClick={() => setSelectedPDF(null)}>
-                Close Reader
-              </Button>
-            </div>
-          )}
+          <Dialog open={!!selectedPDF} onOpenChange={(open) => { if (!open) setSelectedPDF(null); }}>
+            <DialogContent className="max-w-[95vw] w-full h-[90vh] flex flex-col p-0 gap-0">
+              <DialogHeader className="px-4 pt-4 pb-2 shrink-0">
+                <DialogTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5" />
+                  {selectedPDF?.title}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="flex-1 overflow-hidden">
+                {selectedPDF && (
+                  <PDFReader
+                    url={selectedPDF.url ?? `/api/pdf-book?id=${selectedPDF.id}`}
+                    title={selectedPDF.title}
+                  />
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
         </TabsContent>
 
         <TabsContent value="duas" className="space-y-6">
