@@ -411,17 +411,74 @@ export default function AdminDashboard() {
         </Badge>
       </div>
 
-      {/* Quran Media Upload Shortcut */}
-      <div className="flex justify-end mb-2">
-        <Button variant="default" size="lg" onClick={() => {
-          const el = document.querySelector('[data-tab="quran-media"]');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}>
-          <span className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5" />
-            Upload Recitation Audio
-          </span>
-        </Button>
+      {/* ── Quick Access Navigation ─────────────────────────────────── */}
+      <div className="space-y-4">
+        {/* Admin Tools */}
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">⚙️ Admin Tools</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            {[
+              { href: '/admin', label: 'Admin Dashboard', icon: '🛡️' },
+              { href: '/admin/madresah', label: 'Madresah Schools', icon: '🏫' },
+              { href: '/admin/media', label: 'Media Upload', icon: '📁' },
+              { href: '/admin/content', label: 'Content Upload', icon: '📚' },
+              { href: '/facts-admin', label: 'Daily Facts', icon: '💡' },
+              { href: '/verifier', label: 'Verifier Dashboard', icon: '🛡️' },
+              { href: '/teacher', label: 'Teacher Portal', icon: '🎓' },
+              { href: '/scholar/dashboard', label: 'Scholar Q&A', icon: '📖' },
+            ].map(({ href, label, icon }) => (
+              <a key={href} href={href}
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl border bg-white hover:bg-emerald-50 hover:border-emerald-300 transition-all text-center shadow-sm">
+                <span className="text-2xl">{icon}</span>
+                <span className="text-xs font-medium text-gray-700 leading-tight">{label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Main App Pages */}
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">📱 App Pages</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            {[
+              { href: '/dashboard', label: 'Dashboard', icon: '🏠' },
+              { href: '/quran', label: 'Quran Reader', icon: '📖' },
+              { href: '/yaseen', label: 'Surah Yaaseen', icon: '📜' },
+              { href: '/hisnul-muslim', label: 'Hisnul Muslim', icon: '🤲' },
+              { href: '/dhikr', label: 'Dhikr Counter', icon: '📿' },
+              { href: '/awrad', label: 'Awrad & Mawlid', icon: '🌙' },
+              { href: '/library', label: 'Learning Library', icon: '📚' },
+              { href: '/madresah', label: 'Madresah Portal', icon: '🏫' },
+              { href: '/groups', label: 'Groups', icon: '👥' },
+              { href: '/khatm', label: 'Quran Khatm', icon: '📗' },
+              { href: '/radio', label: 'Muslim Radio', icon: '📻' },
+              { href: '/halal-food', label: 'Halal Food', icon: '🥗' },
+              { href: '/halal-screener', label: 'Halal Screener', icon: '🔍' },
+              { href: '/ai-assistant', label: 'AI Assistant', icon: '🤖' },
+              { href: '/zakat', label: 'Zakat Calculator', icon: '💰' },
+              { href: '/qiblah', label: 'Qibla Compass', icon: '🧭' },
+              { href: '/ramadan', label: 'Ramadan Tracker', icon: '🌙' },
+              { href: '/qna', label: 'Scholar Q&A', icon: '❓' },
+              { href: '/news', label: 'Islamic News', icon: '📰' },
+              { href: '/achievements', label: 'Achievements', icon: '🏆' },
+              { href: '/profile', label: 'Profile', icon: '👤' },
+              { href: '/settings', label: 'Settings', icon: '⚙️' },
+              { href: '/ccemag', label: 'CCE Mag', icon: '📰' },
+              { href: '/collab', label: 'Collab', icon: '🤝' },
+              { href: '/wasiya', label: 'Wasiya', icon: '📝' },
+              { href: '/learn', label: 'Video Library', icon: '🎬' },
+              { href: '/masjid', label: 'Masjid Finder', icon: '🕌' },
+              { href: '/taraweeh', label: 'Taraweeh', icon: '🌙' },
+              { href: '/welcome', label: 'Welcome Page', icon: '👋' },
+            ].map(({ href, label, icon }) => (
+              <a key={href} href={href}
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl border bg-white hover:bg-blue-50 hover:border-blue-300 transition-all text-center shadow-sm">
+                <span className="text-2xl">{icon}</span>
+                <span className="text-xs font-medium text-gray-700 leading-tight">{label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Stats Overview */}

@@ -40,8 +40,10 @@ const mainNavLinks: NavLink[] = [
   { href: '/dhikr', label: 'Dhikr Circle', icon: HeartPulse },
   { href: '/khatm', label: 'Quran Khatm', icon: BookOpen },
   { href: '/groups', label: 'My Groups', icon: Users },
+  { href: '/madresah', label: 'Madresah', icon: GraduationCap },
   { href: '/news', label: 'News', icon: Newspaper },
   { href: '/learn', label: 'Video Library', icon: PlayCircle },
+  { href: '/radio', label: 'Muslim Radio', icon: Radio },
 ];
 
 const toolNavLinks: NavLink[] = [

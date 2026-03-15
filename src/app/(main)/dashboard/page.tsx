@@ -232,25 +232,56 @@ export default function DashboardPage() {
         </div>
 
         {/* ── Quick-access feature tiles ───────────────── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {([
-            { icon:'📖', label:'Quran',       sub:'Read & listen',  href:'/quran',          bg:'#e6f4f0',iconBg:'#059669',color:'#065f46' },
-            { icon:'🤲', label:'Duas',         sub:'Hisnul Muslim',  href:'/hisnul-muslim',  bg:'#fdf6e3',iconBg:'#d97706',color:'#92400e' },
-            { icon:'🕌', label:'Prayer Times', sub:'Cape Town',       href:'#prayer-times',   bg:'#eef2ff',iconBg:'#4f46e5',color:'#312e81' },
-            { icon:'🥗', label:'Halal Food',   sub:'Guide',          href:'/halal-food',     bg:'#f0fdf4',iconBg:'#16a34a',color:'#14532d' },
-            { icon:'🤖', label:'AI Assistant', sub:'Ask anything',   href:'/ai-assistant',   bg:'#faf5ff',iconBg:'#7c3aed',color:'#4c1d95' },
-            { icon:'💰', label:'Zakat',        sub:'Calculator',     href:'/zakat',          bg:'#fff7ed',iconBg:'#ea580c',color:'#7c2d12' },
-            { icon:'📚', label:'Library',      sub:'Books & PDFs',   href:'/library',        bg:'#f0f9ff',iconBg:'#0284c7',color:'#0c4a6e' },
-            { icon:'📿', label:'Dhikr',        sub:'Circle',         href:'/dhikr',          bg:'#fdf2f8',iconBg:'#db2777',color:'#831843' },
-            { icon:'📻', label:'Radio',        sub:'Muslim stations', href:'/radio',          bg:'#f0fdf4',iconBg:'#0f766e',color:'#134e4a' },
-          ] as const).map(t=>(
-            <a key={t.label} href={t.href} className="block rounded-2xl p-3.5 card-hover" style={{background:t.bg,textDecoration:'none'}}>
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl mb-2" style={{background:t.iconBg}}>{t.icon}</div>
-              <p className="font-semibold text-sm" style={{color:t.color}}>{t.label}</p>
-              <p className="text-xs" style={{color:t.color+'99'}}>{t.sub}</p>
-            </a>
-          ))}
-        </div>
+        {(() => {
+          const ALL_TILES = [
+            { icon:'📖', label:'Quran',          sub:'Read & listen',     href:'/quran',          bg:'#e6f4f0',iconBg:'#059669',color:'#065f46' },
+            { icon:'🤲', label:'Duas',            sub:'Hisnul Muslim',     href:'/hisnul-muslim',  bg:'#fdf6e3',iconBg:'#d97706',color:'#92400e' },
+            { icon:'🕌', label:'Prayer Times',    sub:'Cape Town',         href:'#prayer-times',   bg:'#eef2ff',iconBg:'#4f46e5',color:'#312e81' },
+            { icon:'🥗', label:'Halal Food',      sub:'Guide',             href:'/halal-food',     bg:'#f0fdf4',iconBg:'#16a34a',color:'#14532d' },
+            { icon:'🤖', label:'AI Assistant',    sub:'Ask anything',      href:'/ai-assistant',   bg:'#faf5ff',iconBg:'#7c3aed',color:'#4c1d95' },
+            { icon:'💰', label:'Zakat',           sub:'Calculator',        href:'/zakat',          bg:'#fff7ed',iconBg:'#ea580c',color:'#7c2d12' },
+            { icon:'📚', label:'Library',         sub:'Books & PDFs',      href:'/library',        bg:'#f0f9ff',iconBg:'#0284c7',color:'#0c4a6e' },
+            { icon:'📿', label:'Dhikr',           sub:'Circle',            href:'/dhikr',          bg:'#fdf2f8',iconBg:'#db2777',color:'#831843' },
+            { icon:'📻', label:'Radio',           sub:'Muslim stations',   href:'/radio',          bg:'#f0fdf4',iconBg:'#0f766e',color:'#134e4a' },
+            { icon:'🏫', label:'Madresah',        sub:'School portal',     href:'/madresah',       bg:'#ecfdf5',iconBg:'#059669',color:'#064e3b' },
+            { icon:'👥', label:'Groups',          sub:'Jamaah & Khatm',    href:'/groups',         bg:'#eff6ff',iconBg:'#2563eb',color:'#1e3a8a' },
+            { icon:'📜', label:'Surah Yaaseen',   sub:'Read & Khatm',      href:'/yaseen',         bg:'#fefce8',iconBg:'#ca8a04',color:'#713f12' },
+            { icon:'🌙', label:'Awrad',           sub:'Daily recitations', href:'/awrad',          bg:'#f5f3ff',iconBg:'#7c3aed',color:'#3b0764' },
+            { icon:'📖', label:'Quran Khatm',     sub:'Group recitation',  href:'/khatm',          bg:'#fff1f2',iconBg:'#e11d48',color:'#881337' },
+            { icon:'🧭', label:'Qiblah',          sub:'Compass',           href:'/qiblah',         bg:'#f0fdf4',iconBg:'#16a34a',color:'#14532d' },
+            { icon:'📅', label:'Ramadan',         sub:'Tracker',           href:'/ramadan',        bg:'#fdf4ff',iconBg:'#a21caf',color:'#581c87' },
+            { icon:'❓', label:'Scholar Q&A',     sub:'Islamic answers',   href:'/qna',            bg:'#f0f9ff',iconBg:'#0284c7',color:'#0c4a6e' },
+            { icon:'📰', label:'News',            sub:'Islamic news',      href:'/news',           bg:'#fafaf9',iconBg:'#57534e',color:'#1c1917' },
+            { icon:'🏆', label:'Achievements',    sub:'Badges & streaks',  href:'/achievements',   bg:'#fff7ed',iconBg:'#f59e0b',color:'#78350f' },
+            { icon:'🔍', label:'Halal Screener',  sub:'Food checker',      href:'/halal-screener', bg:'#f0fdf4',iconBg:'#15803d',color:'#14532d' },
+            { icon:'🕌', label:'Masjid Finder',   sub:'Near you',          href:'/masjid',         bg:'#eff6ff',iconBg:'#3b82f6',color:'#1e3a8a' },
+            { icon:'🎬', label:'Video Library',   sub:'Islamic videos',    href:'/learn',          bg:'#fef2f2',iconBg:'#dc2626',color:'#7f1d1d' },
+            { icon:'🤝', label:'Collab',          sub:'Collaboration',     href:'/collab',         bg:'#f5f5f4',iconBg:'#78716c',color:'#1c1917' },
+            { icon:'📝', label:'Wasiya',          sub:'Last will',         href:'/wasiya',         bg:'#faf5ff',iconBg:'#9333ea',color:'#3b0764' },
+            { icon:'📄', label:'CCE Mag',         sub:'Portal',            href:'/ccemag',         bg:'#ecfdf5',iconBg:'#10b981',color:'#064e3b' },
+          ];
+          const [showAll, setShowAll] = useState(false);
+          const tiles = showAll ? ALL_TILES : ALL_TILES.slice(0, 9);
+          return (
+            <div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {tiles.map(t => (
+                  <a key={t.label} href={t.href} className="block rounded-2xl p-3.5 card-hover" style={{background:t.bg,textDecoration:'none'}}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl mb-2" style={{background:t.iconBg}}>{t.icon}</div>
+                    <p className="font-semibold text-sm" style={{color:t.color}}>{t.label}</p>
+                    <p className="text-xs" style={{color:t.color+'99'}}>{t.sub}</p>
+                  </a>
+                ))}
+              </div>
+              <button
+                onClick={() => setShowAll(v => !v)}
+                className="mt-3 w-full py-2.5 rounded-2xl border border-dashed border-gray-300 text-sm text-gray-500 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all font-medium"
+              >
+                {showAll ? '▲ Show less' : `▼ Show all ${ALL_TILES.length} features`}
+              </button>
+            </div>
+          );
+        })()}
 
         {/* ── Sponsored Banner (main app only — NOT rendered in /madresah) ── */}
         <SponsoredBannerCarousel />
