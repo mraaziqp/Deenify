@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   if (!book) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
-  return new NextResponse(book.pdfData, {
+  return new NextResponse(Buffer.from(book.pdfData) as unknown as BodyInit, {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',

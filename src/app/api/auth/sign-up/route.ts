@@ -7,7 +7,7 @@ import { sendVerificationEmail } from '@/lib/email';
 const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
 
 export async function POST(req: NextRequest) {
-  const { email, password, role } = await req.json();
+  const { email, password, role, displayName } = await req.json();
   if (!email || !password) {
     return NextResponse.json({ error: 'Email and password required' }, { status: 400 });
   }
@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
     data: {
       email,
       password: hashed,
+      displayName: displayName?.trim() || null,
       emailVerified: false,
       verificationToken,
       verificationTokenExpires: expires,

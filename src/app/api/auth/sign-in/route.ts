@@ -46,5 +46,22 @@ export async function POST(req: NextRequest) {
     };
   }
   cookieStore.set('token', token, cookieOptions);
-  return NextResponse.json({ id: user.id, email: user.email, role: user.role });
+
+  // Check if user belongs to a madresah for smart redirect
+  const adminMadresah = await prisma.madresah.findFirst({
+    where: { adminId: user.id },
+    select: { id: true },
+  });
+  let madresahId: string | null = adminMadresah?.id ?? null;
+
+  if (!madresahId) {
+    const membership = await prisma.madresahMember.findFirst({
+      where: { userId: user.id, role: { in: ['PRINCIPAL', 'TEACHER', 'STUDENT', 'PARENT'] } },
+      orderBy: { joinedAt: 'asc' },
+      select: { madresahId: true, role: true },
+    });
+    madresahId = membership?.madresahId ?? null;
+  }
+
+  return NextResponse.json({ id: user.id, email: user.email, role: user.role, madresahId });
 }

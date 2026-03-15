@@ -1,8 +1,22 @@
 import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { NextResponse, NextRequest } from 'next/server';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
 
-export async function GET() {
+const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
+
+async function getUser(req: NextRequest): Promise<{ id: string; role: string } | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+  if (!token) return null;
+  try {
+    return jwt.verify(token, JWT_SECRET) as { id: string; role: string };
+  } catch {
+    return null;
+  }
+}
+
+export async function GET(req: NextRequest) {
   const questions = await prisma.question.findMany({
     where: { isAnswered: false },
     orderBy: { createdAt: 'desc' },
@@ -10,17 +24,17 @@ export async function GET() {
   return NextResponse.json({ questions });
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const { questionId, answer } = await req.json();
-  const session = await getServerSession();
-  if (!session?.user?.id) {
+  const user = await getUser(req);
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   // Write answer and mark question as answered
   await prisma.answer.create({
     data: {
       questionId,
-      scholarId: session.user.id,
+      scholarId: user.id,
       content: answer,
     },
   });

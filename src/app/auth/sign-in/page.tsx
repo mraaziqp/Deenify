@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, Mail, Lock, Sparkles, Star } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Sparkles, Star, School } from 'lucide-react';
 import Link from 'next/link';
 
 /* ─── Floating geometric orbs ─── */
@@ -25,22 +25,35 @@ function IslamicStar({ size = 40, className = '' }: { size?: number; className?:
 }
 
 export default function SignInPage() {
+  return (
+    <Suspense>
+      <SignInForm />
+    </Suspense>
+  );
+}
+
+function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [schoolCode, setSchoolCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, isLoading } = useAuth();
+  const callbackUrl = searchParams?.get('callbackUrl') || '';
 
   useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.replace('/dashboard');
+      // Honor callbackUrl if it's a safe internal path
+      const dest = callbackUrl && callbackUrl.startsWith('/') ? callbackUrl : '/dashboard';
+      router.replace(dest);
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router, callbackUrl]);
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -53,7 +66,24 @@ export default function SignInPage() {
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) throw new Error('Invalid credentials. Please check your email and password.');
-      router.replace('/dashboard');
+      const data = await res.json();
+
+      // If a school code was entered, try to join that school
+      if (schoolCode.trim()) {
+        await fetch('/api/madresah/join', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ inviteCode: schoolCode.trim().toUpperCase() }),
+        });
+      }
+
+      // Honor callbackUrl first, then smart-redirect to madresah or dashboard
+      if (callbackUrl && callbackUrl.startsWith('/')) {
+        router.replace(callbackUrl);
+      } else {
+        const madresahId = data.madresahId as string | null;
+        router.replace(madresahId ? `/madresah/${madresahId}` : '/dashboard');
+      }
       setTimeout(() => window.location.reload(), 100);
     } catch (err: any) {
       setError(err.message || 'Sign in failed. Please try again.');
@@ -308,6 +338,28 @@ export default function SignInPage() {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
+              </div>
+
+              {/* School code (optional) */}
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2 pt-1">
+                  <div className="flex-1 h-px" style={{ background: 'hsl(var(--border))' }} />
+                  <span className="text-xs text-muted-foreground font-medium px-1">School Portal (optional)</span>
+                  <div className="flex-1 h-px" style={{ background: 'hsl(var(--border))' }} />
+                </div>
+                <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+                  <School className="w-3.5 h-3.5 text-muted-foreground" />
+                  School Invite Code
+                </label>
+                <Input
+                  type="text"
+                  placeholder="e.g. A1B2C3D4"
+                  value={schoolCode}
+                  onChange={e => setSchoolCode(e.target.value.toUpperCase())}
+                  maxLength={8}
+                  className="h-11 rounded-xl tracking-widest font-mono uppercase"
+                />
+                <p className="text-xs text-muted-foreground">Enter your school&apos;s code to go directly to your school dashboard</p>
               </div>
 
               {/* Error */}

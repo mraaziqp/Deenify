@@ -38,7 +38,10 @@ function AdManagerTab() {
   const [banners, setBanners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ businessName: '', imageUrl: '', targetUrl: '' });
+  const [form, setForm] = useState({
+    businessName: '', imageUrl: '', targetUrl: '',
+    description: '', monthlyRate: '', startsAt: '', expiresAt: '',
+  });
   const [saving, setSaving] = useState(false);
 
   const load = () => {
@@ -64,7 +67,7 @@ function AdManagerTab() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     });
-    setForm({ businessName: '', imageUrl: '', targetUrl: '' });
+    setForm({ businessName: '', imageUrl: '', targetUrl: '', description: '', monthlyRate: '', startsAt: '', expiresAt: '' });
     setShowAdd(false);
     setSaving(false);
     load();
@@ -83,6 +86,16 @@ function AdManagerTab() {
     if (!confirm('Delete this banner?')) return;
     await fetch(`/api/banners?id=${id}`, { method: 'DELETE' });
     load();
+  };
+
+  const getExpiryStatus = (expiresAt: string | null) => {
+    if (!expiresAt) return null;
+    const exp = new Date(expiresAt);
+    const now = new Date();
+    const daysLeft = Math.ceil((exp.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    if (daysLeft < 0) return { label: 'Expired', color: 'destructive' as const };
+    if (daysLeft <= 7) return { label: `Expires in ${daysLeft}d`, color: 'secondary' as const };
+    return { label: `Exp: ${exp.toLocaleDateString()}`, color: 'outline' as const };
   };
 
   return (
@@ -126,6 +139,26 @@ function AdManagerTab() {
               <Input value={form.targetUrl} onChange={e => setForm(f => ({ ...f, targetUrl: e.target.value }))} placeholder="https://business-website.co.za" />
             </div>
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="space-y-1 sm:col-span-2">
+              <Label>Description (optional)</Label>
+              <Input value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Brief ad copy shown on hover" />
+            </div>
+            <div className="space-y-1">
+              <Label>Monthly Rate (R)</Label>
+              <Input type="number" value={form.monthlyRate} onChange={e => setForm(f => ({ ...f, monthlyRate: e.target.value }))} placeholder="200" min="0" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label>Start Date (optional)</Label>
+              <Input type="date" value={form.startsAt} onChange={e => setForm(f => ({ ...f, startsAt: e.target.value }))} />
+            </div>
+            <div className="space-y-1">
+              <Label>Expiry Date (optional)</Label>
+              <Input type="date" value={form.expiresAt} onChange={e => setForm(f => ({ ...f, expiresAt: e.target.value }))} />
+            </div>
+          </div>
           <Button onClick={handleAdd} disabled={saving || !form.businessName || !form.imageUrl}>
             {saving ? 'Saving...' : 'Create Banner'}
           </Button>
@@ -139,28 +172,35 @@ function AdManagerTab() {
         <p className="text-sm text-muted-foreground">No banners yet. Add your first sponsor above.</p>
       ) : (
         <div className="space-y-2">
-          {banners.map(b => (
-            <Card key={b.id} className="p-3">
-              <div className="flex items-center gap-3 flex-wrap">
-                <img src={b.imageUrl} alt={b.businessName} className="w-20 h-10 object-cover rounded-lg flex-shrink-0" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm">{b.businessName}</p>
-                  <p className="text-xs text-muted-foreground truncate">{b.targetUrl || 'No link'}</p>
+          {banners.map(b => {
+            const expiry = getExpiryStatus(b.expiresAt);
+            return (
+              <Card key={b.id} className="p-3">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <img src={b.imageUrl} alt={b.businessName} className="w-20 h-10 object-cover rounded-lg flex-shrink-0" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-semibold text-sm">{b.businessName}</p>
+                      {b.monthlyRate && <Badge variant="outline" className="text-emerald-600 text-xs">R{b.monthlyRate}/mo</Badge>}
+                      {expiry && <Badge variant={expiry.color} className="text-xs">{expiry.label}</Badge>}
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">{b.targetUrl || 'No link'}</p>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span>👁 {b.views}</span>
+                    <span>🖱 {b.clicks}</span>
+                    <span>CTR: {b.views > 0 ? ((b.clicks / b.views) * 100).toFixed(1) : 0}%</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" onClick={() => toggleActive(b.id, b.isActive)}>
+                      {b.isActive ? '✅ Active' : '⏸ Paused'}
+                    </Button>
+                    <Button size="sm" variant="destructive" onClick={() => deleteBanner(b.id)}>Delete</Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span>👁 {b.views}</span>
-                  <span>🖱 {b.clicks}</span>
-                  <span>CTR: {b.views > 0 ? ((b.clicks / b.views) * 100).toFixed(1) : 0}%</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button size="sm" variant="outline" onClick={() => toggleActive(b.id, b.isActive)}>
-                    {b.isActive ? '✅ Active' : '⏸ Paused'}
-                  </Button>
-                  <Button size="sm" variant="destructive" onClick={() => deleteBanner(b.id)}>Delete</Button>
-                </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       )}
 
@@ -458,6 +498,9 @@ export default function AdminDashboard() {
             <TabsTrigger value="ad-manager">💰 Ad Manager</TabsTrigger>
             <TabsTrigger value="video-playlists">📺 Video Library</TabsTrigger>
             <TabsTrigger value="media-upload">📁 Media Upload</TabsTrigger>
+            <TabsTrigger value="madresah" asChild>
+              <a href="/admin/madresah">🏫 Madresah Schools</a>
+            </TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="cce-mag-portal" className="space-y-4">

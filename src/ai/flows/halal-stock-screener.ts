@@ -35,16 +35,6 @@ export async function halalStockScreener(/*input: any*/): Promise<any> {
   return { summary: 'AI temporarily disabled for debugging.' };
 }
 
-const getStockFinancials = ai.defineTool({
-  name: 'getStockFinancials',
-  description: 'Returns the financial data of a stock, including debt, assets, and market capitalization.',
-  inputSchema: z.object({
-    ticker: z.string().describe('The ticker symbol of the stock.'),
-  }),
-  // Genkit AI temporarily disabled for debugging
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+// TODO: Re-enable once Genkit AI dependencies are restored
+// const getStockFinancials = ai.defineTool({...});
+

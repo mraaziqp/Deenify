@@ -39,13 +39,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { businessName, imageUrl, targetUrl } = await req.json();
+  const { businessName, imageUrl, targetUrl, description, monthlyRate, startsAt, expiresAt } = await req.json();
   if (!businessName || !imageUrl) {
     return NextResponse.json({ error: 'businessName and imageUrl are required' }, { status: 400 });
   }
 
   const banner = await prisma.sponsoredBanner.create({
-    data: { businessName, imageUrl, targetUrl: targetUrl || null },
+    data: {
+      businessName,
+      imageUrl,
+      targetUrl: targetUrl || null,
+      description: description || null,
+      monthlyRate: monthlyRate ? parseFloat(monthlyRate) : null,
+      startsAt: startsAt ? new Date(startsAt) : null,
+      expiresAt: expiresAt ? new Date(expiresAt) : null,
+    },
   });
 
   return NextResponse.json({ banner }, { status: 201 });
@@ -82,6 +90,10 @@ export async function PATCH(req: NextRequest) {
       ...(body.businessName && { businessName: body.businessName }),
       ...(body.imageUrl && { imageUrl: body.imageUrl }),
       ...(body.targetUrl !== undefined && { targetUrl: body.targetUrl }),
+      ...(body.description !== undefined && { description: body.description }),
+      ...(body.monthlyRate !== undefined && { monthlyRate: body.monthlyRate ? parseFloat(body.monthlyRate) : null }),
+      ...(body.startsAt !== undefined && { startsAt: body.startsAt ? new Date(body.startsAt) : null }),
+      ...(body.expiresAt !== undefined && { expiresAt: body.expiresAt ? new Date(body.expiresAt) : null }),
     },
   });
 

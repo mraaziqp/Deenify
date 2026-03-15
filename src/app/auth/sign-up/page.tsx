@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Sparkles, CheckCircle2, Star } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Sparkles, CheckCircle2, Star } from 'lucide-react';
 import Link from 'next/link';
 
 /* ─── Floating orbs config ─── */
@@ -29,6 +29,7 @@ const benefits = [
 ];
 
 export default function SignUpPage() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -36,7 +37,6 @@ export default function SignUpPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [applyScholar, setApplyScholar] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
@@ -57,10 +57,10 @@ export default function SignUpPage() {
       const res = await fetch('/api/auth/sign-up', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role: applyScholar ? 'SCHOLAR' : undefined }),
+        body: JSON.stringify({ displayName: name.trim(), email, password }),
       });
       if (!res.ok) throw new Error('Sign up failed. This email may already be in use.');
-      window.location.href = '/dashboard';
+      window.location.href = '/welcome';
     } catch (err: any) {
       setError(err.message || 'Sign up failed. Please try again.');
     } finally {
@@ -271,6 +271,23 @@ export default function SignUpPage() {
           >
             <form onSubmit={handleSignUp} className="flex flex-col gap-4">
 
+              {/* Name */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-foreground">Your name</label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="e.g. Ahmed Abdullah"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    required
+                    autoFocus
+                    className="pl-10 h-11 rounded-xl"
+                  />
+                </div>
+              </div>
+
               {/* Email */}
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-foreground">Email address</label>
@@ -282,7 +299,6 @@ export default function SignUpPage() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
-                    autoFocus
                     className="pl-10 h-11 rounded-xl"
                   />
                 </div>
@@ -356,30 +372,6 @@ export default function SignUpPage() {
                   </p>
                 )}
               </div>
-
-              {/* Scholar toggle */}
-              <button
-                type="button"
-                onClick={() => setApplyScholar(v => !v)}
-                className={`flex items-center gap-3 p-3.5 rounded-xl border-2 text-left transition-all duration-200 ${
-                  applyScholar
-                    ? 'border-primary bg-primary/5 text-primary'
-                    : 'border-border hover:border-primary/40 text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <GraduationCap className={`w-5 h-5 shrink-0 ${applyScholar ? 'text-primary' : ''}`} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold">Apply as Scholar / Teacher</p>
-                  <p className="text-xs opacity-70 mt-0.5">Get verified status and teaching tools</p>
-                </div>
-                <div
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                    applyScholar ? 'border-primary bg-primary' : 'border-border'
-                  }`}
-                >
-                  {applyScholar && <div className="w-2.5 h-2.5 rounded-full bg-white" />}
-                </div>
-              </button>
 
               {/* Error */}
               {error && (

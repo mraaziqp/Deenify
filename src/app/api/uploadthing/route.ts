@@ -1,4 +1,4 @@
-import { createRouteHandler } from "uploadthing/server";
+import { createRouteHandler } from "uploadthing/next";
 import { uploadRouter } from "./core";
 
 // Export Next.js API route for UploadThing

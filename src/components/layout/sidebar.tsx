@@ -25,6 +25,7 @@ import {
   Users,
   Newspaper,
   PlayCircle,
+  Radio,
 } from 'lucide-react';
 import { Icons } from '@/components/icons';
 import type { NavLink } from '@/lib/types';
@@ -51,6 +52,7 @@ const toolNavLinks: NavLink[] = [
   { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
   { href: '/masjid', label: 'Masjid Finder', icon: MapPin },
   { href: '/achievements', label: 'Achievements', icon: Trophy },
+  { href: '/radio', label: 'Muslim Radio', icon: Radio },
 ];
 
 function NavLinkItem({ href, label, icon: Icon }: NavLink) {

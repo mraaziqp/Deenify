@@ -17,13 +17,13 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
 
   // Hide on auth pages
-  if (pathname.startsWith('/auth/')) return null;
+  if (pathname?.startsWith('/auth/')) return null;
 
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white border-t border-gray-200 shadow-[0_-2px_12px_rgba(0,0,0,0.08)]">
       <div className="flex items-center justify-around px-1 h-16 safe-bottom">
         {BOTTOM_NAV.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
+          const active = pathname === href || (href !== '/dashboard' && (pathname?.startsWith(href) ?? false));
           return (
             <Link
               key={href}

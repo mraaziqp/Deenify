@@ -9,7 +9,7 @@ export default function HeaderWrapper({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { user, isLoading } = useAuth();
   const hideHeader = pathname === '/auth/sign-in' && !user && !isLoading;
-  const isAuthPage = pathname.startsWith('/auth/');
+  const isAuthPage = pathname?.startsWith('/auth/') ?? false;
   return (
     <>
       {!hideHeader && <Header />}

@@ -69,6 +69,22 @@ const GUIDE_CATEGORIES = [
     ],
   },
   {
+    title: '🏫 Madresah',
+    color: '#ecfdf5',
+    accent: '#059669',
+    items: [
+      { icon: '🏫', name: 'Madresah Portal', desc: 'Register your Muslim school, manage classes, assign homework and track student Hifz progress.', href: '/madresah' },
+    ],
+  },
+  {
+    title: '🎵 Media & Entertainment',
+    color: '#f0fdf4',
+    accent: '#0f766e',
+    items: [
+      { icon: '📻', name: 'Muslim Radio', desc: 'Listen live to Muslim radio stations including Voice of the Cape, CII, Radio Islam and more.', href: '/radio' },
+    ],
+  },
+  {
     title: '🤖 AI & Tools',
     color: '#faf5ff',
     accent: '#7c3aed',
@@ -216,7 +232,7 @@ export default function DashboardPage() {
         </div>
 
         {/* ── Quick-access feature tiles ───────────────── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {([
             { icon:'📖', label:'Quran',       sub:'Read & listen',  href:'/quran',          bg:'#e6f4f0',iconBg:'#059669',color:'#065f46' },
             { icon:'🤲', label:'Duas',         sub:'Hisnul Muslim',  href:'/hisnul-muslim',  bg:'#fdf6e3',iconBg:'#d97706',color:'#92400e' },
@@ -226,6 +242,7 @@ export default function DashboardPage() {
             { icon:'💰', label:'Zakat',        sub:'Calculator',     href:'/zakat',          bg:'#fff7ed',iconBg:'#ea580c',color:'#7c2d12' },
             { icon:'📚', label:'Library',      sub:'Books & PDFs',   href:'/library',        bg:'#f0f9ff',iconBg:'#0284c7',color:'#0c4a6e' },
             { icon:'📿', label:'Dhikr',        sub:'Circle',         href:'/dhikr',          bg:'#fdf2f8',iconBg:'#db2777',color:'#831843' },
+            { icon:'📻', label:'Radio',        sub:'Muslim stations', href:'/radio',          bg:'#f0fdf4',iconBg:'#0f766e',color:'#134e4a' },
           ] as const).map(t=>(
             <a key={t.label} href={t.href} className="block rounded-2xl p-3.5 card-hover" style={{background:t.bg,textDecoration:'none'}}>
               <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl mb-2" style={{background:t.iconBg}}>{t.icon}</div>
@@ -235,7 +252,7 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* ── Sponsored Banner ─────────────────────── */}
+        {/* ── Sponsored Banner (main app only — NOT rendered in /madresah) ── */}
         <SponsoredBannerCarousel />
 
         {/* Dashboard Tabs */}

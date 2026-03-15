@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 
 const Alert = React.forwardRef<
 	HTMLDivElement,

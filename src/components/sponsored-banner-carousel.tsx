@@ -1,23 +1,26 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { X } from 'lucide-react';
 
 type Banner = {
   id: string;
   businessName: string;
   imageUrl: string;
   targetUrl: string | null;
+  description: string | null;
 };
 
 export default function SponsoredBannerCarousel() {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [current, setCurrent] = useState(0);
   const [fading, setFading] = useState(false);
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const viewedRef = useRef<Set<string>>(new Set());
 
   const trackView = useCallback((id: string) => {
-    if (viewedRef.current.has(id)) return; // only once per session per banner
+    if (viewedRef.current.has(id)) return;
     viewedRef.current.add(id);
     fetch(`/api/banners?id=${id}`, {
       method: 'PATCH',
@@ -32,12 +35,13 @@ export default function SponsoredBannerCarousel() {
       .then((data) => {
         if (data.banners?.length) {
           setBanners(data.banners);
-          // Track view for the first visible banner only
           if (data.banners[0]) trackView(data.banners[0].id);
         }
       })
       .catch(() => {});
   }, [trackView]);
+
+  const activeBanners = banners.filter((b) => !dismissed.has(b.id));
 
   const goTo = useCallback((index: number, list: Banner[]) => {
     setFading(true);
@@ -49,27 +53,28 @@ export default function SponsoredBannerCarousel() {
   }, [trackView]);
 
   useEffect(() => {
-    if (banners.length <= 1) return;
+    if (activeBanners.length <= 1) return;
     intervalRef.current = setInterval(() => {
       setCurrent((c) => {
-        const next = (c + 1) % banners.length;
+        const next = (c + 1) % activeBanners.length;
         setFading(true);
         setTimeout(() => {
           setCurrent(next);
           setFading(false);
-          trackView(banners[next].id);
+          trackView(activeBanners[next].id);
         }, 220);
-        return c; // actual update happens in the timeout
+        return c;
       });
     }, 5000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [banners, trackView]);
+  }, [activeBanners, trackView]);
 
-  if (!banners.length) return null;
+  if (!activeBanners.length) return null;
 
-  const banner = banners[current];
+  const safeCurrent = Math.min(current, activeBanners.length - 1);
+  const banner = activeBanners[safeCurrent];
 
   const handleClick = () => {
     if (!banner.targetUrl) return;
@@ -81,51 +86,56 @@ export default function SponsoredBannerCarousel() {
     window.open(banner.targetUrl, '_blank', 'noopener,noreferrer');
   };
 
+  const handleDismiss = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDismissed((prev) => new Set([...prev, banner.id]));
+    setCurrent(0);
+  };
+
   return (
     <div className="relative w-full overflow-hidden rounded-2xl shadow-md bg-emerald-900" style={{ aspectRatio: '4/1', minHeight: '72px' }}>
-      {/* Slide with fade transition */}
       <div
         className={`absolute inset-0 transition-opacity duration-200 ${fading ? 'opacity-0' : 'opacity-100'} ${banner.targetUrl ? 'cursor-pointer' : ''}`}
         onClick={banner.targetUrl ? handleClick : undefined}
       >
-        {/* Background image */}
         <img
           src={banner.imageUrl}
           alt={banner.businessName}
           className="absolute inset-0 w-full h-full object-cover"
-          onError={(e) => {
-            // On image error, show a graceful branded gradient instead of broken img
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
-        {/* Always-present gradient overlay — visible even on image error */}
         <div
           className="absolute inset-0"
           style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 60%, transparent 100%)' }}
         />
-        {/* Business name */}
         <div className="absolute bottom-2.5 left-3.5 text-white text-sm font-semibold drop-shadow-sm">
           {banner.businessName}
         </div>
-        {/* "Sponsored" pill — top right */}
-        <div className="absolute top-2 right-3 bg-black/40 text-white/80 text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm tracking-wide">
+        <div className="absolute top-2 right-9 bg-black/40 text-white/80 text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm tracking-wide">
           Sponsored
         </div>
-        {/* Arrow hint if clickable */}
         {banner.targetUrl && (
-          <div className="absolute bottom-2.5 right-3.5 text-white/60 text-[11px]">↗</div>
+          <div className="absolute bottom-2.5 right-9 text-white/60 text-[11px]">↗</div>
         )}
       </div>
 
-      {/* Dot indicators */}
-      {banners.length > 1 && (
+      {/* Dismiss X button */}
+      <button
+        onClick={handleDismiss}
+        aria-label="Dismiss ad"
+        className="absolute top-1.5 right-1.5 z-20 w-6 h-6 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 text-white/80 hover:text-white transition-colors"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+
+      {activeBanners.length > 1 && (
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-          {banners.map((_, i) => (
+          {activeBanners.map((_, i) => (
             <button
               key={i}
-              onClick={() => goTo(i, banners)}
+              onClick={() => goTo(i, activeBanners)}
               className={`rounded-full transition-all duration-300 ${
-                i === current ? 'bg-white w-3 h-1.5' : 'bg-white/45 w-1.5 h-1.5'
+                i === safeCurrent ? 'bg-white w-3 h-1.5' : 'bg-white/45 w-1.5 h-1.5'
               }`}
               aria-label={`Banner ${i + 1}`}
             />
@@ -135,3 +145,5 @@ export default function SponsoredBannerCarousel() {
     </div>
   );
 }
+
+

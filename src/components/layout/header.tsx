@@ -57,7 +57,6 @@ const navLinks: NavLink[] = [
 function HeaderContent() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
-  const router = usePathname ? require('next/navigation').useRouter() : null;
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background px-2 sm:px-6 sm:gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent">
@@ -89,11 +88,11 @@ function HeaderContent() {
                   </h4>
                 );
               }
-              const LinkIcon = link.icon;
+              const LinkIcon = link.icon!;
               return (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={link.href as string}
                   className={cn(
                     'flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground',
                     pathname === link.href && 'text-foreground'
@@ -112,11 +111,11 @@ function HeaderContent() {
       <nav className="hidden sm:flex gap-1 md:gap-2 items-center">
         {navLinks.map((link, index) => {
           if (link.type === 'divider' || link.type === 'title') return null;
-          const LinkIcon = link.icon;
+          const LinkIcon = link.icon!;
           return (
             <Link
               key={link.href}
-              href={link.href}
+              href={link.href as string}
               className={cn(
                 'flex items-center gap-2 px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition',
                 pathname === link.href && 'text-foreground bg-accent'

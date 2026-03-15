@@ -18,7 +18,7 @@
 // });
 // export type AskAboutIslamOutput = z.infer<typeof AskAboutIslamOutputSchema>;
 
-export async function askAboutIslam(/*input: AskAboutIslamInput*/): Promise<any> {
+export async function askAboutIslam(input?: any): Promise<any> {
   return { answer: 'AI temporarily disabled for debugging.' };
 }
 

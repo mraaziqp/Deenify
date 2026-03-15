@@ -1,16 +1,16 @@
 "use client";
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useBookBookmark } from '@/hooks/use-book-bookmark';
 import Link from 'next/link';
-import { useRef } from 'react';
 
 const PDFViewer = dynamic(() => import('@/components/pdf/PDFReader'), { ssr: false });
 
 export default function ReadBookPage({ params }: { params: { bookId: string } }) {
   const { bookId } = params;
   // TODO: Replace with real book fetch logic
-  const book = null;
+  const book = null as null | { title: string; pdfStorageUrl: string; id: string };
   const { page, loading } = useBookBookmark(bookId);
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [resumeAccepted, setResumeAccepted] = useState(false);

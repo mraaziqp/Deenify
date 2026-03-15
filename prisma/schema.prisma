@@ -130,14 +130,18 @@ model PDFBook {
 }
 
 model SponsoredBanner {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   businessName String
   imageUrl     String
   targetUrl    String?
-  isActive     Boolean  @default(true)
-  views        Int      @default(0)
-  clicks       Int      @default(0)
-  createdAt    DateTime @default(now())
+  description  String?
+  monthlyRate  Float?    // ZAR per month, for invoicing reference
+  isActive     Boolean   @default(true)
+  startsAt     DateTime?
+  expiresAt    DateTime?
+  views        Int       @default(0)
+  clicks       Int       @default(0)
+  createdAt    DateTime  @default(now())
 }
 
 model VideoPlaylist {
@@ -185,10 +189,27 @@ model User {
   sessionParticipants SessionParticipant[]
   answers Answer[] @relation("ScholarAnswers")
   questions Question[]
-    groupsAdmin Group[] @relation("GroupAdmin")
-    groupMemberships GroupMember[]
-    claimedJuz KhatmJuz[]
-    dhikrContributions DhikrContribution[]
+  groupsAdmin Group[] @relation("GroupAdmin")
+  groupMemberships GroupMember[]
+  claimedJuz KhatmJuz[]
+  dhikrContributions DhikrContribution[]
+  defaultMadresahId String?
+  // Madresah relations
+  madresahAdmin       Madresah[]           @relation("MadresahAdmin")
+  madresahMembers     MadresahMember[]
+  taughtClasses       MadresahClass[]      @relation("ClassTeacher")
+  classEnrollments    ClassEnrollment[]
+  homeworkSubmissions HomeworkSubmission[]
+  homeworkComments    HomeworkComment[]
+  studentGrades       Grade[]              @relation("StudentGrades")
+  teacherGrades       Grade[]              @relation("TeacherGrades")
+  hifzProgress        HifzProgress[]
+  struggleReports     StruggleReport[]
+  attendanceRecords   Attendance[]
+  announcements       ClassAnnouncement[]
+  classResources      ClassResource[]
+  studentBadges       StudentBadge[]       @relation("BadgeStudent")
+  awardedBadges       StudentBadge[]       @relation("BadgeAwarder")
 }
 
 enum LiveSessionType {
@@ -248,9 +269,13 @@ model Answer {
 }
 
 model QuranMedia {
-  id               String   @id @default(uuid())
-  // Removed invalid relation to AwradChapter
-  // If QuranMedia needs to reference a chapter, add a proper relation in both models
+  id              String   @id @default(uuid())
+  title           String
+  type            String
+  url             String
+  thumbnailUrl    String?
+  reciter         String?
+  surahNumber     Int?
   ayahStart       Int?
   ayahEnd         Int?
   language        String?
@@ -338,4 +363,264 @@ model Bookmark {
 
   @@index([userId])
   @@index([bookId])
+}
+
+// ─── Madresah (Muslim School) Engine ─────────────────────────────────────────
+
+enum MadresahMemberRole {
+  PRINCIPAL
+  TEACHER
+  STUDENT
+  PARENT
+}
+
+enum HomeworkStatus {
+  OPEN
+  SUBMITTED
+  GRADED
+  OVERDUE
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  GRADED
+  LATE
+}
+
+model Madresah {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  address     String?
+  phone       String?
+  email       String?
+  logoUrl     String?
+  inviteCode  String   @unique
+  adminId     String
+  createdAt   DateTime @default(now())
+  admin       User     @relation("MadresahAdmin", fields: [adminId], references: [id])
+  members     MadresahMember[]
+  classes     MadresahClass[]
+}
+
+model MadresahMember {
+  id         String             @id @default(cuid())
+  userId     String
+  madresahId String
+  role       MadresahMemberRole @default(STUDENT)
+  joinedAt   DateTime           @default(now())
+  madresah   Madresah           @relation(fields: [madresahId], references: [id], onDelete: Cascade)
+  user       User               @relation(fields: [userId], references: [id])
+
+  @@unique([userId, madresahId])
+  @@index([userId])
+  @@index([madresahId])
+}
+
+model MadresahClass {
+  id          String    @id @default(cuid())
+  madresahId  String
+  name        String
+  description String?
+  teacherId   String
+  createdAt   DateTime  @default(now())
+  madresah    Madresah  @relation(fields: [madresahId], references: [id], onDelete: Cascade)
+  teacher     User      @relation("ClassTeacher", fields: [teacherId], references: [id])
+  students    ClassEnrollment[]
+  subjects    Subject[]
+  homework    Homework[]
+  attendance  Attendance[]
+  hifzProgress HifzProgress[]
+  struggleReports StruggleReport[]
+  announcements   ClassAnnouncement[]
+  resources       ClassResource[]
+  badges          StudentBadge[]
+}
+
+model ClassEnrollment {
+  id         String        @id @default(cuid())
+  classId    String
+  userId     String
+  enrolledAt DateTime      @default(now())
+  class      MadresahClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  user       User          @relation(fields: [userId], references: [id])
+
+  @@unique([classId, userId])
+  @@index([userId])
+  @@index([classId])
+}
+
+model Subject {
+  id       String        @id @default(cuid())
+  classId  String
+  name     String
+  class    MadresahClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  homework Homework[]
+  grades   Grade[]
+
+  @@index([classId])
+}
+
+model Homework {
+  id             String        @id @default(cuid())
+  classId        String
+  subjectId      String?
+  title          String
+  description    String
+  dueDate        DateTime
+  attachmentUrl  String?
+  attachmentName String?
+  createdAt      DateTime      @default(now())
+  class          MadresahClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject        Subject?      @relation(fields: [subjectId], references: [id])
+  submissions    HomeworkSubmission[]
+  comments       HomeworkComment[]
+
+  @@index([classId])
+}
+
+model HomeworkSubmission {
+  id          String           @id @default(cuid())
+  homeworkId  String
+  studentId   String
+  content     String?
+  submittedAt DateTime         @default(now())
+  status      SubmissionStatus @default(SUBMITTED)
+  grade       Int?
+  feedback    String?
+  homework    Homework         @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  student     User             @relation(fields: [studentId], references: [id])
+
+  @@unique([homeworkId, studentId])
+  @@index([studentId])
+  @@index([homeworkId])
+}
+
+model HomeworkComment {
+  id         String   @id @default(cuid())
+  homeworkId String
+  userId     String
+  content    String
+  isTeacher  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  homework   Homework @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([homeworkId])
+  @@index([userId])
+}
+
+model Grade {
+  id        String   @id @default(cuid())
+  subjectId String
+  studentId String
+  teacherId String
+  value     Float
+  maxValue  Float    @default(100)
+  label     String?
+  createdAt DateTime @default(now())
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  student   User     @relation("StudentGrades", fields: [studentId], references: [id])
+  teacher   User     @relation("TeacherGrades", fields: [teacherId], references: [id])
+
+  @@index([studentId])
+  @@index([subjectId])
+}
+
+model HifzProgress {
+  id          String        @id @default(cuid())
+  studentId   String
+  classId     String
+  surahNumber Int
+  surahName   String
+  ayahFrom    Int           @default(1)
+  ayahTo      Int
+  memorized   Boolean       @default(false)
+  quality     Int?
+  notes       String?
+  recordedAt  DateTime      @default(now())
+  student     User          @relation(fields: [studentId], references: [id])
+  class       MadresahClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([classId])
+}
+
+model StruggleReport {
+  id          String        @id @default(cuid())
+  studentId   String
+  classId     String
+  subjectName String
+  topic       String
+  description String?
+  isResolved  Boolean       @default(false)
+  teacherNote String?
+  createdAt   DateTime      @default(now())
+  student     User          @relation(fields: [studentId], references: [id])
+  class       MadresahClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([classId])
+}
+
+model Attendance {
+  id        String        @id @default(cuid())
+  classId   String
+  studentId String
+  date      DateTime
+  present   Boolean       @default(true)
+  notes     String?
+  class     MadresahClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  student   User          @relation(fields: [studentId], references: [id])
+
+  @@unique([classId, studentId, date])
+  @@index([classId])
+  @@index([studentId])
+}
+
+model ClassAnnouncement {
+  id        String        @id @default(cuid())
+  classId   String
+  authorId  String
+  title     String
+  content   String
+  isPinned  Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  class     MadresahClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  author    User          @relation(fields: [authorId], references: [id])
+
+  @@index([classId])
+}
+
+model ClassResource {
+  id          String        @id @default(cuid())
+  classId     String
+  authorId    String
+  title       String
+  description String?
+  fileUrl     String?
+  fileType    String?
+  subjectName String?
+  createdAt   DateTime      @default(now())
+  class       MadresahClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  author      User          @relation(fields: [authorId], references: [id])
+
+  @@index([classId])
+}
+
+model StudentBadge {
+  id          String        @id @default(cuid())
+  studentId   String
+  classId     String
+  awardedById String
+  type        String
+  label       String
+  description String?
+  awardedAt   DateTime      @default(now())
+  student     User          @relation("BadgeStudent", fields: [studentId], references: [id])
+  class       MadresahClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  awardedBy   User          @relation("BadgeAwarder", fields: [awardedById], references: [id])
+
+  @@index([studentId])
+  @@index([classId])
 }
