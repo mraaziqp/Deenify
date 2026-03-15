@@ -14,6 +14,16 @@ import {
   Users,
   Newspaper,
   PlayCircle,
+  Settings,
+  LogOut,
+  Radio,
+  School,
+  Compass,
+  Moon,
+  BookMarked,
+  Trophy,
+  MapPin,
+  X,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -25,7 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { Icons } from '@/components/icons';
 import type { NavLink } from '@/lib/types';
 import { usePathname } from 'next/navigation';
@@ -35,244 +45,303 @@ import DeenifyLogo from '@/components/ui/deenify-logo';
 import { useAuth } from '@/lib/auth-context';
 import { ShieldCheck, HelpCircle } from 'lucide-react';
 
-const navLinks: NavLink[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/library', label: 'Library', icon: BookOpen },
-  { href: '/dhikr', label: 'Dhikr Circle', icon: HeartPulse },
-  { href: '/khatm', label: 'Quran Khatm', icon: BookOpen },
-  { href: '/groups', label: 'My Groups', icon: Users },
-  { href: '/news', label: 'News', icon: Newspaper },
-  { href: '/learn', label: 'Video Library', icon: PlayCircle },
-  { type: 'divider' },
-  { type: 'title', label: 'Tools' },
-  { href: '/zakat', label: 'Zakat Calculator', icon: CircleDollarSign },
-  { href: '/halal-food', label: 'Halal Food', icon: Apple },
-  { href: '/quran', label: 'Quran & Recitations', icon: BookOpen },
-  { href: '/hisnul-muslim', label: 'Hisnul Muslim Duas', icon: HeartHandshake },
-  { href: '/ccemag', label: 'CCE Mag Portal', icon: Landmark },
-  { href: '/ai-assistant', label: 'AI Assistant', icon: BotMessageSquare },
+// ─── Nav sections for the scrollable mobile drawer ──────────────────────────
+
+const NAV_SECTIONS = [
+  {
+    title: '📱 Main',
+    links: [
+      { href: '/dashboard',      label: 'Dashboard',           icon: LayoutDashboard },
+      { href: '/quran',          label: 'Quran & Recitations', icon: BookOpen },
+      { href: '/library',        label: 'Library',             icon: BookMarked },
+      { href: '/groups',         label: 'My Groups',           icon: Users },
+      { href: '/news',           label: 'News',                icon: Newspaper },
+      { href: '/radio',          label: 'Muslim Radio',        icon: Radio },
+      { href: '/learn',          label: 'Video Library',       icon: PlayCircle },
+    ],
+  },
+  {
+    title: '🤲 Worship',
+    links: [
+      { href: '/hisnul-muslim',  label: 'Hisnul Muslim Duas',  icon: HeartHandshake },
+      { href: '/dhikr',          label: 'Dhikr Circle',        icon: HeartPulse },
+      { href: '/awrad',          label: 'Awrad & Mawlid',      icon: Moon },
+      { href: '/yaseen',         label: 'Surah Yaaseen',       icon: BookOpen },
+      { href: '/khatm',          label: 'Quran Khatm',         icon: BookOpen },
+      { href: '/ramadan',        label: 'Ramadan Tracker',     icon: Moon },
+    ],
+  },
+  {
+    title: '🛠️ Tools',
+    links: [
+      { href: '/zakat',          label: 'Zakat Calculator',    icon: CircleDollarSign },
+      { href: '/halal-food',     label: 'Halal Food Guide',    icon: Apple },
+      { href: '/halal-screener', label: 'Halal Screener',      icon: Apple },
+      { href: '/qiblah',         label: 'Qibla Compass',       icon: Compass },
+      { href: '/ai-assistant',   label: 'AI Assistant',        icon: BotMessageSquare },
+      { href: '/masjid',         label: 'Masjid Finder',       icon: MapPin },
+      { href: '/achievements',   label: 'Achievements',        icon: Trophy },
+    ],
+  },
+  {
+    title: '🏫 School & Learning',
+    links: [
+      { href: '/madresah',       label: 'Madresah Portal',     icon: School },
+      { href: '/qna',            label: 'Scholar Q&A',         icon: BookOpen },
+      { href: '/ccemag',         label: 'CCE Mag Portal',      icon: Landmark },
+    ],
+  },
 ];
 
+const DESKTOP_NAV = [
+  { href: '/dashboard',    label: 'Dashboard',  icon: LayoutDashboard },
+  { href: '/quran',        label: 'Quran',       icon: BookOpen },
+  { href: '/library',      label: 'Library',     icon: BookMarked },
+  { href: '/dhikr',        label: 'Dhikr',       icon: HeartPulse },
+  { href: '/groups',       label: 'Groups',      icon: Users },
+  { href: '/madresah',     label: 'Madresah',    icon: School },
+  { href: '/radio',        label: 'Radio',       icon: Radio },
+  { href: '/news',         label: 'News',        icon: Newspaper },
+  { href: '/zakat',        label: 'Zakat',       icon: CircleDollarSign },
+  { href: '/halal-food',   label: 'Halal Food',  icon: Apple },
+  { href: '/ai-assistant', label: 'AI',          icon: BotMessageSquare },
+];
 
-function HeaderContent() {
+// ─── Mobile Drawer ────────────────────────────────────────────────────────────
+
+function MobileDrawer() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background px-2 sm:px-6 sm:gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent">
-      {/* Mobile Hamburger Menu */}
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button size="icon" variant="outline" className="sm:hidden">
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle Menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="sm:max-w-xs">
-          <nav className="grid gap-6 text-lg font-medium">
-            <Link
-              href="/dashboard"
-              className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-            >
-              <Icons.logo className="h-5 w-5 transition-all group-hover:scale-110" />
-              <span className="sr-only">Deenify</span>
-            </Link>
-            {navLinks.map((link, index) => {
-              if (link.type === 'divider') {
-                return <DropdownMenuSeparator key={`mob-sep-${index}`} className="my-2" />;
-              }
-              if (link.type === 'title') {
-                return (
-                  <h4 key={`mob-title-${index}`} className="px-2 text-sm font-semibold text-muted-foreground">
-                    {link.label}
-                  </h4>
-                );
-              }
-              const LinkIcon = link.icon!;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href as string}
-                  className={cn(
-                    'flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground',
-                    pathname === link.href && 'text-foreground'
-                  )}
-                >
-                  <LinkIcon className="h-5 w-5" />
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
-        </SheetContent>
-      </Sheet>
-
-      {/* Desktop Horizontal Nav */}
-      <nav className="hidden sm:flex gap-1 md:gap-2 items-center">
-        {navLinks.map((link, index) => {
-          if (link.type === 'divider' || link.type === 'title') return null;
-          const LinkIcon = link.icon!;
-          return (
-            <Link
-              key={link.href}
-              href={link.href as string}
-              className={cn(
-                'flex items-center gap-2 px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition',
-                pathname === link.href && 'text-foreground bg-accent'
-              )}
-            >
-              <LinkIcon className="h-4 w-4" />
-              <span className="hidden md:inline">{link.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="relative ml-auto flex-1 md:grow-0 flex items-center gap-1 md:gap-2">
-        <KeyboardShortcutsDialog />
-        <Link
-          href="/dashboard"
-          title="App Guide"
-          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9"
-        >
-          <HelpCircle className="h-5 w-5" />
-          <span className="sr-only">App Guide</span>
-        </Link>
-        <Link href="/dashboard" className="font-bold text-xl text-primary flex items-center gap-2">
-          <DeenifyLogo />
-          <span>Deenify</span>
-        </Link>
-      </div>
-
-      {/* Desktop Account Dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="overflow-hidden rounded-full hidden sm:flex"
-          >
-            <CircleUser className="h-5 w-5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 sm:w-64 max-w-[98vw] rounded-t-lg sm:rounded-md p-2">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {user && (
-            <>
-              <DropdownMenuItem>
-                <div className="flex flex-col">
-                  <span className="font-semibold">{user.email}</span>
-                  <span className="text-xs text-muted-foreground">User ID: {user.id}</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/profile" className="w-full">Profile</Link>
-              </DropdownMenuItem>
-              {/* Admin link – only shown to admins */}
-              {user && user.role === 'admin' && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/admin" className="w-full flex items-center gap-2 font-semibold text-primary">
-                      <ShieldCheck className="h-4 w-4" />
-                      Admin Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                </>
-              )}
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                        onClick={async () => {
-                          await signOut();
-                          window.location.href = '/auth/sign-in'; // Force reload and consistent redirect
-                        }}
-                className="text-red-600 font-semibold cursor-pointer"
-              >
-                Sign Out
-              </DropdownMenuItem>
-            </>
-          )}
-          {!user && (
-            <DropdownMenuItem>
-              <Link href="/auth/sign-in" className="w-full">Sign In</Link>
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </header>
-  );
-}
-
-// ---
-
-function MobileAccountButton() {
-  const { user, signOut } = useAuth();
-  return (
     <Sheet>
       <SheetTrigger asChild>
-        <button
-          className="fixed bottom-4 right-4 z-[200] sm:hidden flex items-center gap-2 px-5 py-3 rounded-full bg-emerald-500 text-white font-bold text-base shadow-2xl border-4 border-white hover:bg-emerald-600 transition"
-          aria-label="Open Account Menu"
-        >
-          <CircleUser className="h-7 w-7 mr-2" />
-          <span>Account</span>
-        </button>
+        <Button size="icon" variant="outline" className="sm:hidden flex-shrink-0">
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Open menu</span>
+        </Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="sm:hidden p-6 max-w-full w-full h-[90vh] rounded-t-2xl flex flex-col justify-between bg-[#F9F7F2]">
-        <div className="flex flex-col gap-4">
-          <div className="font-bold text-xl mb-2 text-[#7C6F57]">My Account</div>
-          {user && (
-            <>
-              <div className="flex flex-col mb-2">
-                <span className="font-semibold">{user.email}</span>
-                <span className="text-xs text-muted-foreground">User ID: {user.id}</span>
+
+      <SheetContent
+        side="left"
+        className="sm:hidden w-[82vw] max-w-[320px] p-0 flex flex-col overflow-hidden"
+        style={{ height: '100dvh' }}
+      >
+        {/* Fixed top bar */}
+        <div className="flex items-center justify-between px-4 py-3 border-b flex-shrink-0">
+          <SheetClose asChild>
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                <Icons.logo className="h-4 w-4 text-primary-foreground" />
               </div>
-              <Button asChild variant="ghost" className="justify-start w-full text-[#7C6F57]">
-                <Link href="/profile">Profile</Link>
-              </Button>
-              <Button asChild variant="ghost" className="justify-start w-full text-[#7C6F57]">
-                <Link href="/settings">Settings</Link>
-              </Button>
-              {/* Admin link in mobile – only shown to admins */}
-              {user.role === 'admin' && (
-                <Button asChild variant="outline" className="justify-start w-full font-semibold text-primary border-primary">
-                  <Link href="/admin" className="flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4" />
-                    Admin Dashboard
-                  </Link>
-                </Button>
-              )}
-              <Button
-                onClick={async () => {
-                  await signOut();
-                  window.location.href = '/auth/sign-in'; // Force reload and consistent redirect
-                }}
-                variant="destructive"
-                className="w-full mt-2"
-              >
-                Sign Out
-              </Button>
-            </>
+              <span className="font-bold text-base text-primary">Deenify</span>
+            </Link>
+          </SheetClose>
+          <SheetClose asChild>
+            <button className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors" aria-label="Close menu">
+              <X className="h-4 w-4" />
+            </button>
+          </SheetClose>
+        </div>
+
+        {/* Scrollable nav */}
+        <div className="flex-1 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
+          {NAV_SECTIONS.map((section) => (
+            <div key={section.title} className="px-2 pt-3">
+              <p className="px-3 mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                {section.title}
+              </p>
+              <div className="space-y-0.5">
+                {section.links.map(({ href, label, icon: Icon }) => {
+                  const active = pathname === href || (href !== '/dashboard' && (pathname?.startsWith(href) ?? false));
+                  return (
+                    <SheetClose asChild key={href}>
+                      <Link
+                        href={href}
+                        className={cn(
+                          'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors',
+                          active
+                            ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                            : 'text-gray-700 hover:bg-gray-100'
+                        )}
+                      >
+                        <Icon className={cn('h-4 w-4 flex-shrink-0', active ? 'text-emerald-600' : 'text-gray-400')} />
+                        {label}
+                      </Link>
+                    </SheetClose>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          {/* Admin section */}
+          {user?.role === 'admin' && (
+            <div className="px-2 pt-3">
+              <p className="px-3 mb-1 text-[10px] font-bold uppercase tracking-widest text-rose-500">
+                🛡️ Admin
+              </p>
+              <div className="space-y-0.5">
+                {[
+                  { href: '/admin',          label: 'Admin Dashboard' },
+                  { href: '/admin/madresah', label: 'Madresah Schools' },
+                  { href: '/admin/media',    label: 'Media Upload' },
+                  { href: '/admin/content',  label: 'Content Upload' },
+                  { href: '/facts-admin',    label: 'Daily Facts' },
+                  { href: '/verifier',       label: 'Verifier Dashboard' },
+                ].map(({ href, label }) => (
+                  <SheetClose asChild key={href}>
+                    <Link
+                      href={href}
+                      className={cn(
+                        'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors',
+                        pathname === href
+                          ? 'bg-rose-50 text-rose-700 font-semibold'
+                          : 'text-gray-700 hover:bg-rose-50'
+                      )}
+                    >
+                      <ShieldCheck className="h-4 w-4 flex-shrink-0 text-rose-400" />
+                      {label}
+                    </Link>
+                  </SheetClose>
+                ))}
+              </div>
+            </div>
           )}
-          {!user && (
-            <Button asChild variant="default" className="w-full">
-              <Link href="/auth/sign-in">Sign In</Link>
-            </Button>
+
+          {/* Bottom spacer so last items are reachable above the footer */}
+          <div className="h-4" />
+        </div>
+
+        {/* Fixed footer */}
+        <div className="flex-shrink-0 border-t px-4 py-3 space-y-2 bg-background">
+          {user ? (
+            <>
+              <div className="flex items-center gap-2.5 px-1">
+                <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <CircleUser className="h-4 w-4 text-emerald-700" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold truncate leading-tight">{user.email}</p>
+                  <p className="text-[11px] text-muted-foreground capitalize">{user.role?.toLowerCase() ?? 'user'}</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <SheetClose asChild>
+                  <Link href="/profile" className="flex-1 flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors">
+                    <CircleUser className="h-3.5 w-3.5" /> Profile
+                  </Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link href="/settings" className="flex-1 flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors">
+                    <Settings className="h-3.5 w-3.5" /> Settings
+                  </Link>
+                </SheetClose>
+                <button
+                  onClick={async () => { await signOut(); window.location.href = '/auth/sign-in'; }}
+                  className="flex-1 flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-medium bg-red-50 hover:bg-red-100 text-red-600 transition-colors"
+                >
+                  <LogOut className="h-3.5 w-3.5" /> Sign Out
+                </button>
+              </div>
+            </>
+          ) : (
+            <SheetClose asChild>
+              <Link href="/auth/sign-in" className="block w-full text-center px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm hover:bg-emerald-700 transition-colors">
+                Sign In
+              </Link>
+            </SheetClose>
           )}
         </div>
-        <div className="text-center text-xs text-muted-foreground mt-8">Deenify &copy; {new Date().getFullYear()}</div>
       </SheetContent>
     </Sheet>
   );
 }
 
+// ─── Main Header export ───────────────────────────────────────────────────────
+
 export default function Header() {
+  const pathname = usePathname();
+  const { user, signOut } = useAuth();
+
   return (
-    <>
-      <HeaderContent />
-      <MobileAccountButton />
-    </>
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background px-3 sm:px-6">
+      <MobileDrawer />
+
+      {/* Logo */}
+      <Link href="/dashboard" className="flex items-center gap-2 font-bold text-primary ml-1 sm:ml-0">
+        <DeenifyLogo />
+        <span className="text-base sm:text-lg">Deenify</span>
+      </Link>
+
+      {/* Desktop nav */}
+      <nav className="hidden sm:flex gap-0.5 items-center ml-4">
+        {DESKTOP_NAV.map(({ href, label, icon: Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className={cn(
+              'flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition',
+              pathname === href && 'text-foreground bg-accent font-medium'
+            )}
+          >
+            <Icon className="h-3.5 w-3.5 flex-shrink-0" />
+            <span className="hidden lg:inline">{label}</span>
+          </Link>
+        ))}
+      </nav>
+
+      {/* Right side */}
+      <div className="ml-auto flex items-center gap-1">
+        <KeyboardShortcutsDialog />
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon" className="overflow-hidden rounded-full hidden sm:flex">
+              <CircleUser className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64 p-2">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {user ? (
+              <>
+                <DropdownMenuItem className="flex-col items-start gap-0">
+                  <span className="font-semibold">{user.email}</span>
+                  <span className="text-xs text-muted-foreground capitalize">{user.role?.toLowerCase()}</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="w-full">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings" className="w-full">Settings</Link>
+                </DropdownMenuItem>
+                {user.role === 'admin' && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin" className="w-full flex items-center gap-2 font-semibold text-primary">
+                        <ShieldCheck className="h-4 w-4" /> Admin Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={async () => { await signOut(); window.location.href = '/auth/sign-in'; }}
+                  className="text-red-600 font-semibold cursor-pointer"
+                >
+                  Sign Out
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <DropdownMenuItem asChild>
+                <Link href="/auth/sign-in" className="w-full">Sign In</Link>
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
   );
 }
