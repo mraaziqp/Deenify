@@ -37,13 +37,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { Icons } from '@/components/icons';
-import type { NavLink } from '@/lib/types';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { KeyboardShortcutsDialog } from '@/components/keyboard-shortcuts-dialog';
 import DeenifyLogo from '@/components/ui/deenify-logo';
 import { useAuth } from '@/lib/auth-context';
-import { ShieldCheck, HelpCircle } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 // ─── Nav sections for the scrollable mobile drawer ──────────────────────────
 
