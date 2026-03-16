@@ -34,7 +34,7 @@ import { useAuth } from '@/lib/auth-context';
 
 type StageId = 'beginner' | 'intermediate' | 'advanced';
 type GameId = 'letters' | 'vocab' | 'grammar';
-type HubTabId = 'path' | 'games' | 'bridge' | 'speaking' | 'revision' | 'placement' | 'planner';
+type HubTabId = 'path' | 'adventure' | 'games' | 'bridge' | 'speaking' | 'revision' | 'placement' | 'planner';
 
 type Lesson = {
   id: string;
@@ -136,6 +136,38 @@ type RootTrack = {
   }>;
 };
 
+type KidsAvatar = {
+  id: string;
+  name: string;
+  emoji: string;
+  superpower: string;
+  color: string;
+};
+
+type KidsQuest = {
+  id: string;
+  title: string;
+  mission: string;
+  rewardXp: number;
+  sticker: string;
+};
+
+type KidsChallenge = {
+  id: string;
+  prompt: string;
+  helper: string;
+  options: string[];
+  answer: string;
+};
+
+type KidsTreasureReward = {
+  id: string;
+  title: string;
+  emoji: string;
+  xp: number;
+  sparkles: number;
+};
+
 type LearnerProgress = {
   completedLessons: string[];
   xp: number;
@@ -148,6 +180,7 @@ type LearnerProgress = {
 const STORAGE_KEY = 'deenify-arabic-learning-progress-v1';
 const SETTINGS_STORAGE_KEY = 'deenify-arabic-learning-settings-v1';
 const JOURNAL_STORAGE_KEY = 'deenify-arabic-learning-journal-v1';
+const ADVENTURE_STORAGE_KEY = 'deenify-arabic-adventure-v1';
 
 const STAGE_META: Record<
   StageId,
@@ -554,6 +587,121 @@ const DAILY_CHALLENGES = [
   'Teach one Arabic word to someone today for retention.',
 ];
 
+const KIDS_AVATARS: KidsAvatar[] = [
+  {
+    id: 'falcon',
+    name: 'Falcon Friend',
+    emoji: '🦅',
+    superpower: 'Spot hidden Arabic letters fast',
+    color: 'from-sky-500 to-cyan-500',
+  },
+  {
+    id: 'lion',
+    name: 'Brave Lion',
+    emoji: '🦁',
+    superpower: 'Roars through tough sounds like ع and خ',
+    color: 'from-amber-500 to-orange-500',
+  },
+  {
+    id: 'dolphin',
+    name: 'Wave Dolphin',
+    emoji: '🐬',
+    superpower: 'Glides through words with smooth reading',
+    color: 'from-indigo-500 to-violet-500',
+  },
+  {
+    id: 'fox',
+    name: 'Smart Fox',
+    emoji: '🦊',
+    superpower: 'Finds root patterns and word families',
+    color: 'from-rose-500 to-pink-500',
+  },
+];
+
+const KIDS_QUESTS: KidsQuest[] = [
+  {
+    id: 'quest-1',
+    title: 'Letter Scout',
+    mission: 'Find and read 5 Arabic letters correctly.',
+    rewardXp: 20,
+    sticker: '🔤',
+  },
+  {
+    id: 'quest-2',
+    title: 'Word Explorer',
+    mission: 'Memorize 3 Quran words and say their meanings.',
+    rewardXp: 25,
+    sticker: '🗺️',
+  },
+  {
+    id: 'quest-3',
+    title: 'Sound Hero',
+    mission: 'Practice difficult sounds for 4 minutes.',
+    rewardXp: 30,
+    sticker: '🎤',
+  },
+  {
+    id: 'quest-4',
+    title: 'Ayah Reader',
+    mission: 'Read one short ayah with calm pacing.',
+    rewardXp: 30,
+    sticker: '📖',
+  },
+];
+
+const KIDS_CHALLENGES: KidsChallenge[] = [
+  {
+    id: 'kc1',
+    prompt: 'Pick the letter that sounds like deep "kh".',
+    helper: 'Look for the letter with a dot above and throat sound.',
+    options: ['ح', 'خ', 'ه', 'ع'],
+    answer: 'خ',
+  },
+  {
+    id: 'kc2',
+    prompt: 'Which word means "book"?',
+    helper: 'You see this word often in learning contexts.',
+    options: ['نُور', 'كِتَاب', 'صَبْر', 'رَحْمَة'],
+    answer: 'كِتَاب',
+  },
+  {
+    id: 'kc3',
+    prompt: 'Choose the letter called "ayn".',
+    helper: 'It is a unique Arabic sound from the throat.',
+    options: ['غ', 'ء', 'ع', 'ق'],
+    answer: 'ع',
+  },
+  {
+    id: 'kc4',
+    prompt: 'What does "صَبْر" mean?',
+    helper: 'A beautiful Quran value about staying steady.',
+    options: ['Patience', 'Light', 'Book', 'Truth'],
+    answer: 'Patience',
+  },
+  {
+    id: 'kc5',
+    prompt: 'Pick the emphatic "s" letter.',
+    helper: 'This one sounds heavier than س.',
+    options: ['س', 'ز', 'ص', 'ث'],
+    answer: 'ص',
+  },
+];
+
+const KIDS_TREASURE_REWARDS: KidsTreasureReward[] = [
+  { id: 'tr1', title: 'Golden Letter Card', emoji: '🏅', xp: 12, sparkles: 4 },
+  { id: 'tr2', title: 'Quran Word Gem', emoji: '💎', xp: 18, sparkles: 6 },
+  { id: 'tr3', title: 'Fluency Rocket', emoji: '🚀', xp: 22, sparkles: 7 },
+  { id: 'tr4', title: 'Confidence Crown', emoji: '👑', xp: 28, sparkles: 8 },
+];
+
+const ADVENTURE_STORY_STEPS = [
+  { id: 's1', title: 'Village Gate', requirement: 'Choose your adventure buddy.' },
+  { id: 's2', title: 'Letter Forest', requirement: 'Complete 2 quests.' },
+  { id: 's3', title: 'Word River', requirement: 'Claim your first treasure chest.' },
+  { id: 's4', title: 'Sound Mountain', requirement: 'Score 4/5 in Balloon Pop.' },
+  { id: 's5', title: 'Star Castle', requirement: 'Defeat the Guardian Boss challenge.' },
+];
+
 const DIALOGUE_PRACTICE = [
   {
     title: 'Masjid Arrival',
@@ -774,6 +922,17 @@ export default function ArabicLearningPage() {
   const [roundScore, setRoundScore] = useState(0);
   const [roundComplete, setRoundComplete] = useState(false);
   const [rewardClaimed, setRewardClaimed] = useState(false);
+  const [selectedAvatarId, setSelectedAvatarId] = useState(KIDS_AVATARS[0].id);
+  const [claimedQuestIds, setClaimedQuestIds] = useState<string[]>([]);
+  const [kidChallengeIndex, setKidChallengeIndex] = useState(0);
+  const [kidSelectedOption, setKidSelectedOption] = useState<string | null>(null);
+  const [kidScore, setKidScore] = useState(0);
+  const [kidRoundComplete, setKidRoundComplete] = useState(false);
+  const [kidRewardClaimed, setKidRewardClaimed] = useState(false);
+  const [adventureSparkles, setAdventureSparkles] = useState(0);
+  const [lastTreasureClaimDate, setLastTreasureClaimDate] = useState<string | null>(null);
+  const [latestTreasureNote, setLatestTreasureNote] = useState<string | null>(null);
+  const [bossCompleted, setBossCompleted] = useState(false);
   const [placementAnswers, setPlacementAnswers] = useState<Record<string, string>>({});
   const [placementSubmitted, setPlacementSubmitted] = useState(false);
   const [placementScore, setPlacementScore] = useState<number | null>(null);
@@ -919,6 +1078,29 @@ export default function ArabicLearningPage() {
   const quiz = QUIZZES[activeGame];
   const currentQuestion = quiz.questions[questionIndex];
   const roundPercent = Math.round((questionIndex / quiz.questions.length) * 100);
+  const selectedAvatar = KIDS_AVATARS.find((avatar) => avatar.id === selectedAvatarId) ?? KIDS_AVATARS[0];
+  const kidChallenge = KIDS_CHALLENGES[kidChallengeIndex];
+  const kidRoundPercent = Math.round((kidChallengeIndex / KIDS_CHALLENGES.length) * 100);
+  const collectedStickers = claimedQuestIds.length;
+  const questCompletionPercent = Math.round((collectedStickers / KIDS_QUESTS.length) * 100);
+  const canOpenTreasure = lastTreasureClaimDate !== getTodayIso();
+  const adventureRankScore = progress.xp + adventureSparkles * 5 + collectedStickers * 15;
+  const adventureRank =
+    adventureRankScore < 250
+      ? 'Little Explorer'
+      : adventureRankScore < 600
+        ? 'Brave Pathfinder'
+        : adventureRankScore < 950
+          ? 'Language Champion'
+          : 'Quran Star Hero';
+  const bossUnlocked = collectedStickers === KIDS_QUESTS.length && kidScore >= 4;
+  const storyUnlockCount = [
+    true,
+    collectedStickers >= 2,
+    Boolean(lastTreasureClaimDate),
+    kidScore >= 4,
+    bossCompleted,
+  ].filter(Boolean).length;
   const selectedPhrase = PRONUNCIATION_PHRASES.find((item) => item.id === selectedPhraseId) ?? PRONUNCIATION_PHRASES[0];
   const isTeacherOrPrincipal = schoolInfo?.role === 'TEACHER' || schoolInfo?.role === 'PRINCIPAL';
   const canManageAssignments = canCreateAssignments || isTeacherOrPrincipal || user?.role === 'ADMIN';
@@ -942,7 +1124,7 @@ export default function ArabicLearningPage() {
     const tab = new URLSearchParams(window.location.search).get('tab');
     if (!tab) return;
 
-    const validTabs: HubTabId[] = ['path', 'games', 'bridge', 'speaking', 'revision', 'placement', 'planner'];
+    const validTabs: HubTabId[] = ['path', 'adventure', 'games', 'bridge', 'speaking', 'revision', 'placement', 'planner'];
     if (validTabs.includes(tab as HubTabId)) {
       setActiveTab(tab as HubTabId);
     }
@@ -1004,6 +1186,55 @@ export default function ArabicLearningPage() {
   useEffect(() => {
     localStorage.setItem(JOURNAL_STORAGE_KEY, journalEntry);
   }, [journalEntry]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(ADVENTURE_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as {
+        selectedAvatarId?: string;
+        claimedQuestIds?: string[];
+        adventureSparkles?: number;
+        lastTreasureClaimDate?: string | null;
+        bossCompleted?: boolean;
+      };
+
+      if (typeof parsed.selectedAvatarId === 'string' && KIDS_AVATARS.some((avatar) => avatar.id === parsed.selectedAvatarId)) {
+        setSelectedAvatarId(parsed.selectedAvatarId);
+      }
+
+      if (Array.isArray(parsed.claimedQuestIds)) {
+        setClaimedQuestIds(parsed.claimedQuestIds.filter((id) => typeof id === 'string'));
+      }
+
+      if (typeof parsed.adventureSparkles === 'number') {
+        setAdventureSparkles(Math.max(0, Math.floor(parsed.adventureSparkles)));
+      }
+
+      if (typeof parsed.lastTreasureClaimDate === 'string' || parsed.lastTreasureClaimDate === null) {
+        setLastTreasureClaimDate(parsed.lastTreasureClaimDate ?? null);
+      }
+
+      if (typeof parsed.bossCompleted === 'boolean') {
+        setBossCompleted(parsed.bossCompleted);
+      }
+    } catch {
+      // Ignore malformed adventure mode settings and keep defaults.
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      ADVENTURE_STORAGE_KEY,
+      JSON.stringify({
+        selectedAvatarId,
+        claimedQuestIds,
+        adventureSparkles,
+        lastTreasureClaimDate,
+        bossCompleted,
+      })
+    );
+  }, [selectedAvatarId, claimedQuestIds, adventureSparkles, lastTreasureClaimDate, bossCompleted]);
 
   useEffect(() => {
     if (!user?.id || hasHydratedRemoteProgressRef.current) return;
@@ -1377,6 +1608,86 @@ export default function ArabicLearningPage() {
     setRewardClaimed(false);
   };
 
+  const claimKidsQuest = (quest: KidsQuest) => {
+    if (claimedQuestIds.includes(quest.id)) return;
+
+    setClaimedQuestIds((prev) => [...prev, quest.id]);
+    setAdventureSparkles((prev) => prev + 2);
+    setProgress((prev) => withActivityUpdate({
+      ...prev,
+      xp: prev.xp + quest.rewardXp,
+    }));
+  };
+
+  const chooseKidOption = (option: string) => {
+    if (kidSelectedOption || kidRoundComplete) return;
+
+    setKidSelectedOption(option);
+    if (option === kidChallenge.answer) {
+      setKidScore((prev) => prev + 1);
+    }
+  };
+
+  const nextKidChallenge = () => {
+    if (!kidSelectedOption) return;
+
+    if (kidChallengeIndex >= KIDS_CHALLENGES.length - 1) {
+      setKidRoundComplete(true);
+      return;
+    }
+
+    setKidChallengeIndex((prev) => prev + 1);
+    setKidSelectedOption(null);
+  };
+
+  const restartKidRound = () => {
+    setKidChallengeIndex(0);
+    setKidSelectedOption(null);
+    setKidScore(0);
+    setKidRoundComplete(false);
+    setKidRewardClaimed(false);
+  };
+
+  const claimKidRoundReward = () => {
+    if (!kidRoundComplete || kidRewardClaimed) return;
+
+    const earnedXp = 15 + kidScore * 6 + (kidScore === KIDS_CHALLENGES.length ? 10 : 0);
+    const earnedSparkles = kidScore >= 4 ? 5 : 3;
+    setProgress((prev) => withActivityUpdate({
+      ...prev,
+      xp: prev.xp + earnedXp,
+      gamesWon: prev.gamesWon + 1,
+    }));
+    setAdventureSparkles((prev) => prev + earnedSparkles);
+    setKidRewardClaimed(true);
+  };
+
+  const openTreasureChest = () => {
+    if (!canOpenTreasure) return;
+
+    const dayCode = Number(getTodayIso().replace(/-/g, ''));
+    const reward = KIDS_TREASURE_REWARDS[dayCode % KIDS_TREASURE_REWARDS.length];
+    setLastTreasureClaimDate(getTodayIso());
+    setLatestTreasureNote(`${reward.emoji} ${reward.title}: +${reward.xp} XP and +${reward.sparkles} sparkles.`);
+    setAdventureSparkles((prev) => prev + reward.sparkles);
+    setProgress((prev) => withActivityUpdate({
+      ...prev,
+      xp: prev.xp + reward.xp,
+    }));
+  };
+
+  const completeBossChallenge = () => {
+    if (!bossUnlocked || bossCompleted) return;
+
+    setBossCompleted(true);
+    setAdventureSparkles((prev) => prev + 10);
+    setProgress((prev) => withActivityUpdate({
+      ...prev,
+      xp: prev.xp + 40,
+      gamesWon: prev.gamesWon + 1,
+    }));
+  };
+
   const setPlacementAnswer = (questionId: string, optionId: string) => {
     setPlacementAnswers((prev) => ({ ...prev, [questionId]: optionId }));
   };
@@ -1556,8 +1867,9 @@ export default function ArabicLearningPage() {
       </section>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as HubTabId)} className="space-y-5">
-        <TabsList className="w-full grid grid-cols-2 md:grid-cols-7 h-auto gap-1">
+        <TabsList className="w-full grid grid-cols-2 md:grid-cols-8 h-auto gap-1">
           <TabsTrigger value="path">Pathway</TabsTrigger>
+          <TabsTrigger value="adventure">Kids Adventure</TabsTrigger>
           <TabsTrigger value="placement">Placement</TabsTrigger>
           <TabsTrigger value="games">Games Lab</TabsTrigger>
           <TabsTrigger value="bridge">Quran Bridge</TabsTrigger>
@@ -1667,6 +1979,282 @@ export default function ArabicLearningPage() {
                       </Card>
                     );
                   })}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="adventure" className="space-y-5">
+          <Card className="relative overflow-hidden border-rose-200">
+            <div className="absolute inset-0 bg-gradient-to-br from-rose-100 via-amber-50 to-sky-100" />
+            <div className="absolute -top-10 -left-6 h-36 w-36 rounded-full bg-rose-300/25 blur-2xl" />
+            <div className="absolute -bottom-10 -right-8 h-40 w-40 rounded-full bg-sky-300/30 blur-2xl" />
+
+            <CardHeader className="relative z-10 pb-2">
+              <CardTitle className="flex items-center gap-2 text-rose-900">
+                <Sparkles className="h-5 w-5 text-rose-600" />
+                Adventure Playground for Kids and Newbies
+              </CardTitle>
+              <CardDescription className="text-rose-900/75">
+                A playful mode with tiny missions, friendly avatars, and quick Arabic wins. Great for first-timers.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="relative z-10 space-y-4">
+              <div className={cn('rounded-2xl bg-gradient-to-r p-4 text-white shadow-md', selectedAvatar.color)}>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.14em] text-white/80">Adventure Buddy</p>
+                    <p className="mt-1 text-xl font-extrabold">{selectedAvatar.emoji} {selectedAvatar.name}</p>
+                    <p className="text-sm text-white/90">{selectedAvatar.superpower}</p>
+                  </div>
+                  <div className="rounded-xl bg-black/15 px-3 py-2 text-center">
+                    <p className="text-xs text-white/80">Sticker Pack</p>
+                    <p className="text-lg font-bold">{collectedStickers}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-xl border border-rose-200 bg-white px-3 py-2">
+                  <p className="text-xs text-muted-foreground">Adventure Rank</p>
+                  <p className="font-bold text-rose-900">{adventureRank}</p>
+                </div>
+                <div className="rounded-xl border border-amber-200 bg-white px-3 py-2">
+                  <p className="text-xs text-muted-foreground">Quest Progress</p>
+                  <p className="font-bold text-amber-900">{questCompletionPercent}%</p>
+                </div>
+                <div className="rounded-xl border border-sky-200 bg-white px-3 py-2">
+                  <p className="text-xs text-muted-foreground">Sparkles</p>
+                  <p className="font-bold text-sky-900">{adventureSparkles}</p>
+                </div>
+                <div className="rounded-xl border border-emerald-200 bg-white px-3 py-2">
+                  <p className="text-xs text-muted-foreground">Story Steps</p>
+                  <p className="font-bold text-emerald-900">{storyUnlockCount}/{ADVENTURE_STORY_STEPS.length}</p>
+                </div>
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {KIDS_AVATARS.map((avatar) => (
+                  <button
+                    key={avatar.id}
+                    onClick={() => setSelectedAvatarId(avatar.id)}
+                    className={cn(
+                      'rounded-2xl border bg-white px-3 py-3 text-left transition-all',
+                      selectedAvatarId === avatar.id
+                        ? 'border-rose-400 ring-2 ring-rose-200'
+                        : 'border-rose-100 hover:border-rose-300'
+                    )}
+                  >
+                    <p className="text-2xl">{avatar.emoji}</p>
+                    <p className="mt-1 font-semibold text-sm text-rose-900">{avatar.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{avatar.superpower}</p>
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-2">
+                <Card className="border-amber-200 bg-white/90">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base text-amber-900">Quest Board</CardTitle>
+                    <CardDescription>Complete simple missions and collect XP + stickers.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {KIDS_QUESTS.map((quest) => {
+                      const claimed = claimedQuestIds.includes(quest.id);
+
+                      return (
+                        <div key={quest.id} className="rounded-xl border border-amber-200 bg-amber-50/50 p-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="font-semibold text-sm text-amber-900">
+                              {quest.sticker} {quest.title}
+                            </p>
+                            <Badge variant={claimed ? 'default' : 'secondary'}>
+                              {claimed ? 'Done' : `+${quest.rewardXp} XP`}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-amber-900/80 mt-1">{quest.mission}</p>
+                          <Button
+                            onClick={() => claimKidsQuest(quest)}
+                            disabled={claimed}
+                            variant={claimed ? 'outline' : 'default'}
+                            className="h-8 px-3 text-xs mt-2"
+                          >
+                            {claimed ? 'Claimed' : 'Claim Reward'}
+                          </Button>
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+
+                <Card className="border-sky-200 bg-white/90">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base text-sky-900">Letter Balloon Pop</CardTitle>
+                    <CardDescription>
+                      Tap the correct answer for each fun micro-question.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>Round {Math.min(kidChallengeIndex + 1, KIDS_CHALLENGES.length)} / {KIDS_CHALLENGES.length}</span>
+                        <span>Score: {kidScore}</span>
+                      </div>
+                      <Progress value={kidRoundComplete ? 100 : kidRoundPercent} className="h-2" />
+                    </div>
+
+                    {!kidRoundComplete && (
+                      <>
+                        <div className="rounded-xl border border-sky-200 bg-sky-50/60 p-3">
+                          <p className="font-semibold text-sky-900">{kidChallenge.prompt}</p>
+                          <p className="text-xs text-sky-800 mt-1">Hint: {kidChallenge.helper}</p>
+                        </div>
+
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          {kidChallenge.options.map((option) => {
+                            const isSelected = kidSelectedOption === option;
+                            const isCorrect = kidSelectedOption && option === kidChallenge.answer;
+                            const isWrong = isSelected && option !== kidChallenge.answer;
+
+                            return (
+                              <button
+                                key={option}
+                                onClick={() => chooseKidOption(option)}
+                                className={cn(
+                                  'rounded-xl border px-3 py-2.5 text-left transition-all bg-white',
+                                  !kidSelectedOption && 'hover:border-sky-300 hover:bg-sky-50/50',
+                                  isCorrect && 'border-emerald-400 bg-emerald-50',
+                                  isWrong && 'border-red-300 bg-red-50'
+                                )}
+                              >
+                                <span className={cn(
+                                  'font-medium',
+                                  option.length <= 3 && 'arabic-text text-[1.3rem] leading-[1.9rem]'
+                                )}>
+                                  {option}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <Button onClick={nextKidChallenge} disabled={!kidSelectedOption} className="w-full">
+                          {kidChallengeIndex === KIDS_CHALLENGES.length - 1 ? 'Finish Adventure Round' : 'Next Balloon'}
+                        </Button>
+                      </>
+                    )}
+
+                    {kidRoundComplete && (
+                      <div className="rounded-xl border border-sky-200 bg-sky-50/70 p-3 space-y-2">
+                        <p className="font-semibold text-sky-900">
+                          Great job! You scored {kidScore}/{KIDS_CHALLENGES.length}.
+                        </p>
+                        {kidScore === KIDS_CHALLENGES.length && (
+                          <p className="text-xs text-emerald-700">Perfect round bonus unlocked: +10 XP.</p>
+                        )}
+                        <div className="flex flex-col gap-2 sm:flex-row">
+                          <Button onClick={restartKidRound} variant="outline" className="sm:flex-1">
+                            Play Again
+                          </Button>
+                          <Button onClick={claimKidRoundReward} disabled={kidRewardClaimed} className="sm:flex-1">
+                            {kidRewardClaimed ? 'Reward Claimed' : 'Claim Star Reward'}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-2">
+                <Card className="border-violet-200 bg-white/90">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base text-violet-900">Daily Treasure Chest</CardTitle>
+                    <CardDescription>
+                      Open once per day for surprise rewards and sparkles.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="rounded-xl border border-violet-200 bg-violet-50/60 p-3">
+                      <p className="text-sm text-violet-900">
+                        {canOpenTreasure
+                          ? 'Your chest is ready today. Tap to open.'
+                          : 'Today\'s chest is already opened. Come back tomorrow for a new reward.'}
+                      </p>
+                      {latestTreasureNote && (
+                        <p className="text-xs text-violet-800 mt-1">Latest reward: {latestTreasureNote}</p>
+                      )}
+                    </div>
+                    <Button onClick={openTreasureChest} disabled={!canOpenTreasure} className="w-full">
+                      {canOpenTreasure ? 'Open Treasure Chest' : 'Chest Opened Today'}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-emerald-200 bg-white/90">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base text-emerald-900">Story Map</CardTitle>
+                    <CardDescription>
+                      Unlock each location as you complete your beginner adventure.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {ADVENTURE_STORY_STEPS.map((step, index) => {
+                      const unlocked =
+                        index === 0 ||
+                        (index === 1 && collectedStickers >= 2) ||
+                        (index === 2 && Boolean(lastTreasureClaimDate)) ||
+                        (index === 3 && kidScore >= 4) ||
+                        (index === 4 && bossCompleted);
+
+                      return (
+                        <div
+                          key={step.id}
+                          className={cn(
+                            'rounded-lg border px-3 py-2',
+                            unlocked
+                              ? 'border-emerald-300 bg-emerald-50 text-emerald-900'
+                              : 'border-border bg-muted/20 text-muted-foreground'
+                          )}
+                        >
+                          <p className="text-sm font-semibold">{step.title}</p>
+                          <p className="text-xs mt-0.5">{step.requirement}</p>
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="border-fuchsia-200 bg-white/90">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base text-fuchsia-900">Boss Challenge: Guardian of Letters</CardTitle>
+                  <CardDescription>
+                    Unlock this by completing all quests and scoring at least 4/5 in Balloon Pop.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="rounded-xl border border-fuchsia-200 bg-fuchsia-50/60 p-3 text-sm text-fuchsia-900">
+                    {bossCompleted
+                      ? 'Boss defeated. You earned +40 XP and +10 sparkles.'
+                      : bossUnlocked
+                        ? 'Boss unlocked. Tap the button to claim your hero victory rewards.'
+                        : 'Keep going: finish all quests and reach 4 correct answers in Balloon Pop.'}
+                  </div>
+                  <Button onClick={completeBossChallenge} disabled={!bossUnlocked || bossCompleted} className="w-full">
+                    {bossCompleted ? 'Boss Defeated' : bossUnlocked ? 'Defeat Guardian Boss' : 'Boss Locked'}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4">
+                <p className="font-semibold text-emerald-900">Starter Routine for New Learners</p>
+                <div className="mt-2 grid gap-2 md:grid-cols-3 text-sm text-emerald-800">
+                  <div className="rounded-xl border border-emerald-200 bg-white px-3 py-2">1. Pick one avatar and one quest</div>
+                  <div className="rounded-xl border border-emerald-200 bg-white px-3 py-2">2. Do one balloon challenge round</div>
+                  <div className="rounded-xl border border-emerald-200 bg-white px-3 py-2">3. Finish one beginner lesson in Pathway</div>
                 </div>
               </div>
             </CardContent>
