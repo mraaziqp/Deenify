@@ -210,6 +210,9 @@ model User {
   classResources      ClassResource[]
   studentBadges       StudentBadge[]       @relation("BadgeStudent")
   awardedBadges       StudentBadge[]       @relation("BadgeAwarder")
+  arabicLearningProgress ArabicLearningProgress?
+  arabicAssignmentsCreated ArabicLearningAssignment[] @relation("ArabicAssignmentCreator")
+  arabicAssignmentsTargeted ArabicLearningAssignment[] @relation("ArabicAssignmentTargetUser")
 }
 
 enum LiveSessionType {
@@ -435,6 +438,7 @@ model MadresahClass {
   announcements   ClassAnnouncement[]
   resources       ClassResource[]
   badges          StudentBadge[]
+  arabicAssignments ArabicLearningAssignment[]
 }
 
 model ClassEnrollment {
@@ -623,4 +627,48 @@ model StudentBadge {
 
   @@index([studentId])
   @@index([classId])
+}
+
+model ArabicLearningProgress {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  completedLessons   String[]
+  xp                 Int      @default(0)
+  streak             Int      @default(0)
+  gamesWon           Int      @default(0)
+  placementCompleted Boolean  @default(false)
+  lastActiveDate     DateTime?
+  dailyMinutes       Int      @default(25)
+  daysPerWeek        Int      @default(5)
+  journalEntry       String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ArabicLearningAssignment {
+  id               String        @id @default(cuid())
+  createdById      String
+  targetUserId     String?
+  targetClassId    String?
+  title            String
+  focusArea        String?
+  notes            String?
+  dueDate          DateTime?
+  recommendedMinutes Int        @default(25)
+  daysPerWeek      Int           @default(5)
+  isCompleted      Boolean       @default(false)
+  completedAt      DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  createdBy        User          @relation("ArabicAssignmentCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  targetUser       User?         @relation("ArabicAssignmentTargetUser", fields: [targetUserId], references: [id], onDelete: SetNull)
+  targetClass      MadresahClass? @relation(fields: [targetClassId], references: [id], onDelete: SetNull)
+
+  @@index([createdById])
+  @@index([targetUserId])
+  @@index([targetClassId])
+  @@index([isCompleted])
 }

@@ -17,6 +17,7 @@ import {
   Award,
   Compass,
   HelpCircle,
+  Languages,
   X,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -36,6 +37,7 @@ const GUIDE_CATEGORIES = [
       { icon: '📖', name: 'Quran Reader', desc: 'Read the full Quran with translations, tafsir, and audio recitation.', href: '/quran' },
       { icon: '📜', name: 'Surah Yaaseen', desc: 'Read Surah Yaaseen (36) individually or join a group Khatm recitation.', href: '/yaseen' },
       { icon: '📚', name: 'Learning Library', desc: 'Browse Islamic PDFs, books, and educational resources.', href: '/library' },
+      { icon: '🗣️', name: 'Arabic Learning Hub', desc: 'Beginner to advanced Arabic class journey with games and Quran-focused understanding.', href: '/arabic-learning' },
     ],
   },
   {
@@ -113,6 +115,7 @@ const ALL_TILES = [
   { icon:'🤖', label:'AI Assistant',    sub:'Ask anything',      href:'/ai-assistant',   bg:'#faf5ff',iconBg:'#7c3aed',color:'#4c1d95' },
   { icon:'💰', label:'Zakat',           sub:'Calculator',        href:'/zakat',          bg:'#fff7ed',iconBg:'#ea580c',color:'#7c2d12' },
   { icon:'📚', label:'Library',         sub:'Books & PDFs',      href:'/library',        bg:'#f0f9ff',iconBg:'#0284c7',color:'#0c4a6e' },
+  { icon:'🗣️', label:'Arabic Learning', sub:'Class + games',     href:'/arabic-learning',bg:'#ecfeff',iconBg:'#0891b2',color:'#164e63' },
   { icon:'📿', label:'Dhikr',           sub:'Circle',            href:'/dhikr',          bg:'#fdf2f8',iconBg:'#db2777',color:'#831843' },
   { icon:'📻', label:'Radio',           sub:'Muslim stations',   href:'/radio',          bg:'#f0fdf4',iconBg:'#0f766e',color:'#134e4a' },
   { icon:'🏫', label:'Madresah',        sub:'School portal',     href:'/madresah',       bg:'#ecfdf5',iconBg:'#059669',color:'#064e3b' },
@@ -135,7 +138,7 @@ const ALL_TILES = [
 
 export default function DashboardPage() {
   const { user, hasRole, isLoading } = useAuth();
-  const [selectedTab, setSelectedTab] = useState<'learning' | 'yaseen' | 'qiblah' | 'ccemag' | 'daily' | 'worship' | 'admin'>('learning');
+  const [selectedTab, setSelectedTab] = useState<'learning' | 'arabic' | 'yaseen' | 'qiblah' | 'ccemag' | 'daily' | 'worship' | 'admin'>('learning');
   const [showGuide, setShowGuide] = useState(false);
   const [showAllTiles, setShowAllTiles] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
@@ -293,6 +296,12 @@ export default function DashboardPage() {
                 <BookOpen className="inline h-5 w-5 mr-1 align-text-bottom" /> Learning Library
               </button>
               <button
+                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'arabic' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
+                onClick={() => setSelectedTab('arabic')}
+              >
+                <Languages className="inline h-5 w-5 mr-1 align-text-bottom" /> Arabic Class
+              </button>
+              <button
                 className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'yaseen' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
                 onClick={() => setSelectedTab('yaseen')}
               >
@@ -352,6 +361,37 @@ export default function DashboardPage() {
                 </div>
                 <Button asChild className="w-full">
                   <Link href="/library">Open Learning Library</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+          {selectedTab === 'arabic' && (
+            <Card className="shadow-md border-cyan-100 bg-gradient-to-br from-cyan-50/80 via-white to-emerald-50/60">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Languages className="h-5 w-5 text-cyan-700" />
+                  Arabic Learning Hub
+                </CardTitle>
+                <CardDescription>
+                  Start from absolute beginner and level up to advanced Quran comprehension with guided classes, game rounds, root analysis, and speaking drills.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  {[['🔤','Beginner letter lessons'],['🎮','Interactive language games'],['🧠','Root & grammar mastery'],['📖','Quran comprehension bridge']].map(([icon,label])=>(
+                    <div key={label as string} className="flex items-center gap-2 rounded-xl bg-white/80 border border-cyan-100 px-3 py-2">
+                      <span>{icon}</span><span className="text-cyan-900/80">{label as string}</span>
+                    </div>
+                  ))}
+                </div>
+                <Button asChild className="w-full bg-cyan-700 hover:bg-cyan-800">
+                  <Link href="/arabic-learning">Enter Arabic Learning Hub</Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full border-cyan-200 text-cyan-800 hover:bg-cyan-50">
+                  <Link href="/arabic-learning?tab=placement">Take Placement Challenge</Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full border-cyan-200 text-cyan-800 hover:bg-cyan-50">
+                  <Link href="/quran">Practice in Quran Reader</Link>
                 </Button>
               </CardContent>
             </Card>

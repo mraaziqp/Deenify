@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, BookOpen, BookMarked, Radio } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, BookMarked, Radio, Languages } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const BOTTOM_NAV = [
@@ -11,6 +11,7 @@ const BOTTOM_NAV = [
   { href: '/quran',          label: 'Quran',   icon: BookOpen },
   { href: '/library',        label: 'Library', icon: BookMarked },
   { href: '/radio',          label: 'Radio',   icon: Radio },
+  { href: '/arabic-learning',label: 'Arabic',  icon: Languages },
 ];
 
 export default function MobileBottomNav() {

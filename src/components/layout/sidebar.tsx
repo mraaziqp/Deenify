@@ -13,6 +13,7 @@ import {
   CircleDollarSign,
   CircleUser,
   HeartPulse,
+  Languages,
   LayoutDashboard,
   BotMessageSquare,
   Settings,
@@ -35,6 +36,7 @@ import { useAuth } from '@/lib/auth-context';
 const mainNavLinks: NavLink[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/learning', label: 'Learning Library', icon: BookOpen },
+  { href: '/arabic-learning', label: 'Arabic Learning Hub', icon: Languages },
   { href: '/library', label: 'Library', icon: BookOpen },
   { href: '/courses', label: 'Courses', icon: GraduationCap },
   { href: '/dhikr', label: 'Dhikr Circle', icon: HeartPulse },

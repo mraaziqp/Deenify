@@ -23,6 +23,7 @@ import {
   BookMarked,
   Trophy,
   MapPin,
+  Languages,
   X,
 } from 'lucide-react';
 
@@ -57,6 +58,7 @@ const NAV_SECTIONS = [
       { href: '/news',           label: 'News',                icon: Newspaper },
       { href: '/radio',          label: 'Muslim Radio',        icon: Radio },
       { href: '/learn',          label: 'Video Library',       icon: PlayCircle },
+      { href: '/arabic-learning', label: 'Arabic Learning Hub', icon: Languages },
     ],
   },
   {
@@ -95,6 +97,7 @@ const NAV_SECTIONS = [
 const DESKTOP_NAV = [
   { href: '/dashboard',    label: 'Dashboard',  icon: LayoutDashboard },
   { href: '/quran',        label: 'Quran',       icon: BookOpen },
+  { href: '/arabic-learning', label: 'Arabic',   icon: Languages },
   { href: '/library',      label: 'Library',     icon: BookMarked },
   { href: '/dhikr',        label: 'Dhikr',       icon: HeartPulse },
   { href: '/groups',       label: 'Groups',      icon: Users },

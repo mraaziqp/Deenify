@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "public"."PDFBook" (
+CREATE TABLE "PDFBook" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "author" TEXT,
@@ -10,3 +10,4 @@ CREATE TABLE "public"."PDFBook" (
 
     CONSTRAINT "PDFBook_pkey" PRIMARY KEY ("id")
 );
+

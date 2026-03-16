@@ -6,7 +6,8 @@
 
 */
 -- CreateIndex
-CREATE UNIQUE INDEX "AwradBook_title_key" ON "public"."AwradBook"("title");
+CREATE UNIQUE INDEX "AwradBook_title_key" ON "AwradBook"("title");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Dua_title_key" ON "public"."Dua"("title");
+CREATE UNIQUE INDEX "Dua_title_key" ON "Dua"("title");
+

@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "public"."AwradBook" (
+CREATE TABLE "AwradBook" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "author" TEXT NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE "public"."AwradBook" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."AwradChapter" (
+CREATE TABLE "AwradChapter" (
     "id" TEXT NOT NULL,
     "bookId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE "public"."AwradChapter" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."AwradLine" (
+CREATE TABLE "AwradLine" (
     "id" TEXT NOT NULL,
     "chapterId" TEXT NOT NULL,
     "arabicText" TEXT NOT NULL,
@@ -32,7 +32,8 @@ CREATE TABLE "public"."AwradLine" (
 );
 
 -- AddForeignKey
-ALTER TABLE "public"."AwradChapter" ADD CONSTRAINT "AwradChapter_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "public"."AwradBook"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "AwradChapter" ADD CONSTRAINT "AwradChapter_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "AwradBook"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."AwradLine" ADD CONSTRAINT "AwradLine_chapterId_fkey" FOREIGN KEY ("chapterId") REFERENCES "public"."AwradChapter"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "AwradLine" ADD CONSTRAINT "AwradLine_chapterId_fkey" FOREIGN KEY ("chapterId") REFERENCES "AwradChapter"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+

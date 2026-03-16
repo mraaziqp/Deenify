@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "public"."Book" (
+CREATE TABLE "Book" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "author" TEXT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE "public"."Book" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Recipe" (
+CREATE TABLE "Recipe" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE "public"."Recipe" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Bookmark" (
+CREATE TABLE "Bookmark" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "bookId" TEXT NOT NULL,
@@ -37,7 +37,8 @@ CREATE TABLE "public"."Bookmark" (
 );
 
 -- AddForeignKey
-ALTER TABLE "public"."Bookmark" ADD CONSTRAINT "Bookmark_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Bookmark" ADD CONSTRAINT "Bookmark_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Bookmark" ADD CONSTRAINT "Bookmark_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "public"."Book"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Bookmark" ADD CONSTRAINT "Bookmark_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "Book"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+

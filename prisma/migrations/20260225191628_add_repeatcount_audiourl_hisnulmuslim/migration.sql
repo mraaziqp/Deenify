@@ -10,13 +10,14 @@
 
 */
 -- AlterTable
-ALTER TABLE "public"."Dua" ADD COLUMN     "audioUrl" TEXT,
+ALTER TABLE "Dua" ADD COLUMN     "audioUrl" TEXT,
 ADD COLUMN     "repeatCount" INTEGER NOT NULL DEFAULT 1;
 
 -- AlterTable
-ALTER TABLE "public"."QuranMedia" DROP COLUMN "reciter",
+ALTER TABLE "QuranMedia" DROP COLUMN "reciter",
 DROP COLUMN "surahNumber",
 DROP COLUMN "thumbnailUrl",
 DROP COLUMN "title",
 DROP COLUMN "type",
 DROP COLUMN "url";
+

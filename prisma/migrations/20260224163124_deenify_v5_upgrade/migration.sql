@@ -5,26 +5,26 @@
 
 */
 -- CreateEnum
-CREATE TYPE "public"."UserRole" AS ENUM ('USER', 'ADMIN', 'SCHOLAR');
+CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN', 'SCHOLAR');
 
 -- CreateEnum
-CREATE TYPE "public"."LiveSessionType" AS ENUM ('DHIKR', 'YASEEN', 'KHATM');
+CREATE TYPE "LiveSessionType" AS ENUM ('DHIKR', 'YASEEN', 'KHATM');
 
 -- CreateEnum
-CREATE TYPE "public"."LiveSessionStatus" AS ENUM ('OPEN', 'ACTIVE', 'COMPLETED');
+CREATE TYPE "LiveSessionStatus" AS ENUM ('OPEN', 'ACTIVE', 'COMPLETED');
 
 -- AlterTable
-ALTER TABLE "public"."User" DROP COLUMN "role",
-ADD COLUMN     "role" "public"."UserRole" NOT NULL DEFAULT 'USER';
+ALTER TABLE "User" DROP COLUMN "role",
+ADD COLUMN     "role" "UserRole" NOT NULL DEFAULT 'USER';
 
 -- CreateTable
-CREATE TABLE "public"."LiveSession" (
+CREATE TABLE "LiveSession" (
     "id" TEXT NOT NULL,
-    "type" "public"."LiveSessionType" NOT NULL,
+    "type" "LiveSessionType" NOT NULL,
     "title" TEXT NOT NULL,
     "targetCount" INTEGER NOT NULL,
     "currentCount" INTEGER NOT NULL DEFAULT 0,
-    "status" "public"."LiveSessionStatus" NOT NULL DEFAULT 'OPEN',
+    "status" "LiveSessionStatus" NOT NULL DEFAULT 'OPEN',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -32,7 +32,7 @@ CREATE TABLE "public"."LiveSession" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."SessionParticipant" (
+CREATE TABLE "SessionParticipant" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "sessionId" TEXT NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE "public"."SessionParticipant" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Question" (
+CREATE TABLE "Question" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "content" TEXT NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE "public"."Question" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Answer" (
+CREATE TABLE "Answer" (
     "id" TEXT NOT NULL,
     "questionId" TEXT NOT NULL,
     "scholarId" TEXT NOT NULL,
@@ -64,16 +64,17 @@ CREATE TABLE "public"."Answer" (
 );
 
 -- AddForeignKey
-ALTER TABLE "public"."SessionParticipant" ADD CONSTRAINT "SessionParticipant_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "SessionParticipant" ADD CONSTRAINT "SessionParticipant_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."SessionParticipant" ADD CONSTRAINT "SessionParticipant_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "public"."LiveSession"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "SessionParticipant" ADD CONSTRAINT "SessionParticipant_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "LiveSession"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Question" ADD CONSTRAINT "Question_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Question" ADD CONSTRAINT "Question_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Answer" ADD CONSTRAINT "Answer_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "public"."Question"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Answer" ADD CONSTRAINT "Answer_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "Question"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Answer" ADD CONSTRAINT "Answer_scholarId_fkey" FOREIGN KEY ("scholarId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Answer" ADD CONSTRAINT "Answer_scholarId_fkey" FOREIGN KEY ("scholarId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+

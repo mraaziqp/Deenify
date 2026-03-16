@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "public"."Dua" (
+CREATE TABLE "Dua" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "arabic" TEXT NOT NULL,
@@ -9,3 +9,4 @@ CREATE TABLE "public"."Dua" (
 
     CONSTRAINT "Dua_pkey" PRIMARY KEY ("id")
 );
+
