@@ -702,6 +702,8 @@ const ADVENTURE_STORY_STEPS = [
   { id: 's5', title: 'Star Castle', requirement: 'Defeat the Guardian Boss challenge.' },
 ];
 
+const ADVENTURE_FLOATING_ICONS = ['✨', '🌟', '🎈', '🎉', '🪄', '🧩'];
+
 const DIALOGUE_PRACTICE = [
   {
     title: 'Masjid Arrival',
@@ -933,6 +935,7 @@ export default function ArabicLearningPage() {
   const [lastTreasureClaimDate, setLastTreasureClaimDate] = useState<string | null>(null);
   const [latestTreasureNote, setLatestTreasureNote] = useState<string | null>(null);
   const [bossCompleted, setBossCompleted] = useState(false);
+  const [rewardBurst, setRewardBurst] = useState<{ icon: string; label: string } | null>(null);
   const [placementAnswers, setPlacementAnswers] = useState<Record<string, string>>({});
   const [placementSubmitted, setPlacementSubmitted] = useState(false);
   const [placementScore, setPlacementScore] = useState<number | null>(null);
@@ -968,6 +971,7 @@ export default function ArabicLearningPage() {
   const audioClipUrlsRef = useRef<string[]>([]);
   const hasHydratedRemoteProgressRef = useRef(false);
   const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rewardBurstTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [progress, setProgress] = useState<LearnerProgress>(defaultProgress);
 
   const todayMission = useMemo(() => {
@@ -1093,6 +1097,12 @@ export default function ArabicLearningPage() {
         : adventureRankScore < 950
           ? 'Language Champion'
           : 'Quran Star Hero';
+  const adventureMood =
+    bossCompleted
+      ? 'Legend mode unlocked'
+      : collectedStickers >= 3
+        ? 'On fire and leveling up'
+        : 'Warmup mode for new learners';
   const bossUnlocked = collectedStickers === KIDS_QUESTS.length && kidScore >= 4;
   const storyUnlockCount = [
     true,
@@ -1411,8 +1421,23 @@ export default function ArabicLearningPage() {
       }
 
       audioClipUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+
+      if (rewardBurstTimeoutRef.current) {
+        clearTimeout(rewardBurstTimeoutRef.current);
+      }
     };
   }, []);
+
+  const triggerRewardBurst = (icon: string, label: string) => {
+    setRewardBurst({ icon, label });
+    if (rewardBurstTimeoutRef.current) {
+      clearTimeout(rewardBurstTimeoutRef.current);
+    }
+
+    rewardBurstTimeoutRef.current = setTimeout(() => {
+      setRewardBurst(null);
+    }, 1800);
+  };
 
   const submitAssignment = async () => {
     if (!assignmentForm.title.trim() || !assignmentForm.targetClassId) {
@@ -1613,6 +1638,7 @@ export default function ArabicLearningPage() {
 
     setClaimedQuestIds((prev) => [...prev, quest.id]);
     setAdventureSparkles((prev) => prev + 2);
+    triggerRewardBurst(quest.sticker, `+${quest.rewardXp} XP and +2 sparkles`);
     setProgress((prev) => withActivityUpdate({
       ...prev,
       xp: prev.xp + quest.rewardXp,
@@ -1653,6 +1679,7 @@ export default function ArabicLearningPage() {
 
     const earnedXp = 15 + kidScore * 6 + (kidScore === KIDS_CHALLENGES.length ? 10 : 0);
     const earnedSparkles = kidScore >= 4 ? 5 : 3;
+    triggerRewardBurst('⭐', `+${earnedXp} XP and +${earnedSparkles} sparkles`);
     setProgress((prev) => withActivityUpdate({
       ...prev,
       xp: prev.xp + earnedXp,
@@ -1670,6 +1697,7 @@ export default function ArabicLearningPage() {
     setLastTreasureClaimDate(getTodayIso());
     setLatestTreasureNote(`${reward.emoji} ${reward.title}: +${reward.xp} XP and +${reward.sparkles} sparkles.`);
     setAdventureSparkles((prev) => prev + reward.sparkles);
+    triggerRewardBurst(reward.emoji, `Treasure opened: +${reward.xp} XP, +${reward.sparkles} sparkles`);
     setProgress((prev) => withActivityUpdate({
       ...prev,
       xp: prev.xp + reward.xp,
@@ -1681,6 +1709,7 @@ export default function ArabicLearningPage() {
 
     setBossCompleted(true);
     setAdventureSparkles((prev) => prev + 10);
+    triggerRewardBurst('🏆', 'Guardian defeated: +40 XP and +10 sparkles');
     setProgress((prev) => withActivityUpdate({
       ...prev,
       xp: prev.xp + 40,
@@ -1991,6 +2020,16 @@ export default function ArabicLearningPage() {
             <div className="absolute -top-10 -left-6 h-36 w-36 rounded-full bg-rose-300/25 blur-2xl" />
             <div className="absolute -bottom-10 -right-8 h-40 w-40 rounded-full bg-sky-300/30 blur-2xl" />
 
+            <div className="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center">
+              {rewardBurst && (
+                <div className="animate-pulse rounded-full border border-rose-300 bg-white/95 px-4 py-2 shadow-lg">
+                  <p className="text-sm font-semibold text-rose-900">
+                    {rewardBurst.icon} {rewardBurst.label}
+                  </p>
+                </div>
+              )}
+            </div>
+
             <CardHeader className="relative z-10 pb-2">
               <CardTitle className="flex items-center gap-2 text-rose-900">
                 <Sparkles className="h-5 w-5 text-rose-600" />
@@ -2002,7 +2041,24 @@ export default function ArabicLearningPage() {
             </CardHeader>
 
             <CardContent className="relative z-10 space-y-4">
-              <div className={cn('rounded-2xl bg-gradient-to-r p-4 text-white shadow-md', selectedAvatar.color)}>
+              <div className="pointer-events-none absolute right-3 top-3 hidden sm:flex gap-2">
+                {ADVENTURE_FLOATING_ICONS.map((icon, index) => (
+                  <span
+                    key={`${icon}-${index}`}
+                    className="text-lg"
+                    style={{
+                      animation: `adventureFloat ${2 + index * 0.2}s ease-in-out ${index * 0.12}s infinite`,
+                    }}
+                  >
+                    {icon}
+                  </span>
+                ))}
+              </div>
+
+              <div
+                className={cn('rounded-2xl bg-gradient-to-r p-4 text-white shadow-md', selectedAvatar.color)}
+                style={{ animation: 'adventurePop 420ms ease both' }}
+              >
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <p className="text-xs uppercase tracking-[0.14em] text-white/80">Adventure Buddy</p>
@@ -2014,9 +2070,12 @@ export default function ArabicLearningPage() {
                     <p className="text-lg font-bold">{collectedStickers}</p>
                   </div>
                 </div>
+                <p className="mt-3 text-xs font-medium text-white/90">
+                  Mood: {adventureMood}
+                </p>
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4" style={{ animation: 'adventurePop 520ms ease both' }}>
                 <div className="rounded-xl border border-rose-200 bg-white px-3 py-2">
                   <p className="text-xs text-muted-foreground">Adventure Rank</p>
                   <p className="font-bold text-rose-900">{adventureRank}</p>
@@ -2035,7 +2094,7 @@ export default function ArabicLearningPage() {
                 </div>
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4" style={{ animation: 'adventurePop 620ms ease both' }}>
                 {KIDS_AVATARS.map((avatar) => (
                   <button
                     key={avatar.id}
@@ -2054,7 +2113,7 @@ export default function ArabicLearningPage() {
                 ))}
               </div>
 
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid gap-4 lg:grid-cols-2" style={{ animation: 'adventurePop 720ms ease both' }}>
                 <Card className="border-amber-200 bg-white/90">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base text-amber-900">Quest Board</CardTitle>
@@ -2168,7 +2227,7 @@ export default function ArabicLearningPage() {
                 </Card>
               </div>
 
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid gap-4 lg:grid-cols-2" style={{ animation: 'adventurePop 820ms ease both' }}>
                 <Card className="border-violet-200 bg-white/90">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base text-violet-900">Daily Treasure Chest</CardTitle>
@@ -2228,7 +2287,7 @@ export default function ArabicLearningPage() {
                 </Card>
               </div>
 
-              <Card className="border-fuchsia-200 bg-white/90">
+              <Card className="border-fuchsia-200 bg-white/90" style={{ animation: 'adventurePop 920ms ease both' }}>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base text-fuchsia-900">Boss Challenge: Guardian of Letters</CardTitle>
                   <CardDescription>
@@ -2249,7 +2308,7 @@ export default function ArabicLearningPage() {
                 </CardContent>
               </Card>
 
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4">
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4" style={{ animation: 'adventurePop 1s ease both' }}>
                 <p className="font-semibold text-emerald-900">Starter Routine for New Learners</p>
                 <div className="mt-2 grid gap-2 md:grid-cols-3 text-sm text-emerald-800">
                   <div className="rounded-xl border border-emerald-200 bg-white px-3 py-2">1. Pick one avatar and one quest</div>
@@ -3084,6 +3143,29 @@ export default function ArabicLearningPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <style jsx>{`
+        @keyframes adventurePop {
+          0% {
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes adventureFloat {
+          0%,
+          100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-6px) rotate(4deg);
+          }
+        }
+      `}</style>
     </div>
   );
 }
