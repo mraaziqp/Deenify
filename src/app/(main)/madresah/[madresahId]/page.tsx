@@ -275,13 +275,13 @@ export default function MadresahDashboardPage() {
       </div>
 
       <Tabs defaultValue="classes">
-        <TabsList className="mb-4">
-          <TabsTrigger value="classes">Classes</TabsTrigger>
-          <TabsTrigger value="members">Members</TabsTrigger>
+        <TabsList className="mb-4 flex overflow-x-auto scrollbar-hide h-auto py-1 gap-1 flex-nowrap sm:inline-flex">
+          <TabsTrigger value="classes" className="shrink-0">Classes</TabsTrigger>
+          <TabsTrigger value="members" className="shrink-0">Members</TabsTrigger>
           {isStaff && (
-            <TabsTrigger value="analytics" onClick={fetchAnalytics}>Analytics</TabsTrigger>
+            <TabsTrigger value="analytics" className="shrink-0" onClick={fetchAnalytics}>Analytics</TabsTrigger>
           )}
-          {isPrincipal && <TabsTrigger value="settings">Settings</TabsTrigger>}
+          {isPrincipal && <TabsTrigger value="settings" className="shrink-0">Settings</TabsTrigger>}
         </TabsList>
 
         {/* ── Classes Tab ── */}

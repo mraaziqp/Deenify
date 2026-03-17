@@ -16871,158 +16871,138 @@ export default function ArabicLearningPage() {
   const rootTrack = ROOT_TRACKS[activeRootIndex];
 
   return (
-    <div className="container mx-auto max-w-6xl px-3 py-4 sm:px-4 md:px-8 space-y-6">
-      <section className="relative overflow-hidden rounded-3xl border border-emerald-300/40 shadow-xl">
+    <div className="w-full max-w-6xl mx-auto px-3 py-3 sm:px-4 md:px-8 space-y-4">
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-emerald-300/40 shadow-xl">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-700 via-teal-700 to-cyan-700" />
         <div className="absolute -top-14 -right-10 h-48 w-48 rounded-full bg-amber-300/25 blur-2xl" />
         <div className="absolute top-10 left-1/3 h-32 w-32 rounded-full bg-white/10 blur-xl" />
-        <div className="absolute bottom-4 right-8 text-6xl text-white/10 arabic-text" dir="rtl">
+        <div className="absolute bottom-4 right-8 text-5xl text-white/10 arabic-text hidden sm:block" dir="rtl">
           تَدَبُّر
         </div>
 
-        <div className="relative z-10 p-5 sm:p-7 md:p-9 text-white space-y-5">
-          <Badge className="bg-white/15 text-white border-white/20 backdrop-blur-sm">
-            <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-            New: Quran Arabic Mastery Track
-          </Badge>
-
-          <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
-              Arabic Learning Hub
-            </h1>
-            <p className="max-w-3xl text-sm sm:text-base text-emerald-50/95">
-              A full learning path that starts from beginner basics and grows into advanced Quran comprehension.
-              Build your skills through structured lessons, fun games, and root-pattern exploration so you can
-              understand more directly while reading Quran.
-            </p>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Card className="bg-white/10 border-white/15 text-white">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-emerald-100">Lessons Done</p>
-                  <p className="text-2xl font-bold tabular-nums">{completedCount}/{totalLessons}</p>
-                </div>
-                <BookOpen className="h-7 w-7 text-emerald-100" />
-              </CardContent>
-            </Card>
-            <Card className="bg-white/10 border-white/15 text-white">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-emerald-100">Current Streak</p>
-                  <p className="text-2xl font-bold tabular-nums">{progress.streak} day{progress.streak === 1 ? '' : 's'}</p>
-                </div>
-                <Flame className="h-7 w-7 text-orange-200" />
-              </CardContent>
-            </Card>
-            <Card className="bg-white/10 border-white/15 text-white">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-emerald-100">Total XP</p>
-                  <p className="text-2xl font-bold tabular-nums">{progress.xp}</p>
-                </div>
-                <Star className="h-7 w-7 text-amber-200" />
-              </CardContent>
-            </Card>
-            <Card className="bg-white/10 border-white/15 text-white">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-emerald-100">Game Wins</p>
-                  <p className="text-2xl font-bold tabular-nums">{progress.gamesWon}</p>
-                </div>
-                <Trophy className="h-7 w-7 text-yellow-200" />
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="rounded-2xl border border-white/15 bg-black/10 p-4 backdrop-blur-sm">
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-              <p className="font-semibold">Today&apos;s Mission</p>
-              <Badge className="bg-amber-400/20 text-amber-100 border-amber-200/30">Daily Practice</Badge>
+        <div className="relative z-10 p-4 sm:p-6 md:p-9 text-white space-y-4">
+          <div className="flex items-start justify-between gap-2">
+            <div className="space-y-1">
+              <h1 className="text-xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
+                Arabic Learning Hub
+              </h1>
+              <p className="text-xs sm:text-sm text-emerald-50/90 max-w-xl hidden sm:block">
+                A full learning path from beginner basics to advanced Quran comprehension — lessons, games, and root-pattern exploration.
+              </p>
             </div>
-            <p className="text-sm text-emerald-50">{todayMission}</p>
+            <Badge className="bg-white/15 text-white border-white/20 backdrop-blur-sm text-xs shrink-0 mt-0.5">
+              <Sparkles className="mr-1 h-3 w-3" />
+              <span className="hidden sm:inline">New: </span>Mastery Track
+            </Badge>
+          </div>
+
+          {/* Stats row — 4 cols always, compact on mobile */}
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Done', value: `${completedCount}/${totalLessons}`, icon: <BookOpen className="h-5 w-5 text-emerald-200" /> },
+              { label: 'Streak', value: `${progress.streak}d`, icon: <Flame className="h-5 w-5 text-orange-200" /> },
+              { label: 'XP', value: progress.xp, icon: <Star className="h-5 w-5 text-amber-200" /> },
+              { label: 'Wins', value: progress.gamesWon, icon: <Trophy className="h-5 w-5 text-yellow-200" /> },
+            ].map((stat) => (
+              <div key={stat.label} className="rounded-xl bg-white/10 border border-white/10 p-2 sm:p-3 text-center">
+                <div className="flex justify-center mb-1">{stat.icon}</div>
+                <p className="text-sm sm:text-xl font-bold tabular-nums leading-none">{stat.value}</p>
+                <p className="text-[10px] sm:text-xs text-emerald-100 mt-0.5">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-xl border border-white/15 bg-black/10 p-3 backdrop-blur-sm">
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <p className="font-semibold text-sm">Today&apos;s Mission</p>
+              <Badge className="bg-amber-400/20 text-amber-100 border-amber-200/30 text-xs">Daily</Badge>
+            </div>
+            <p className="text-xs sm:text-sm text-emerald-50 leading-relaxed">{todayMission}</p>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2 border-emerald-100">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2">
-              <Crown className="h-5 w-5 text-amber-500" />
-              Mastery Rank: {levelInfo.level}
-            </CardTitle>
-            <CardDescription>
-              Progress to the next rank by finishing lessons and completing game rounds.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Progress value={xpProgress} className="h-2" />
-            <div className="text-xs text-muted-foreground flex justify-between">
-              <span>{progress.xp} XP earned</span>
-              <span>Next checkpoint: {levelInfo.nextTarget} XP</span>
+      {/* ── Rank + Completion strip ── */}
+      <section className="grid gap-3 sm:grid-cols-2">
+        <Card className="border-emerald-100">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Crown className="h-4 w-4 text-amber-500 shrink-0" />
+              <p className="font-semibold text-sm">Rank: {levelInfo.level}</p>
+              <span className="ml-auto text-xs text-muted-foreground tabular-nums">{progress.xp} / {levelInfo.nextTarget} XP</span>
             </div>
+            <Progress value={xpProgress} className="h-2" />
           </CardContent>
         </Card>
 
         <Card className="border-emerald-100">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Overall Completion</CardTitle>
-            <CardDescription>Complete all lessons to finish the full track.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Progress value={completionPercent} className="h-2" />
-            <p className="text-sm text-muted-foreground">{completionPercent}% complete</p>
-            {user?.id && (
-              <div
-                className={cn(
-                  'rounded-lg border px-3 py-2 text-xs',
-                  syncStatus === 'synced' && 'border-emerald-200 bg-emerald-50 text-emerald-800',
-                  syncStatus === 'syncing' && 'border-blue-200 bg-blue-50 text-blue-800',
-                  syncStatus === 'error' && 'border-red-200 bg-red-50 text-red-800',
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <p className="font-semibold text-sm">Overall Progress</p>
+              <span className="ml-auto text-xs text-muted-foreground">{completionPercent}%</span>
+              {user?.id && (
+                <span className={cn(
+                  'text-xs rounded-full px-2 py-0.5 border',
+                  syncStatus === 'synced' && 'border-emerald-200 bg-emerald-50 text-emerald-700',
+                  syncStatus === 'syncing' && 'border-blue-200 bg-blue-50 text-blue-700 animate-pulse',
+                  syncStatus === 'error' && 'border-red-200 bg-red-50 text-red-700',
                   syncStatus === 'idle' && 'border-border bg-muted/40 text-muted-foreground'
-                )}
-              >
-                {syncStatus === 'synced' && 'Cloud sync active: your Arabic progress is saved across devices.'}
-                {syncStatus === 'syncing' && 'Syncing your latest Arabic progress...'}
-                {syncStatus === 'error' && `Sync issue: ${syncError || 'Unable to reach server right now.'}`}
-                {syncStatus === 'idle' && 'Sign in and continue learning to enable progress sync.'}
-              </div>
-            )}
-            <Button asChild variant="outline" className="w-full">
-              <Link href="/quran">Apply Learning in Quran Reader</Link>
-            </Button>
+                )}>
+                  {syncStatus === 'synced' ? '☁ Synced' : syncStatus === 'syncing' ? '⟳ Saving' : syncStatus === 'error' ? '✕ Offline' : '☁ Local'}
+                </span>
+              )}
+            </div>
+            <Progress value={completionPercent} className="h-2" />
           </CardContent>
         </Card>
       </section>
 
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as HubTabId)} className="space-y-5">
-        <TabsList className="w-full grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 h-auto gap-1">
-          <TabsTrigger value="path">Pathway</TabsTrigger>
-          <TabsTrigger value="typing">⌨️ Typing</TabsTrigger>
-          <TabsTrigger value="games">Games Lab</TabsTrigger>
-          <TabsTrigger value="adventure">Kids Adventure</TabsTrigger>
-          <TabsTrigger value="placement">Placement</TabsTrigger>
-          <TabsTrigger value="bridge">Quran Bridge</TabsTrigger>
-          <TabsTrigger value="speaking">Speaking</TabsTrigger>
-          <TabsTrigger value="revision">Revision</TabsTrigger>
-          <TabsTrigger value="planner">Planner</TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} onValueChange={(value) => { setActiveTab(value as HubTabId); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="space-y-4">
+        {/* ── Mobile-first scrollable tab strip ── */}
+        <div className="relative">
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0 pb-1 snap-x snap-mandatory">
+            {([
+              { id: 'path',      label: 'Pathway',   emoji: '🗺️' },
+              { id: 'typing',    label: 'Typing',     emoji: '⌨️' },
+              { id: 'games',     label: 'Games',      emoji: '🎮' },
+              { id: 'adventure', label: 'Kids',       emoji: '⭐' },
+              { id: 'placement', label: 'Placement',  emoji: '📍' },
+              { id: 'bridge',    label: 'Bridge',     emoji: '☪️' },
+              { id: 'speaking',  label: 'Speaking',   emoji: '🎙️' },
+              { id: 'revision',  label: 'Revision',   emoji: '📚' },
+              { id: 'planner',   label: 'Planner',    emoji: '📅' },
+            ] as { id: HubTabId; label: string; emoji: string }[]).map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-2 rounded-xl font-medium text-sm whitespace-nowrap snap-start transition-all shrink-0 border',
+                  activeTab === tab.id
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                    : 'bg-white text-muted-foreground border-border hover:border-emerald-300 hover:text-emerald-700'
+                )}
+              >
+                <span className="text-base leading-none">{tab.emoji}</span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+          {/* fade gradient hinting scroll */}
+          <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-white/80 to-transparent sm:hidden" />
+        </div>
 
-        <TabsContent value="path" className="space-y-5">
+        <TabsContent value="path" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Languages className="h-5 w-5 text-emerald-600" />
+            <CardHeader className="pb-3 pt-4 px-4">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Languages className="h-4 w-4 text-emerald-600" />
                 Class Roadmap
               </CardTitle>
-              <CardDescription>
-                Learn in stages: beginner to advanced, with every lesson tied directly to Quran understanding.
-              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            <CardContent className="px-3 sm:px-6 space-y-4">
+              {/* Stage selector — horizontal scroll on mobile */}
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0 pb-1">
                 {(['alphabet', 'beginner', 'intermediate', 'advanced'] as StageId[]).map((stage) => {
                   const meta = STAGE_META[stage];
                   const summary = stageCompletion(stage);
@@ -17032,80 +17012,80 @@ export default function ArabicLearningPage() {
                       key={stage}
                       onClick={() => setActiveStage(stage)}
                       className={cn(
-                        'rounded-2xl border px-4 py-3 text-left transition-all',
+                        'rounded-2xl border px-3 py-2.5 text-left transition-all shrink-0 min-w-[9rem] sm:flex-1',
                         activeStage === stage
-                          ? 'border-primary bg-primary/5 shadow-sm'
-                          : 'border-border hover:border-primary/40'
+                          ? 'border-emerald-500 bg-emerald-50 shadow-sm'
+                          : 'border-border bg-white hover:border-emerald-300'
                       )}
                     >
-                      <p className="font-semibold text-sm">{meta.title}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{meta.subtitle}</p>
-                      <div className="mt-3 flex items-center justify-between text-xs">
+                      <p className="font-semibold text-xs leading-snug">{meta.title}</p>
+                      <div className="mt-2 flex items-center justify-between text-xs">
                         <span className="text-muted-foreground">{meta.xpBand}</span>
-                        <Badge variant="secondary">{summary.done}/{summary.total}</Badge>
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{summary.done}/{summary.total}</Badge>
                       </div>
-                      <Progress value={summary.percent} className="h-1.5 mt-2" />
+                      <Progress value={summary.percent} className="h-1 mt-1.5" />
                     </button>
                   );
                 })}
               </div>
 
-              <div className="rounded-3xl border bg-muted/20 p-4 sm:p-5">
-                <div className={cn('rounded-2xl p-4 text-white bg-gradient-to-r', STAGE_META[activeStage].color)}>
-                  <p className="text-xs uppercase tracking-[0.18em] text-white/80">Current Stage</p>
-                  <h3 className="mt-1 text-xl font-bold">{STAGE_META[activeStage].title}</h3>
-                  <p className="text-sm text-white/90 mt-1">{STAGE_META[activeStage].subtitle}</p>
+              <div className="rounded-2xl border bg-muted/20 p-3 sm:p-4">
+                <div className={cn('rounded-xl p-3 text-white bg-gradient-to-r', STAGE_META[activeStage].color)}>
+                  <p className="text-[10px] uppercase tracking-widest text-white/80">Current Stage</p>
+                  <h3 className="mt-0.5 text-lg font-bold">{STAGE_META[activeStage].title}</h3>
+                  <p className="text-xs text-white/90">{STAGE_META[activeStage].subtitle}</p>
                 </div>
 
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-3 grid gap-3 lg:grid-cols-2">
                   {paginatedLessons.map((lesson) => {
                     const done = progress.completedLessons.includes(lesson.id);
 
                     return (
-                      <Card key={lesson.id} className={cn('border transition-all', done && 'border-emerald-300 bg-emerald-50/50')}>
-                        <CardHeader className="pb-3">
+                      <Card key={lesson.id} className={cn('border transition-all', done && 'border-emerald-300 bg-emerald-50/40')}>
+                        <CardHeader className="pb-2 pt-3 px-3 sm:px-6">
                           <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <CardTitle className="text-lg leading-tight">{lesson.title}</CardTitle>
-                              <CardDescription className="mt-1">{lesson.objective}</CardDescription>
+                            <div className="min-w-0">
+                              <CardTitle className="text-sm sm:text-base leading-snug">{lesson.title}</CardTitle>
+                              <CardDescription className="mt-0.5 text-xs leading-snug">{lesson.objective}</CardDescription>
                             </div>
-                            <Badge variant={done ? 'default' : 'secondary'}>
-                              {done ? 'Completed' : lesson.challengeLevel}
+                            <Badge variant={done ? 'default' : 'secondary'} className="shrink-0 text-[10px]">
+                              {done ? '✓ Done' : lesson.challengeLevel}
                             </Badge>
                           </div>
                         </CardHeader>
-                        <CardContent className="space-y-3">
-                          <p className="text-xs text-muted-foreground">Session length: {lesson.duration}</p>
+                        <CardContent className="space-y-2.5 px-3 sm:px-6 pb-3">
+                          <p className="text-[11px] text-muted-foreground">⏱ {lesson.duration}</p>
 
-                          <div className="rounded-xl bg-muted/40 p-3 min-h-[100px]">
-                            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Drills</p>
-                            <ul className="space-y-1 text-sm">
+                          <div className="rounded-lg bg-muted/40 p-2.5">
+                            <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1 font-semibold">Drills</p>
+                            <ul className="space-y-0.5 text-xs">
                               {lesson.drills.map((drill) => (
-                                <li key={drill} className="flex items-start gap-2">
-                                  <span className="text-emerald-600">•</span>
+                                <li key={drill} className="flex items-start gap-1.5">
+                                  <span className="text-emerald-600 mt-px shrink-0">•</span>
                                   <span>{drill}</span>
                                 </li>
                               ))}
                             </ul>
                           </div>
 
-                          <div className="rounded-xl border border-amber-100 bg-amber-50/60 p-3 min-h-[100px]">
-                            <p className="text-xs uppercase tracking-wide text-amber-700 mb-2">Quran Bridge</p>
-                            <p className="arabic-text text-[1.35rem] leading-[2.1rem] text-amber-900" dir="rtl">
+                          <div className="rounded-lg border border-amber-100 bg-amber-50/60 p-2.5">
+                            <p className="text-[10px] uppercase tracking-wide text-amber-700 mb-1.5 font-semibold">Quran Bridge</p>
+                            <p className="arabic-text text-[1.25rem] leading-[1.9rem] text-amber-900" dir="rtl">
                               {lesson.quranBridge.arabic}
                             </p>
-                            <p className="mt-1 text-xs text-amber-800">{lesson.quranBridge.transliteration}</p>
-                            <p className="mt-1 text-sm text-amber-900">{lesson.quranBridge.meaning}</p>
-                            <p className="mt-2 text-xs text-amber-700">{lesson.quranBridge.note}</p>
+                            <p className="mt-1 text-[10px] text-amber-800 italic">{lesson.quranBridge.transliteration}</p>
+                            <p className="mt-0.5 text-xs text-amber-900">{lesson.quranBridge.meaning}</p>
+                            <p className="mt-1 text-[10px] text-amber-700 leading-relaxed">{lesson.quranBridge.note}</p>
                           </div>
 
                           <Button
                             onClick={() => markLessonComplete(lesson.id)}
                             variant={done ? 'outline' : 'default'}
-                            className="w-full"
+                            size="sm"
+                            className={cn('w-full h-10 text-sm font-semibold', !done && 'bg-emerald-600 hover:bg-emerald-700')}
                           >
-                            <CheckCircle2 className="mr-2 h-4 w-4" />
-                            {done ? 'Lesson Completed' : 'Mark Lesson Complete (+35 XP)'}
+                            <CheckCircle2 className="mr-1.5 h-4 w-4" />
+                            {done ? 'Completed ✓' : 'Mark Complete (+35 XP)'}
                           </Button>
                         </CardContent>
                       </Card>
@@ -17113,46 +17093,30 @@ export default function ArabicLearningPage() {
                   })}
                 </div>
 
-                {/* Pagination */}
+                {/* Pagination — compact mobile-friendly */}
                 {totalLessonPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 pt-4 flex-wrap">
+                  <div className="flex items-center justify-between gap-2 pt-3">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setLessonsPage(0)}
-                      disabled={lessonsPage === 0}
-                    >
-                      First
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setLessonsPage((p) => Math.max(0, p - 1))}
+                      className="h-9 px-3 text-xs"
+                      onClick={() => { setLessonsPage((p) => Math.max(0, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                       disabled={lessonsPage === 0}
                     >
                       ← Prev
                     </Button>
-                    <span className="px-3 py-1.5 rounded-lg bg-muted text-sm font-semibold">
-                      Page {lessonsPage + 1} / {totalLessonPages}
-                      <span className="text-muted-foreground font-normal ml-2">
-                        ({lessonsPage * LESSONS_PER_PAGE + 1}–{Math.min((lessonsPage + 1) * LESSONS_PER_PAGE, lessonsForStage.length)} of {lessonsForStage.length})
-                      </span>
+                    <span className="text-xs text-center text-muted-foreground">
+                      <span className="font-semibold text-foreground">{lessonsPage + 1}</span> / {totalLessonPages}
+                      <span className="hidden sm:inline ml-1 text-muted-foreground">({lessonsPage * LESSONS_PER_PAGE + 1}–{Math.min((lessonsPage + 1) * LESSONS_PER_PAGE, lessonsForStage.length)} of {lessonsForStage.length})</span>
                     </span>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setLessonsPage((p) => Math.min(totalLessonPages - 1, p + 1))}
+                      className="h-9 px-3 text-xs"
+                      onClick={() => { setLessonsPage((p) => Math.min(totalLessonPages - 1, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                       disabled={lessonsPage >= totalLessonPages - 1}
                     >
                       Next →
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setLessonsPage(totalLessonPages - 1)}
-                      disabled={lessonsPage >= totalLessonPages - 1}
-                    >
-                      Last
                     </Button>
                   </div>
                 )}

@@ -612,8 +612,8 @@ export default function ClassDetailPage() {
 
       {/* ── Tabs ── */}
       <Tabs defaultValue="homework">
-        <TabsList className="mb-4 flex-wrap gap-1">
-          <TabsTrigger value="homework">
+        <TabsList className="mb-4 flex w-full overflow-x-auto scrollbar-hide h-auto py-1 gap-1 flex-nowrap">
+          <TabsTrigger value="homework" className="whitespace-nowrap shrink-0 text-xs sm:text-sm">
             📝 Homework
             {homework.filter((h) => !h.submissions?.length).length > 0 && (
               <span className="ml-1.5 bg-red-500 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">
@@ -621,8 +621,8 @@ export default function ClassDetailPage() {
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="hifz">🤲 Hifz</TabsTrigger>
-          <TabsTrigger value="struggles">
+          <TabsTrigger value="hifz" className="whitespace-nowrap shrink-0 text-xs sm:text-sm">🤲 Hifz</TabsTrigger>
+          <TabsTrigger value="struggles" className="whitespace-nowrap shrink-0 text-xs sm:text-sm">
             🆘 Struggles
             {pendingStruggles > 0 && (
               <span className="ml-1.5 bg-amber-500 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">
@@ -630,12 +630,12 @@ export default function ClassDetailPage() {
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="announcements">📢 Announcements</TabsTrigger>
-          <TabsTrigger value="resources">📎 Resources</TabsTrigger>
-          <TabsTrigger value="attendance">📅 Attendance</TabsTrigger>
-          {isStaff && <TabsTrigger value="report" onClick={fetchReport}>📊 Report</TabsTrigger>}
-          <TabsTrigger value="achievements">🏅 Achievements</TabsTrigger>
-          {isStaff && <TabsTrigger value="students">👨‍🎓 Students</TabsTrigger>}
+          <TabsTrigger value="announcements" className="whitespace-nowrap shrink-0 text-xs sm:text-sm">📢 Announce</TabsTrigger>
+          <TabsTrigger value="resources" className="whitespace-nowrap shrink-0 text-xs sm:text-sm">📎 Resources</TabsTrigger>
+          <TabsTrigger value="attendance" className="whitespace-nowrap shrink-0 text-xs sm:text-sm">📅 Attendance</TabsTrigger>
+          {isStaff && <TabsTrigger value="report" className="whitespace-nowrap shrink-0 text-xs sm:text-sm" onClick={fetchReport}>📊 Report</TabsTrigger>}
+          <TabsTrigger value="achievements" className="whitespace-nowrap shrink-0 text-xs sm:text-sm">🏅 Badges</TabsTrigger>
+          {isStaff && <TabsTrigger value="students" className="whitespace-nowrap shrink-0 text-xs sm:text-sm">👨‍🎓 Students</TabsTrigger>}
         </TabsList>
 
         {/* ──── Homework Tab ──── */}

@@ -405,8 +405,7 @@ export default function MadresahPage() {
                   <GraduationCap className="h-4 w-4 mr-2" /> Register My School
                 </Button>
                 <Button
-                  variant="outline"
-                  className="border-white/50 text-white hover:bg-white/10"
+                  className="bg-transparent border border-white/70 text-white hover:bg-white/15 shadow-none"
                   onClick={() => setJoinOpen(true)}
                 >
                   <LogIn className="h-4 w-4 mr-2" /> Join with Code
