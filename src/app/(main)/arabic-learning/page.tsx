@@ -31,10 +31,11 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
+import ArabicTypingGame from '@/components/arabic-typing-game';
 
 type StageId = 'alphabet' | 'beginner' | 'intermediate' | 'advanced';
 type GameId = 'letters' | 'vocab' | 'grammar';
-type HubTabId = 'path' | 'adventure' | 'games' | 'bridge' | 'speaking' | 'revision' | 'placement' | 'planner';
+type HubTabId = 'path' | 'adventure' | 'games' | 'bridge' | 'speaking' | 'revision' | 'placement' | 'planner' | 'typing';
 
 type Lesson = {
   id: string;
@@ -181,6 +182,7 @@ const STORAGE_KEY = 'deenify-arabic-learning-progress-v1';
 const SETTINGS_STORAGE_KEY = 'deenify-arabic-learning-settings-v1';
 const JOURNAL_STORAGE_KEY = 'deenify-arabic-learning-journal-v1';
 const ADVENTURE_STORAGE_KEY = 'deenify-arabic-adventure-v1';
+const LESSONS_PER_PAGE = 10;
 
 const STAGE_META: Record<
   StageId,
@@ -16006,6 +16008,7 @@ export default function ArabicLearningPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<HubTabId>('path');
   const [activeStage, setActiveStage] = useState<StageId>('alphabet');
+  const [lessonsPage, setLessonsPage] = useState(0);
   const [activeGame, setActiveGame] = useState<GameId>('letters');
   const [activeRootIndex, setActiveRootIndex] = useState(0);
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -16072,6 +16075,16 @@ export default function ArabicLearningPage() {
     () => LESSONS.filter((lesson) => lesson.stage === activeStage),
     [activeStage]
   );
+
+  const totalLessonPages = Math.ceil(lessonsForStage.length / LESSONS_PER_PAGE);
+
+  const paginatedLessons = useMemo(
+    () => lessonsForStage.slice(lessonsPage * LESSONS_PER_PAGE, (lessonsPage + 1) * LESSONS_PER_PAGE),
+    [lessonsForStage, lessonsPage]
+  );
+
+  // Reset to page 0 whenever the stage changes
+  useEffect(() => { setLessonsPage(0); }, [activeStage]);
 
   const totalLessons = LESSONS.length;
   const completedCount = progress.completedLessons.length;
@@ -16223,7 +16236,7 @@ export default function ArabicLearningPage() {
     const tab = new URLSearchParams(window.location.search).get('tab');
     if (!tab) return;
 
-    const validTabs: HubTabId[] = ['path', 'adventure', 'games', 'bridge', 'speaking', 'revision', 'placement', 'planner'];
+    const validTabs: HubTabId[] = ['path', 'adventure', 'games', 'bridge', 'speaking', 'revision', 'placement', 'planner', 'typing'];
     if (validTabs.includes(tab as HubTabId)) {
       setActiveTab(tab as HubTabId);
     }
@@ -16985,13 +16998,14 @@ export default function ArabicLearningPage() {
       </section>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as HubTabId)} className="space-y-5">
-        <TabsList className="w-full grid grid-cols-2 md:grid-cols-8 h-auto gap-1">
+        <TabsList className="w-full grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 h-auto gap-1">
           <TabsTrigger value="path">Pathway</TabsTrigger>
+          <TabsTrigger value="typing">⌨️ Typing</TabsTrigger>
+          <TabsTrigger value="games">Games Lab</TabsTrigger>
           <TabsTrigger value="adventure">Kids Adventure</TabsTrigger>
           <TabsTrigger value="placement">Placement</TabsTrigger>
-          <TabsTrigger value="games">Games Lab</TabsTrigger>
           <TabsTrigger value="bridge">Quran Bridge</TabsTrigger>
-          <TabsTrigger value="speaking">Speaking Studio</TabsTrigger>
+          <TabsTrigger value="speaking">Speaking</TabsTrigger>
           <TabsTrigger value="revision">Revision</TabsTrigger>
           <TabsTrigger value="planner">Planner</TabsTrigger>
         </TabsList>
@@ -17044,7 +17058,7 @@ export default function ArabicLearningPage() {
                 </div>
 
                 <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                  {lessonsForStage.map((lesson) => {
+                  {paginatedLessons.map((lesson) => {
                     const done = progress.completedLessons.includes(lesson.id);
 
                     return (
@@ -17098,9 +17112,57 @@ export default function ArabicLearningPage() {
                     );
                   })}
                 </div>
+
+                {/* Pagination */}
+                {totalLessonPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 pt-4 flex-wrap">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setLessonsPage(0)}
+                      disabled={lessonsPage === 0}
+                    >
+                      First
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setLessonsPage((p) => Math.max(0, p - 1))}
+                      disabled={lessonsPage === 0}
+                    >
+                      ← Prev
+                    </Button>
+                    <span className="px-3 py-1.5 rounded-lg bg-muted text-sm font-semibold">
+                      Page {lessonsPage + 1} / {totalLessonPages}
+                      <span className="text-muted-foreground font-normal ml-2">
+                        ({lessonsPage * LESSONS_PER_PAGE + 1}–{Math.min((lessonsPage + 1) * LESSONS_PER_PAGE, lessonsForStage.length)} of {lessonsForStage.length})
+                      </span>
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setLessonsPage((p) => Math.min(totalLessonPages - 1, p + 1))}
+                      disabled={lessonsPage >= totalLessonPages - 1}
+                    >
+                      Next →
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setLessonsPage(totalLessonPages - 1)}
+                      disabled={lessonsPage >= totalLessonPages - 1}
+                    >
+                      Last
+                    </Button>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="typing" className="space-y-5">
+          <ArabicTypingGame />
         </TabsContent>
 
         <TabsContent value="adventure" className="space-y-5">
