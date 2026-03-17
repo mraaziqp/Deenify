@@ -24,6 +24,7 @@ interface Masjid {
   province: string;
   phone?: string;
   website?: string;
+  liveStreamUrl?: string;
   prayerTimesAvailable: boolean;
   jummahTime?: string;
   features: string[];
@@ -33,8 +34,9 @@ interface Masjid {
   };
 }
 
-// Sample South African Masjids Database
+// South African Masjids Database
 const masjidsDatabase: Masjid[] = [
+  // ── Gauteng ──────────────────────────────────────────────────────────────
   {
     name: 'Al-Ansaar Islamic Centre',
     address: '31 Glenhove Rd, Melville',
@@ -45,16 +47,6 @@ const masjidsDatabase: Masjid[] = [
     prayerTimesAvailable: true,
     jummahTime: '12:45 PM',
     features: ['Jummah', 'Daily Prayers', 'Islamic School', 'Community Center'],
-  },
-  {
-    name: 'Masjidul Quds',
-    address: 'Queens Rd, Gatesville',
-    city: 'Cape Town',
-    province: 'Western Cape',
-    phone: '021 638 7249',
-    prayerTimesAvailable: true,
-    jummahTime: '1:00 PM',
-    features: ['Jummah', 'Daily Prayers', 'Quran Classes'],
   },
   {
     name: 'Nizamiye Masjid',
@@ -68,14 +60,44 @@ const masjidsDatabase: Masjid[] = [
     features: ['Jummah', 'Daily Prayers', 'Turkish Ottoman Architecture', 'Museum', 'Restaurant'],
   },
   {
-    name: 'Grey Street Mosque',
+    name: 'Lenasia Masjid',
+    address: 'Nirvana Dr, Lenasia',
+    city: 'Johannesburg',
+    province: 'Gauteng',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Madrasah'],
+  },
+  // ── KwaZulu-Natal ─────────────────────────────────────────────────────────
+  {
+    name: 'Grey Street Mosque (Jumma Masjid)',
     address: '104 Grey St',
     city: 'Durban',
     province: 'KwaZulu-Natal',
     phone: '031 306 0026',
     prayerTimesAvailable: true,
     jummahTime: '12:30 PM',
-    features: ['Jummah', 'Daily Prayers', 'Historical Site'],
+    features: ['Jummah', 'Daily Prayers', 'Historical Site', 'Largest Mosque in SA'],
+  },
+  // ── Western Cape — Cape Town City ─────────────────────────────────────────
+  {
+    name: 'Masjid Al-Tuba',
+    address: 'Panorama',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    liveStreamUrl: 'https://www.youtube.com/@MasjidAlTuba',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Live Stream', 'Youth Programs', 'Ladies Section'],
+  },
+  {
+    name: 'Groote Mosque (Awwal Masjid)',
+    address: '33 Dorp St, Bo-Kaap',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Oldest Mosque in SA (1794)', 'Historic Site'],
   },
   {
     name: 'Nurul Islam Mosque',
@@ -85,6 +107,26 @@ const masjidsDatabase: Masjid[] = [
     prayerTimesAvailable: true,
     jummahTime: '1:00 PM',
     features: ['Jummah', 'Daily Prayers', 'Community Programs'],
+  },
+  {
+    name: 'Masjidul Quds',
+    address: 'Queens Rd, Gatesville',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    phone: '021 638 7249',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Quran Classes'],
+  },
+  {
+    name: 'Claremont Main Road Mosque',
+    address: 'Main Rd, Claremont',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    phone: '021 671 9402',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Historic Building', 'Academic Programs'],
   },
   {
     name: 'Masjid-ut-Taqwa',
@@ -97,23 +139,104 @@ const masjidsDatabase: Masjid[] = [
     features: ['Jummah', 'Daily Prayers', 'Ladies Section', 'Youth Programs'],
   },
   {
-    name: 'Lenasia Masjid',
-    address: 'Nirvana Dr, Lenasia',
-    city: 'Johannesburg',
-    province: 'Gauteng',
-    prayerTimesAvailable: true,
-    jummahTime: '1:00 PM',
-    features: ['Jummah', 'Daily Prayers', 'Madrasah'],
-  },
-  {
-    name: 'Claremont Main Road Mosque',
-    address: 'Main Rd, Claremont',
+    name: 'Azzawia (Shafee Mosque)',
+    address: 'Chiappini St, Bo-Kaap',
     city: 'Cape Town',
     province: 'Western Cape',
-    phone: '021 671 9402',
     prayerTimesAvailable: true,
     jummahTime: '1:00 PM',
-    features: ['Jummah', 'Daily Prayers', 'Historic Building'],
+    features: ['Jummah', 'Daily Prayers', 'Historic Shafee Mosque', 'Bo-Kaap Heritage'],
+  },
+  {
+    name: 'Masjidul Islam',
+    address: 'Klipfontein Rd, Athlone',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Community Centre', 'Madrasah'],
+  },
+  {
+    name: 'Masjid al-Jamia (Wynberg)',
+    address: 'Worcester St, Wynberg',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Islamic Education'],
+  },
+  {
+    name: 'Masjidul Noor',
+    address: 'Bellville',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Northern Suburbs'],
+  },
+  {
+    name: 'Masjid-ul-Furqaan',
+    address: 'Belhar',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Community Programs'],
+  },
+  {
+    name: 'Masjidul Quds (Table View)',
+    address: 'Table View',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Table View Community'],
+  },
+  {
+    name: 'Shamsul Islam Mosque',
+    address: 'Woodstock',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Ladies Section'],
+  },
+  {
+    name: 'Masjid Al-Ikraam',
+    address: 'Goodwood',
+    city: 'Cape Town',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Northern Suburbs'],
+  },
+  // ── Western Cape — outside Cape Town ─────────────────────────────────────
+  {
+    name: 'Masjid Ibrahim',
+    address: 'Paarl',
+    city: 'Paarl',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Winelands'],
+  },
+  {
+    name: 'Masjidul Noor (Stellenbosch)',
+    address: 'Stellenbosch',
+    city: 'Stellenbosch',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'University Town'],
+  },
+  {
+    name: 'Masjid Rahmatullah',
+    address: 'Wellington',
+    city: 'Wellington',
+    province: 'Western Cape',
+    prayerTimesAvailable: true,
+    jummahTime: '1:00 PM',
+    features: ['Jummah', 'Daily Prayers', 'Winelands'],
   },
 ];
 
@@ -245,6 +368,17 @@ export default function MasjidFinderPage() {
                               {masjid.website}
                             </a>
                           </p>
+                        )}
+                        {masjid.liveStreamUrl && (
+                          <a
+                            href={masjid.liveStreamUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-red-500 hover:text-red-600 hover:underline font-medium"
+                          >
+                            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
+                            Watch Live Stream ↗
+                          </a>
                         )}
                       </div>
                     </div>

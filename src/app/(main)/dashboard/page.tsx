@@ -287,59 +287,45 @@ export default function DashboardPage() {
 
         {/* Dashboard Tabs */}
         <div className="w-full mt-2">
-          <div className="border-b border-muted mb-4">
+          <div className="relative mb-4">
             <div className="flex gap-2 overflow-x-auto pb-1" style={{scrollbarWidth:'none',msOverflowStyle:'none'}}>
-              <button
-                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'learning' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
-                onClick={() => setSelectedTab('learning')}
-              >
-                <BookOpen className="inline h-5 w-5 mr-1 align-text-bottom" /> Learning Library
-              </button>
-              <button
-                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'arabic' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
-                onClick={() => setSelectedTab('arabic')}
-              >
-                <Languages className="inline h-5 w-5 mr-1 align-text-bottom" /> Arabic Class
-              </button>
-              <button
-                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'yaseen' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
-                onClick={() => setSelectedTab('yaseen')}
-              >
-                <BookOpen className="inline h-5 w-5 mr-1 align-text-bottom" /> Surah Yaaseen
-              </button>
-              <button
-                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'qiblah' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
-                onClick={() => setSelectedTab('qiblah')}
-              >
-                <Compass className="inline h-5 w-5 mr-1 align-text-bottom" /> Qiblah Compass
-              </button>
-              <button
-                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors ${selectedTab === 'ccemag' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
-                onClick={() => setSelectedTab('ccemag')}
-              >
-                <Award className="inline h-5 w-5 mr-1 align-text-bottom" /> CCE Mag Portal
-              </button>
-              <button
-                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors whitespace-nowrap ${selectedTab === 'daily' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
-                onClick={() => setSelectedTab('daily')}
-              >
-                📅 Daily
-              </button>
-              <button
-                className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors whitespace-nowrap ${selectedTab === 'worship' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
-                onClick={() => setSelectedTab('worship')}
-              >
-                📿 Worship
-              </button>
+              {([
+                { id: 'learning', emoji: '📚', label: 'Library' },
+                { id: 'arabic',   emoji: '🔤', label: 'Arabic' },
+                { id: 'yaseen',   emoji: '📖', label: 'Yaaseen' },
+                { id: 'qiblah',   emoji: '🧭', label: 'Qiblah' },
+                { id: 'ccemag',   emoji: '📰', label: 'CCE Mag' },
+                { id: 'daily',    emoji: '📅', label: 'Daily' },
+                { id: 'worship',  emoji: '📿', label: 'Worship' },
+              ] as { id: typeof selectedTab; emoji: string; label: string }[]).map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setSelectedTab(tab.id)}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-2xl font-semibold text-sm whitespace-nowrap shrink-0 border transition-all ${
+                    selectedTab === tab.id
+                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                      : 'bg-white text-muted-foreground border-border hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/60'
+                  }`}
+                >
+                  <span className="text-base leading-none">{tab.emoji}</span>
+                  <span>{tab.label}</span>
+                </button>
+              ))}
               {hasRole && hasRole('admin') && (
                 <button
-                  className={`px-4 py-2 font-semibold rounded-t-md border-b-2 transition-colors whitespace-nowrap ${selectedTab === 'admin' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'}`}
                   onClick={() => setSelectedTab('admin')}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-2xl font-semibold text-sm whitespace-nowrap shrink-0 border transition-all ${
+                    selectedTab === 'admin'
+                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                      : 'bg-white text-muted-foreground border-border hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/60'
+                  }`}
                 >
-                  <Award className="inline h-5 w-5 mr-1 align-text-bottom" /> Admin
+                  <span className="text-base leading-none">🔧</span>
+                  <span>Admin</span>
                 </button>
               )}
             </div>
+            <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-background to-transparent" />
           </div>
           {/* Tab Content */}
           {selectedTab === 'learning' && (

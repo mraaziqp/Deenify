@@ -68,7 +68,7 @@ export default function RadioPlayer({ station, isActive, onActivate, onStop }: R
   };
 
   return (
-    <div className={`rounded-2xl border transition-all duration-200 p-4 ${isPending ? 'border-dashed border-amber-200 bg-amber-50/60 opacity-80' : isActive ? 'border-emerald-400 bg-emerald-50 shadow-md' : 'border-gray-200 bg-white hover:border-emerald-200 hover:shadow-sm'}`}>
+    <div className={`rounded-2xl border transition-all duration-200 p-4 ${isPending ? 'border-dashed border-gray-200 bg-gray-50/40' : isActive ? 'border-emerald-400 bg-emerald-50 shadow-md' : 'border-gray-200 bg-white hover:border-emerald-200 hover:shadow-sm'}`}>
       {/* Single persistent audio element — always mounted so ref is always valid */}
       <audio
         ref={audioRef}
@@ -89,9 +89,7 @@ export default function RadioPlayer({ station, isActive, onActivate, onStop }: R
           <div className="flex items-center gap-2 flex-wrap">
             <p className="font-semibold text-gray-900 truncate">{station.name}</p>
             <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-medium">{station.genre}</span>
-            {isPending && (
-              <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">Partnership Pending</span>
-            )}
+
             {!isPending && isActive && !buffering && !error && (
               <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -121,8 +119,8 @@ export default function RadioPlayer({ station, isActive, onActivate, onStop }: R
             </button>
           )}
           {isPending ? (
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-100 text-amber-500" title="Coming soon">
-              <span className="text-sm">🔜</span>
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 text-gray-400 cursor-default" title="Stream coming soon">
+              <Play className="h-4 w-4" />
             </div>
           ) : (
             <button
