@@ -38,8 +38,13 @@ export default function SignUpPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [pageCallbackUrl, setPageCallbackUrl] = useState('');
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    const cb = new URLSearchParams(window.location.search).get('callbackUrl') || '';
+    setPageCallbackUrl(cb && cb.startsWith('/') ? cb : '');
+  }, []);
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
@@ -60,7 +65,9 @@ export default function SignUpPage() {
         body: JSON.stringify({ displayName: name.trim(), email, password }),
       });
       if (!res.ok) throw new Error('Sign up failed. This email may already be in use.');
-      window.location.href = '/welcome';
+      window.location.href = pageCallbackUrl
+        ? `/welcome?callbackUrl=${encodeURIComponent(pageCallbackUrl)}`
+        : '/welcome';
     } catch (err: any) {
       setError(err.message || 'Sign up failed. Please try again.');
     } finally {
@@ -419,9 +426,9 @@ export default function SignUpPage() {
             <div className="flex-1 h-px bg-border/60" />
           </div>
 
-          {/* Sign-in link */}
+          {/* Sign-in link — preserve callbackUrl so invite flows survive */}
           <Link
-            href="/auth/sign-in"
+            href={pageCallbackUrl ? `/auth/sign-in?callbackUrl=${encodeURIComponent(pageCallbackUrl)}` : '/auth/sign-in'}
             className="flex items-center justify-center gap-2 w-full h-11 rounded-xl text-sm font-semibold transition-all duration-200 border hover:border-primary hover:text-primary"
             style={{
               borderColor: 'hsl(var(--border))',

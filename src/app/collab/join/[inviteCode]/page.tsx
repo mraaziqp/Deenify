@@ -23,6 +23,6 @@ export default async function JoinGroupPage({ params, searchParams }: any) {
     const groupId = await joinGroup({ inviteCode, userId });
     redirect(`/groups/${groupId}?joined=1`);
   } catch (e: any) {
-    redirect(`/dashboard/worship?error=${encodeURIComponent(e.message)}`);
+    redirect(`/groups?error=${encodeURIComponent(e.message)}`);
   }
 }

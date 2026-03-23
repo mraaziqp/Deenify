@@ -13,8 +13,8 @@ export default function HeaderWrapper({ children }: { children: ReactNode }) {
   return (
     <>
       {!hideHeader && <Header />}
-      {/* Extra bottom padding on mobile so content isn't hidden behind bottom nav (56px) + safe area */}
-      <div className={!isAuthPage ? 'pb-14 md:pb-0' : ''}>
+      {/* Extra bottom padding on mobile so content isn't hidden behind bottom nav and device safe area */}
+      <div className={!isAuthPage ? 'pb-[calc(56px+env(safe-area-inset-bottom)+0.75rem)] md:pb-0' : ''}>
         {children}
       </div>
       {!isAuthPage && <MobileBottomNav />}

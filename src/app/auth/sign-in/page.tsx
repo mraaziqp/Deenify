@@ -408,9 +408,9 @@ function SignInForm() {
             <div className="flex-1 h-px bg-border/60" />
           </div>
 
-          {/* Sign-up link */}
+          {/* Sign-up link — preserve callbackUrl so join/invite flows survive registration */}
           <Link
-            href="/auth/sign-up"
+            href={callbackUrl ? `/auth/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}` : '/auth/sign-up'}
             className="flex items-center justify-center gap-2 w-full h-11 rounded-xl text-sm font-semibold transition-all duration-200 border hover:border-primary hover:text-primary"
             style={{
               borderColor: 'hsl(var(--border))',

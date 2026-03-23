@@ -2,7 +2,7 @@
 import { useAuth } from '@/lib/auth-context';
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   Card,
@@ -106,11 +106,24 @@ type DashboardStats = {
   dhikrCount: number;
 };
 
+type DashboardTab = 'learning' | 'arabic' | 'yaseen' | 'qiblah' | 'ccemag' | 'daily' | 'prayer' | 'worship' | 'admin';
+
+const DASHBOARD_TABS: { id: Exclude<DashboardTab, 'admin'>; emoji: string; label: string }[] = [
+  { id: 'learning', emoji: '📚', label: 'Library' },
+  { id: 'arabic', emoji: '🔤', label: 'Arabic' },
+  { id: 'yaseen', emoji: '📖', label: 'Yaaseen' },
+  { id: 'qiblah', emoji: '🧭', label: 'Qiblah' },
+  { id: 'ccemag', emoji: '📰', label: 'CCE Mag' },
+  { id: 'daily', emoji: '📅', label: 'Daily' },
+  { id: 'prayer', emoji: '🕌', label: 'Salaah' },
+  { id: 'worship', emoji: '📿', label: 'Worship' },
+];
+
 
 const ALL_TILES = [
   { icon:'📖', label:'Quran',          sub:'Read & listen',     href:'/quran',          bg:'#e6f4f0',iconBg:'#059669',color:'#065f46' },
   { icon:'🤲', label:'Duas',            sub:'Hisnul Muslim',     href:'/hisnul-muslim',  bg:'#fdf6e3',iconBg:'#d97706',color:'#92400e' },
-  { icon:'🕌', label:'Prayer Times',    sub:'Cape Town',         href:'#prayer-times',   bg:'#eef2ff',iconBg:'#4f46e5',color:'#312e81' },
+  { icon:'🕌', label:'Prayer Times',    sub:'Cape Town',         href:'/dashboard?tab=prayer#prayer-times',   bg:'#eef2ff',iconBg:'#4f46e5',color:'#312e81' },
   { icon:'🥗', label:'Halal Food',      sub:'Guide',             href:'/halal-food',     bg:'#f0fdf4',iconBg:'#16a34a',color:'#14532d' },
   { icon:'🤖', label:'AI Assistant',    sub:'Ask anything',      href:'/ai-assistant',   bg:'#faf5ff',iconBg:'#7c3aed',color:'#4c1d95' },
   { icon:'💰', label:'Zakat',           sub:'Calculator',        href:'/zakat',          bg:'#fff7ed',iconBg:'#ea580c',color:'#7c2d12' },
@@ -138,9 +151,10 @@ const ALL_TILES = [
 
 export default function DashboardPage() {
   const { user, hasRole, isLoading } = useAuth();
-  const [selectedTab, setSelectedTab] = useState<'learning' | 'arabic' | 'yaseen' | 'qiblah' | 'ccemag' | 'daily' | 'worship' | 'admin'>('learning');
+  const [selectedTab, setSelectedTab] = useState<DashboardTab>('learning');
   const [showGuide, setShowGuide] = useState(false);
   const [showAllTiles, setShowAllTiles] = useState(false);
+  const tabRefs = useRef<Partial<Record<DashboardTab, HTMLButtonElement | null>>>({});
   const [stats, setStats] = useState<DashboardStats>({
     currentStreak: 0,
     totalDaysActive: 0,
@@ -149,6 +163,48 @@ export default function DashboardPage() {
     dhikrCount: 0,
   });
   useEffect(() => { document.title = 'Dashboard | Deenify'; }, []);
+
+  useEffect(() => {
+    const syncTabFromUrl = () => {
+      const url = new URL(window.location.href);
+      const tab = (url.searchParams.get('tab') || '').toLowerCase();
+      if (tab === 'prayer' || tab === 'salaah' || tab === 'salah') {
+        setSelectedTab('prayer');
+        return;
+      }
+      if (tab === 'daily') {
+        setSelectedTab('daily');
+        return;
+      }
+      if (url.hash === '#prayer-times') {
+        setSelectedTab('prayer');
+      }
+    };
+
+    syncTabFromUrl();
+    window.addEventListener('hashchange', syncTabFromUrl);
+    window.addEventListener('popstate', syncTabFromUrl);
+    return () => {
+      window.removeEventListener('hashchange', syncTabFromUrl);
+      window.removeEventListener('popstate', syncTabFromUrl);
+    };
+  }, []);
+
+  useEffect(() => {
+    const activeBtn = tabRefs.current[selectedTab];
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, [selectedTab]);
+
+  const selectTab = (tab: DashboardTab) => {
+    setSelectedTab(tab);
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      requestAnimationFrame(() => {
+        document.getElementById('dashboard-tab-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  };
 
   const displayName = user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || null;
 
@@ -267,11 +323,11 @@ export default function DashboardPage() {
         <div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {(showAllTiles ? ALL_TILES : ALL_TILES.slice(0, 9)).map(t => (
-              <a key={t.label} href={t.href} className="block rounded-2xl p-3.5 card-hover" style={{background:t.bg,textDecoration:'none'}}>
+              <Link key={t.label} href={t.href} className="block rounded-2xl p-3.5 card-hover" style={{background:t.bg,textDecoration:'none'}}>
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl mb-2" style={{background:t.iconBg}}>{t.icon}</div>
                 <p className="font-semibold text-sm" style={{color:t.color}}>{t.label}</p>
                 <p className="text-xs" style={{color:t.color+'99'}}>{t.sub}</p>
-              </a>
+              </Link>
             ))}
           </div>
           <button
@@ -287,20 +343,15 @@ export default function DashboardPage() {
 
         {/* Dashboard Tabs */}
         <div className="w-full mt-2">
-          <div className="relative mb-4">
-            <div className="flex gap-2 overflow-x-auto pb-1" style={{scrollbarWidth:'none',msOverflowStyle:'none'}}>
-              {([
-                { id: 'learning', emoji: '📚', label: 'Library' },
-                { id: 'arabic',   emoji: '🔤', label: 'Arabic' },
-                { id: 'yaseen',   emoji: '📖', label: 'Yaaseen' },
-                { id: 'qiblah',   emoji: '🧭', label: 'Qiblah' },
-                { id: 'ccemag',   emoji: '📰', label: 'CCE Mag' },
-                { id: 'daily',    emoji: '📅', label: 'Daily' },
-                { id: 'worship',  emoji: '📿', label: 'Worship' },
-              ] as { id: typeof selectedTab; emoji: string; label: string }[]).map((tab) => (
+          <div className="sticky top-14 z-20 -mx-2 px-2 py-2 md:static md:mx-0 md:px-0 md:py-0 bg-gradient-to-b from-background/95 via-background/85 to-transparent backdrop-blur-sm">
+            <div className="relative mb-2">
+              <div className="flex gap-2 overflow-x-auto pb-1" style={{scrollbarWidth:'none',msOverflowStyle:'none'}}>
+                {DASHBOARD_TABS.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setSelectedTab(tab.id)}
+                  ref={(el) => { tabRefs.current[tab.id] = el; }}
+                  onClick={() => selectTab(tab.id)}
+                  aria-pressed={selectedTab === tab.id}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-2xl font-semibold text-sm whitespace-nowrap shrink-0 border transition-all ${
                     selectedTab === tab.id
                       ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
@@ -313,7 +364,9 @@ export default function DashboardPage() {
               ))}
               {hasRole && hasRole('admin') && (
                 <button
-                  onClick={() => setSelectedTab('admin')}
+                  ref={(el) => { tabRefs.current.admin = el; }}
+                  onClick={() => selectTab('admin')}
+                  aria-pressed={selectedTab === 'admin'}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-2xl font-semibold text-sm whitespace-nowrap shrink-0 border transition-all ${
                     selectedTab === 'admin'
                       ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
@@ -327,7 +380,15 @@ export default function DashboardPage() {
             </div>
             <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-background to-transparent" />
           </div>
+            <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Button variant="outline" className="justify-start" onClick={() => selectTab('prayer')}>🕌 Salaah times</Button>
+              <Button variant="outline" className="justify-start" onClick={() => selectTab('daily')}>📅 Daily view</Button>
+              <Button variant="outline" className="justify-start" onClick={() => selectTab('worship')}>📿 Dhikr</Button>
+              <Button variant="outline" className="justify-start" onClick={() => selectTab('learning')}>📚 Continue learning</Button>
+            </div>
+          </div>
           {/* Tab Content */}
+          <div id="dashboard-tab-content" className="scroll-mt-24">
           {selectedTab === 'learning' && (
             <Card className="shadow-md">
               <CardHeader>
@@ -488,7 +549,21 @@ export default function DashboardPage() {
           {selectedTab === 'daily' && (
             <div className="grid gap-4 md:grid-cols-2">
               <DailyHadithCard />
+              <div id="prayer-times" className="scroll-mt-24">
+                <PrayerTimesCard />
+              </div>
+            </div>
+          )}
+          {selectedTab === 'prayer' && (
+            <div id="prayer-times" className="space-y-3 scroll-mt-24">
               <PrayerTimesCard />
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => selectTab('daily')}
+              >
+                View Daily Hadith + Salaah Together
+              </Button>
             </div>
           )}
           {selectedTab === 'worship' && (
@@ -502,6 +577,7 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           )}
+          </div>
         </div>
 
       </div>

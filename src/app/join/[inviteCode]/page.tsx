@@ -63,7 +63,7 @@ export default function MagicJoinPage() {
     if ((state === 'success' || state === 'already') && groupId) {
       const timer = setTimeout(() => {
         router.push(`/groups/${groupId}?joined=${state === 'success' ? '1' : '0'}`);
-      }, 2200);
+      }, 3500);
       return () => clearTimeout(timer);
     }
   }, [state, groupId, router]);
@@ -93,25 +93,36 @@ export default function MagicJoinPage() {
 
           {state === 'success' && (
             <>
+              <style>{`@keyframes joinCountdown{from{width:100%}to{width:0%}}`}</style>
               <CheckCircle2 className="h-14 w-14 text-emerald-500 mx-auto mb-4" />
               <h2 className="text-xl font-bold text-gray-800 mb-1">Welcome! 🎉</h2>
               <p className="text-muted-foreground">You&apos;ve successfully joined</p>
               <p className="font-bold text-emerald-700 text-lg mt-1">{groupName}</p>
-              <p className="text-xs text-muted-foreground mt-3">Redirecting you now…</p>
-              <Button asChild className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700">
-                <Link href={`/groups/${groupId}`}>Go to Group →</Link>
+              {/* countdown bar */}
+              <div className="mt-4 w-full h-1.5 rounded-full overflow-hidden bg-gray-100">
+                <div style={{ height: '100%', background: '#059669', borderRadius: '9999px', animation: 'joinCountdown 3.5s linear forwards' }} />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">Taking you to the group…</p>
+              <Button asChild className="w-full mt-3 bg-emerald-600 hover:bg-emerald-700">
+                <Link href={`/groups/${groupId}`}>Go to Group now →</Link>
               </Button>
             </>
           )}
 
           {state === 'already' && (
             <>
+              <style>{`@keyframes joinCountdown{from{width:100%}to{width:0%}}`}</style>
               <CheckCircle2 className="h-14 w-14 text-blue-500 mx-auto mb-4" />
               <h2 className="text-xl font-bold text-gray-800 mb-1">Already a member!</h2>
               <p className="text-muted-foreground">You&apos;re already in</p>
               <p className="font-bold text-blue-700 text-lg mt-1">{groupName}</p>
-              <Button asChild className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700">
-                <Link href={`/groups/${groupId}`}>Open Group →</Link>
+              {/* countdown bar */}
+              <div className="mt-4 w-full h-1.5 rounded-full overflow-hidden bg-gray-100">
+                <div style={{ height: '100%', background: '#2563eb', borderRadius: '9999px', animation: 'joinCountdown 3.5s linear forwards' }} />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">Taking you to the group…</p>
+              <Button asChild className="w-full mt-3 bg-emerald-600 hover:bg-emerald-700">
+                <Link href={`/groups/${groupId}`}>Open Group now →</Link>
               </Button>
             </>
           )}

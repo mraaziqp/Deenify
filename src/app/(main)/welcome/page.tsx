@@ -1,5 +1,5 @@
-﻿'export const dynamic = "force-dynamic";'
-'use client';
+﻿'use client';
+export const dynamic = "force-dynamic";
 
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
@@ -11,7 +11,7 @@ const QUICK_STARTS = [
   { icon: 'ðŸ“–', label: 'Read Quran', sub: 'with audio & tafsir', href: '/quran', bg: '#e6f4f0', color: '#065f46' },
   { icon: 'ðŸ¤²', label: 'Daily Duas', sub: 'Hisnul Muslim', href: '/hisnul-muslim', bg: '#fdf6e3', color: '#92400e' },
   { icon: 'ðŸ“¿', label: 'Dhikr Circle', sub: 'count globally', href: '/dhikr', bg: '#fdf2f8', color: '#831843' },
-  { icon: 'ðŸ•Œ', label: 'Prayer Times', sub: 'accurate & local', href: '/dashboard', bg: '#eef2ff', color: '#312e81' },
+  { icon: '🕌', label: 'Prayer Times', sub: 'accurate & local', href: '/dashboard?tab=prayer', bg: '#eef2ff', color: '#312e81' },
   { icon: 'ðŸ«', label: 'Madresah', sub: 'school portal', href: '/madresah', bg: '#ecfdf5', color: '#065f46' },
   { icon: 'ðŸ¤–', label: 'AI Assistant', sub: 'ask anything', href: '/ai-assistant', bg: '#faf5ff', color: '#4c1d95' },
 ];
@@ -20,9 +20,25 @@ export default function WelcomePage() {
   const { user } = useAuth();
   const [step, setStep] = useState(0);
   const displayName = user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
+  const callbackUrl =
+    typeof window !== 'undefined'
+      ? (new URLSearchParams(window.location.search).get('callbackUrl') || '')
+      : '';
+  const finalDest = callbackUrl && callbackUrl.startsWith('/') ? callbackUrl : '/dashboard';
 
   return (
     <div className="container mx-auto max-w-xl py-10 px-4">
+      {/* Progress dots */}
+      <div className="flex justify-center gap-2 mb-8">
+        {[0, 1].map((i) => (
+          <div
+            key={i}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              i === step ? 'w-6 bg-emerald-600' : 'w-2 bg-gray-200'
+            }`}
+          />
+        ))}
+      </div>
       {/* Step 0 â€“ Greeting */}
       {step === 0 && (
         <div className="text-center">
@@ -74,7 +90,7 @@ export default function WelcomePage() {
             Get started <ChevronRight className="h-5 w-5" />
           </Button>
           <Button asChild variant="ghost" className="w-full mt-2 text-muted-foreground">
-            <Link href="/dashboard">Skip to dashboard</Link>
+            <Link href={finalDest}>Skip to {callbackUrl ? 'your destination' : 'dashboard'}</Link>
           </Button>
         </div>
       )}
@@ -90,7 +106,7 @@ export default function WelcomePage() {
 
           <div className="grid grid-cols-2 gap-3 mb-6">
             {QUICK_STARTS.map(q => (
-              <a
+              <Link
                 key={q.label}
                 href={q.href}
                 className="block rounded-2xl p-4 text-left transition-shadow hover:shadow-md"
@@ -99,13 +115,13 @@ export default function WelcomePage() {
                 <div className="text-3xl mb-2">{q.icon}</div>
                 <p className="font-semibold text-sm" style={{ color: q.color }}>{q.label}</p>
                 <p className="text-xs mt-0.5" style={{ color: q.color + '99' }}>{q.sub}</p>
-              </a>
+              </Link>
             ))}
           </div>
 
           <Button asChild className="w-full h-12 rounded-xl text-base font-semibold gap-2">
-            <Link href="/dashboard">
-              Go to my dashboard <Sparkles className="h-4 w-4" />
+            <Link href={finalDest}>
+              {callbackUrl ? 'Continue to your destination' : 'Go to my dashboard'} <Sparkles className="h-4 w-4" />
             </Link>
           </Button>
         </div>
