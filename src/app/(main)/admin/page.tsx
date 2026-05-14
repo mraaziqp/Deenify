@@ -25,11 +25,18 @@ import {
   Clock,
   DollarSign,
   Eye,
-  Settings
+  Settings,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  UserCog,
+  Handshake,
+  BarChart3
 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
 import PDFReader from '@/components/pdf/PDFReader';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 // ─── Inline Admin Sub-Components ────────────────────────────────────────────
@@ -315,14 +322,44 @@ function VideoPlaylistsTab() {
 
 interface SystemStats {
   totalUsers: number;
-  totalCourses: number;
-  activeCourses: number;
-  pendingVerification: number;
-  totalRevenue: number;
-  monthlyRevenue: number;
-  totalEnrollments: number;
-  activeTeachers: number;
-  activeVerifiers: number;
+  usersByRole: { user: number; admin: number; scholar: number };
+  recentSignups7d: number;
+  recentSignups30d: number;
+  totalGroups: number;
+  totalBanners: number;
+  activeBanners: number;
+  totalDhikrCount: number;
+  totalPartnerships: number;
+  // kept for backward compat
+  pendingVerification?: number;
+}
+
+interface AdminUser {
+  id: string;
+  email: string;
+  username: string | null;
+  displayName: string | null;
+  role: string;
+  createdAt: string;
+  dhikrCount: number;
+  currentStreak: number;
+  totalDaysActive: number;
+  emailVerified: boolean;
+  _count: { groupMemberships: number; bookmarks: number };
+}
+
+interface Partnership {
+  id: string;
+  companyName: string;
+  contactName: string;
+  email: string;
+  phone: string | null;
+  website: string | null;
+  message: string;
+  proposedRate: number | null;
+  status: 'PENDING' | 'REVIEWING' | 'ACTIVE' | 'DECLINED';
+  notes: string | null;
+  createdAt: string;
 }
 
 interface RecentActivity {
@@ -332,6 +369,355 @@ interface RecentActivity {
   timestamp: string;
   userId: string;
   userName: string;
+}
+
+// ─── Real User Management Tab ────────────────────────────────────────────────
+
+function UserManagementTab() {
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [total, setTotal] = useState(0);
+  const [pages, setPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [q, setQ] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const load = (p = page, search = q, role = roleFilter) => {
+    setLoading(true);
+    const params = new URLSearchParams({ page: String(p), q: search, role });
+    fetch(`/api/admin/users?${params}`)
+      .then(r => r.json())
+      .then(d => {
+        setUsers(d.users ?? []);
+        setTotal(d.total ?? 0);
+        setPages(d.pages ?? 1);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(1, '', ''); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPage(1);
+    load(1, q, roleFilter);
+  };
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    setUpdatingId(userId);
+    await fetch(`/api/admin/users?id=${userId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: newRole }),
+    });
+    setUpdatingId(null);
+    load(page, q, roleFilter);
+  };
+
+  const roleBadgeColor = (role: string) => {
+    if (role === 'ADMIN') return 'bg-red-100 text-red-700';
+    if (role === 'SCHOLAR') return 'bg-purple-100 text-purple-700';
+    return 'bg-gray-100 text-gray-700';
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <UserCog className="h-5 w-5" /> User Management
+        </CardTitle>
+        <CardDescription>{total.toLocaleString()} total users registered</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <form onSubmit={handleSearch} className="flex gap-2 flex-wrap">
+          <div className="relative flex-1 min-w-[180px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by email or username…"
+              className="pl-9"
+              value={q}
+              onChange={e => setQ(e.target.value)}
+            />
+          </div>
+          <Select value={roleFilter || 'all'} onValueChange={v => { setRoleFilter(v === 'all' ? '' : v); setPage(1); load(1, q, v === 'all' ? '' : v); }}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="All roles" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All roles</SelectItem>
+              <SelectItem value="USER">Users</SelectItem>
+              <SelectItem value="SCHOLAR">Scholars</SelectItem>
+              <SelectItem value="ADMIN">Admins</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button type="submit" variant="secondary">Search</Button>
+        </form>
+
+        {loading ? (
+          <p className="text-muted-foreground text-sm py-4 text-center">Loading users…</p>
+        ) : users.length === 0 ? (
+          <p className="text-muted-foreground text-sm py-4 text-center">No users found.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left text-muted-foreground">
+                  <th className="pb-2 pr-3 font-medium">User</th>
+                  <th className="pb-2 pr-3 font-medium">Role</th>
+                  <th className="pb-2 pr-3 font-medium hidden sm:table-cell">Dhikr</th>
+                  <th className="pb-2 pr-3 font-medium hidden sm:table-cell">Streak</th>
+                  <th className="pb-2 pr-3 font-medium hidden md:table-cell">Days Active</th>
+                  <th className="pb-2 pr-3 font-medium hidden md:table-cell">Groups</th>
+                  <th className="pb-2 font-medium">Joined</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {users.map(u => (
+                  <tr key={u.id} className="hover:bg-muted/30">
+                    <td className="py-2 pr-3">
+                      <div className="font-medium truncate max-w-[160px]">{u.displayName ?? u.username ?? u.email.split('@')[0]}</div>
+                      <div className="text-xs text-muted-foreground truncate max-w-[160px]">{u.email}</div>
+                      {!u.emailVerified && <span className="text-xs text-amber-600">unverified</span>}
+                    </td>
+                    <td className="py-2 pr-3">
+                      <Select
+                        value={u.role}
+                        onValueChange={v => handleRoleChange(u.id, v)}
+                        disabled={updatingId === u.id}
+                      >
+                        <SelectTrigger className="h-7 text-xs w-28">
+                          <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${roleBadgeColor(u.role)}`}>{u.role}</span>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="USER">USER</SelectItem>
+                          <SelectItem value="SCHOLAR">SCHOLAR</SelectItem>
+                          <SelectItem value="ADMIN">ADMIN</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </td>
+                    <td className="py-2 pr-3 hidden sm:table-cell text-muted-foreground">{u.dhikrCount.toLocaleString()}</td>
+                    <td className="py-2 pr-3 hidden sm:table-cell text-muted-foreground">{u.currentStreak}d</td>
+                    <td className="py-2 pr-3 hidden md:table-cell text-muted-foreground">{u.totalDaysActive}</td>
+                    <td className="py-2 pr-3 hidden md:table-cell text-muted-foreground">{u._count.groupMemberships}</td>
+                    <td className="py-2 text-muted-foreground text-xs whitespace-nowrap">
+                      {new Date(u.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {pages > 1 && (
+          <div className="flex items-center justify-between pt-2">
+            <p className="text-xs text-muted-foreground">Page {page} of {pages}</p>
+            <div className="flex gap-1">
+              <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => { setPage(p => p - 1); load(page - 1, q, roleFilter); }}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button size="sm" variant="outline" disabled={page >= pages} onClick={() => { setPage(p => p + 1); load(page + 1, q, roleFilter); }}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Partnerships Tab ────────────────────────────────────────────────────────
+
+const STATUS_COLORS: Record<string, string> = {
+  PENDING: 'bg-yellow-100 text-yellow-700',
+  REVIEWING: 'bg-blue-100 text-blue-700',
+  ACTIVE: 'bg-green-100 text-green-700',
+  DECLINED: 'bg-red-100 text-red-700',
+};
+
+function PartnershipsTab() {
+  const [partnerships, setPartnerships] = useState<Partnership[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ companyName: '', contactName: '', email: '', phone: '', website: '', message: '', proposedRate: '' });
+  const [saving, setSaving] = useState(false);
+
+  const load = (status = statusFilter) => {
+    setLoading(true);
+    fetch(`/api/admin/partnerships${status ? `?status=${status}` : ''}`)
+      .then(r => r.json())
+      .then(d => setPartnerships(d.partnerships ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const updateStatus = async (id: string, status: string) => {
+    await fetch(`/api/admin/partnerships?id=${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status, notes: notes[id] }),
+    });
+    load(statusFilter);
+  };
+
+  const saveNotes = async (id: string) => {
+    await fetch(`/api/admin/partnerships?id=${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: notes[id] }),
+    });
+    load(statusFilter);
+  };
+
+  const handleAddPartnership = async () => {
+    if (!form.companyName || !form.contactName || !form.email || !form.message) return;
+    setSaving(true);
+    await fetch('/api/admin/partnerships', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    setForm({ companyName: '', contactName: '', email: '', phone: '', website: '', message: '', proposedRate: '' });
+    setShowForm(false);
+    setSaving(false);
+    load(statusFilter);
+  };
+
+  const activeCount = partnerships.filter(p => p.status === 'ACTIVE').length;
+  const pendingCount = partnerships.filter(p => p.status === 'PENDING').length;
+
+  return (
+    <div className="space-y-4">
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: 'Total', value: partnerships.length },
+          { label: 'Pending', value: pendingCount },
+          { label: 'Active Partners', value: activeCount },
+          { label: 'Declined', value: partnerships.filter(p => p.status === 'DECLINED').length },
+        ].map(s => (
+          <Card key={s.label} className="p-3">
+            <p className="text-xs text-muted-foreground">{s.label}</p>
+            <p className="text-xl font-bold">{s.value}</p>
+          </Card>
+        ))}
+      </div>
+
+      {/* Toolbar */}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2">
+          <Select value={statusFilter || 'all'} onValueChange={v => { const s = v === 'all' ? '' : v; setStatusFilter(s); load(s); }}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="All statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="PENDING">Pending</SelectItem>
+              <SelectItem value="REVIEWING">Reviewing</SelectItem>
+              <SelectItem value="ACTIVE">Active</SelectItem>
+              <SelectItem value="DECLINED">Declined</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <Button size="sm" onClick={() => setShowForm(v => !v)}>
+          <Handshake className="h-4 w-4 mr-1" />
+          {showForm ? 'Cancel' : 'Add Partnership'}
+        </Button>
+      </div>
+
+      {/* Add form */}
+      {showForm && (
+        <Card className="border-dashed border-primary/40 bg-primary/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">New Partnership Inquiry</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <Input placeholder="Company Name *" value={form.companyName} onChange={e => setForm(p => ({ ...p, companyName: e.target.value }))} />
+              <Input placeholder="Contact Name *" value={form.contactName} onChange={e => setForm(p => ({ ...p, contactName: e.target.value }))} />
+              <Input placeholder="Email *" type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} />
+              <Input placeholder="Phone" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} />
+              <Input placeholder="Website" value={form.website} onChange={e => setForm(p => ({ ...p, website: e.target.value }))} />
+              <Input placeholder="Proposed Rate (ZAR/month)" type="number" value={form.proposedRate} onChange={e => setForm(p => ({ ...p, proposedRate: e.target.value }))} />
+            </div>
+            <Textarea placeholder="Message / Partnership Details *" rows={3} value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} />
+            <Button onClick={handleAddPartnership} disabled={saving} className="w-full">
+              {saving ? 'Saving…' : 'Save Partnership'}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* List */}
+      {loading ? (
+        <p className="text-muted-foreground text-sm py-4 text-center">Loading partnerships…</p>
+      ) : partnerships.length === 0 ? (
+        <p className="text-muted-foreground text-sm py-4 text-center">No partnerships found. Add your first one above.</p>
+      ) : (
+        <div className="space-y-3">
+          {partnerships.map(p => (
+            <Card key={p.id} className="overflow-hidden">
+              <div
+                className="flex items-start justify-between gap-3 p-4 cursor-pointer hover:bg-muted/30"
+                onClick={() => {
+                  setExpanded(e => e === p.id ? null : p.id);
+                  if (!notes[p.id]) setNotes(n => ({ ...n, [p.id]: p.notes ?? '' }));
+                }}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold">{p.companyName}</span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[p.status]}`}>{p.status}</span>
+                    {p.proposedRate && <span className="text-xs text-muted-foreground">R{p.proposedRate}/mo</span>}
+                  </div>
+                  <div className="text-sm text-muted-foreground">{p.contactName} · {p.email}</div>
+                  {p.phone && <div className="text-xs text-muted-foreground">{p.phone}</div>}
+                </div>
+                <div className="text-xs text-muted-foreground shrink-0">{new Date(p.createdAt).toLocaleDateString()}</div>
+              </div>
+              {expanded === p.id && (
+                <div className="border-t p-4 space-y-3 bg-muted/20">
+                  <p className="text-sm">{p.message}</p>
+                  {p.website && <a href={p.website} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">{p.website}</a>}
+                  <div className="flex gap-2 flex-wrap">
+                    {['PENDING', 'REVIEWING', 'ACTIVE', 'DECLINED'].map(s => (
+                      <Button
+                        key={s}
+                        size="sm"
+                        variant={p.status === s ? 'default' : 'outline'}
+                        onClick={() => updateStatus(p.id, s)}
+                      >
+                        {s}
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-muted-foreground">Internal Notes</p>
+                    <Textarea
+                      rows={2}
+                      placeholder="Add internal notes…"
+                      value={notes[p.id] ?? ''}
+                      onChange={e => setNotes(n => ({ ...n, [p.id]: e.target.value }))}
+                    />
+                    <Button size="sm" variant="secondary" onClick={() => saveNotes(p.id)}>Save Notes</Button>
+                  </div>
+                </div>
+              )}
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function AdminDashboard() {
@@ -350,11 +736,14 @@ export default function AdminDashboard() {
     }
   }, [user, hasRole, isLoading, router]);
 
-  // Fetch admin data from real API
+  // Fetch admin stats from real API
   useEffect(() => {
-    // Removed broken fetch calls to /api/admin/stats and /api/admin/activities
-    // TODO: Implement real admin stats and activities endpoints or use available data
-  }, []);
+    if (!user || !hasRole('admin')) return;
+    fetch('/api/admin/stats')
+      .then(r => r.json())
+      .then(d => setStats(d))
+      .catch(() => {});
+  }, [user, hasRole]);
 
   const getActivityIcon = (type: RecentActivity['type']) => {
     switch (type) {
@@ -489,48 +878,46 @@ export default function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalUsers.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{stats ? stats.totalUsers.toLocaleString() : '—'}</div>
             <p className="text-xs text-muted-foreground">
-              {stats?.activeTeachers} teachers, {stats?.activeVerifiers} verifiers
+              +{stats?.recentSignups7d ?? '—'} this week · +{stats?.recentSignups30d ?? '—'} this month
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Active Ads</CardTitle>
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalCourses}</div>
+            <div className="text-2xl font-bold">{stats ? stats.activeBanners : '—'}</div>
             <p className="text-xs text-muted-foreground">
-              {stats?.activeCourses} active, {stats?.pendingVerification} pending
+              {stats?.totalBanners ?? '—'} total · {stats?.totalPartnerships ?? '—'} partnerships
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${stats?.monthlyRevenue.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              ${stats?.totalRevenue.toLocaleString()} total
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Enrollments</CardTitle>
+            <CardTitle className="text-sm font-medium">Groups</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalEnrollments.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{stats ? stats.totalGroups.toLocaleString() : '—'}</div>
+            <p className="text-xs text-muted-foreground">Active jamaah groups</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Dhikr</CardTitle>
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats ? stats.totalDhikrCount.toLocaleString() : '—'}</div>
             <p className="text-xs text-muted-foreground">
-              All time enrollments
+              Across all users
             </p>
           </CardContent>
         </Card>
@@ -542,7 +929,8 @@ export default function AdminDashboard() {
           <TabsList className="flex w-max min-w-full flex-wrap gap-1 h-auto p-1">
             <TabsTrigger value="activity">Recent Activity</TabsTrigger>
             <TabsTrigger value="alerts">System Alerts</TabsTrigger>
-            <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="users">👥 User Management</TabsTrigger>
+            <TabsTrigger value="partnerships">🤝 Partnerships</TabsTrigger>
             <TabsTrigger value="content-manager">📚 Content Manager</TabsTrigger>
             <TabsTrigger value="yaseen-audio">🎵 Yaaseen Audio</TabsTrigger>
             <TabsTrigger value="quran-media" data-tab="quran-media">Quran Media</TabsTrigger>
@@ -784,72 +1172,13 @@ export default function AdminDashboard() {
 
         {/* User Management Tab */}
         <TabsContent value="users" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>User Management</CardTitle>
-              <CardDescription>
-                Manage user roles and permissions
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg border">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Users className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Students</p>
-                      <p className="text-sm text-muted-foreground">2,508 active users</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Manage
-                  </Button>
-                </div>
-
-                <div className="flex items-center justify-between p-4 rounded-lg border">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Users className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Teachers</p>
-                      <p className="text-sm text-muted-foreground">34 active instructors</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Manage
-                  </Button>
-                </div>
-
-                <div className="flex items-center justify-between p-4 rounded-lg border">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                      <ShieldCheck className="h-5 w-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Verifiers</p>
-                      <p className="text-sm text-muted-foreground">5 content moderators</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Manage
-                  </Button>
-                </div>
-
-                <Button className="w-full">
-                  <Users className="h-4 w-4 mr-2" />
-                  Add New User
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <UserManagementTab />
         </TabsContent>
 
+        {/* Partnerships Tab */}
+        <TabsContent value="partnerships" className="space-y-4">
+          <PartnershipsTab />
+        </TabsContent>
         {/* Settings Tab */}
         <TabsContent value="settings" className="space-y-4">
           <Card>

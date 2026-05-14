@@ -144,6 +144,28 @@ model SponsoredBanner {
   createdAt    DateTime  @default(now())
 }
 
+enum PartnershipStatus {
+  PENDING
+  REVIEWING
+  ACTIVE
+  DECLINED
+}
+
+model Partnership {
+  id          String            @id @default(cuid())
+  companyName String
+  contactName String
+  email       String
+  phone       String?
+  website     String?
+  message     String
+  proposedRate Float?
+  status      PartnershipStatus @default(PENDING)
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
 model VideoPlaylist {
   id                String   @id @default(cuid())
   title             String
