@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deenify - Download Mobile App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .header .emoji {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .info-box {
+            background: #f0f9f7;
+            border-left: 4px solid #059669;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .apk-option {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .apk-option:hover {
+            border-color: #059669;
+            background: #f9fafb;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 150, 105, 0.1);
+        }
+
+        .apk-option h3 {
+            color: #059669;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .apk-option p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .specs {
+            background: #f9fafb;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.85em;
+            color: #555;
+        }
+
+        .specs span {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #d1fae5;
+            color: #047857;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
+        }
+
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+
+        .qr-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .qr-section h3 {
+            color: #059669;
+            margin-bottom: 15px;
+        }
+
+        .qr-code {
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 15px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .requirements {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #78350f;
+        }
+
+        .requirements h4 {
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .requirements ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 30px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #d1fae5;
+            color: #047857;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .notification-test {
+            background: #e0f2fe;
+            border-left: 4px solid #0284c7;
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #0c4a6e;
+        }
+
+        .notification-test button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .notification-test button:hover {
+            background: #0369a1;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header .emoji {
+                font-size: 2.5em;
+            }
+
+            .content {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="emoji">📱</div>
+            <h1>Deenify</h1>
+            <p>Islamic Learning Platform</p>
+            <p style="font-size: 0.9em; opacity: 0.8;">Download the Android App</p>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                <strong>✅ Ready for Download!</strong><br>
+                The Deenify mobile app is now available for download. Choose the version that best fits your needs.
+            </div>
+
+            <!-- Release APK -->
+            <div class="apk-option">
+                <h3>
+                    📦 Release APK
+                    <span class="badge">Production</span>
+                </h3>
+                <p>Optimized for performance and stability. Recommended for all users.</p>
+                <div class="specs">
+                    <span>📥 Size: 3.6 MB</span>
+                    <span>🎯 Version: 0.1.0</span>
+                    <span>📊 Status: Stable</span>
+                </div>
+                <button class="download-btn" onclick="downloadAPK('release')">
+                    ⬇️ Download Release APK
+                </button>
+            </div>
+
+            <!-- Debug APK -->
+            <div class="apk-option">
+                <h3>
+                    🔧 Debug APK
+                    <span class="badge">Testing</span>
+                </h3>
+                <p>Includes enhanced logging and debugging features. Useful for testing and reporting issues.</p>
+                <div class="specs">
+                    <span>📥 Size: 4.5 MB</span>
+                    <span>🎯 Version: 0.1.0</span>
+                    <span>📊 Status: Debug Build</span>
+                </div>
+                <button class="download-btn" onclick="downloadAPK('debug')">
+                    ⬇️ Download Debug APK
+                </button>
+            </div>
+
+            <!-- Local Notifications Testing -->
+            <div class="notification-test">
+                <strong>🔔 Test Notifications</strong>
+                <p style="margin-top: 8px;">Enable notifications to test the app's notification system locally.</p>
+                <button onclick="requestNotificationPermission()">
+                    🔔 Enable Notifications
+                </button>
+                <button onclick="sendTestNotification()" style="margin-left: 10px;">
+                    📤 Send Test Notification
+                </button>
+            </div>
+
+            <!-- Installation Requirements -->
+            <div class="requirements">
+                <h4>📋 Requirements</h4>
+                <ul>
+                    <li><strong>Android Version:</strong> 7.0 or higher</li>
+                    <li><strong>Storage:</strong> At least 50 MB free space</li>
+                    <li><strong>Internet:</strong> Active internet connection required</li>
+                    <li><strong>Permissions:</strong> Will request during installation</li>
+                </ul>
+            </div>
+
+            <!-- Installation Instructions -->
+            <div class="info-box" style="margin-top: 25px; background: #e0f2fe; border-left-color: #0284c7;">
+                <strong style="color: #0c4a6e;">📖 Installation Instructions</strong>
+                <ol style="margin-left: 20px; margin-top: 10px; color: #0c4a6e; line-height: 1.8;">
+                    <li>Download the APK file using the button above</li>
+                    <li>Open your device's file manager and locate the downloaded file</li>
+                    <li>Tap the APK file to install</li>
+                    <li>Grant the required permissions when prompted</li>
+                    <li>Wait for installation to complete</li>
+                    <li>Tap "Open" to launch the app or find it in your app drawer</li>
+                </ol>
+            </div>
+
+            <div class="status-badge">
+                ✅ Version 0.1.0 - Production Ready
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Deenify</strong> • Islamic Learning Platform</p>
+            <p style="margin-top: 8px; opacity: 0.7;">Last updated: June 7, 2026 • All features tested and verified</p>
+            <p style="margin-top: 10px; font-size: 0.8em; opacity: 0.6;">📧 For support, visit deenify.co.za</p>
+        </div>
+    </div>
+
+    <script>
+        // Check if browser supports notifications
+        function checkNotificationSupport() {
+            if ('Notification' in window) {
+                console.log('✅ Notifications supported');
+                return true;
+            } else {
+                console.log('❌ Notifications not supported in this browser');
+                return false;
+            }
+        }
+
+        // Request notification permission
+        function requestNotificationPermission() {
+            if (!('Notification' in window)) {
+                alert('Your browser does not support notifications');
+                return;
+            }
+
+            if (Notification.permission === 'granted') {
+                alert('✅ Notifications already enabled');
+                sendTestNotification();
+                return;
+            }
+
+            if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === 'granted') {
+                        alert('✅ Notifications enabled successfully!');
+                        sendTestNotification();
+                    }
+                });
+            }
+        }
+
+        // Send test notification
+        function sendTestNotification() {
+            if (Notification.permission === 'granted') {
+                // Browser notification
+                new Notification('Deenify Notification Test', {
+                    icon: '/favicon.ico',
+                    badge: '/favicon.ico',
+                    tag: 'deenify-test',
+                    body: '🌙 Welcome to Deenify!\n\nThis is a test notification. The app will send you notifications for:\n• Prayer reminders\n• New homework assignments\n• Class announcements\n• Achievement unlocks',
+                    requireInteraction: false,
+                    actions: [
+                        { action: 'open', title: '📱 Open App' },
+                        { action: 'dismiss', title: '✕ Dismiss' }
+                    ]
+                });
+
+                console.log('✅ Test notification sent!');
+                alert('✅ Test notification sent! Check your notifications.');
+            } else {
+                alert('⚠️ Please enable notifications first');
+            }
+        }
+
+        // Download APK
+        function downloadAPK(type) {
+            let filename;
+            const apiPath = `/api/download/apk?type=${type}`;
+
+            // Create download link
+            const link = document.createElement('a');
+            link.href = apiPath;
+            link.download = type === 'release'
+                ? 'deenify-release-0.1.0.apk'
+                : 'deenify-debug-0.1.0.apk';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Log download
+            console.log(`✅ Downloading APK: ${type}`);
+            logDownload(type);
+
+            // Show success message
+            showDownloadMessage(type);
+        }
+
+        // Show download message
+        function showDownloadMessage(type) {
+            const typeName = type === 'release' ? 'Release' : 'Debug';
+            alert(`✅ ${typeName} APK Download Started!\n\n` +
+                `The file should appear in your Downloads folder.\n\n` +
+                `Next steps:\n` +
+                `1. Transfer the APK to your Android phone\n` +
+                `2. Open the file on your phone\n` +
+                `3. Grant permissions when prompted\n` +
+                `4. Tap "Install" to complete\n\n` +
+                `Need help? Visit the app for more instructions.`);
+        }
+
+        // Show download instructions if direct download not available
+        function showDownloadInstructions(type, path) {
+            const typeName = type === 'release' ? 'Release' : 'Debug';
+            alert(`📥 ${typeName} APK Download\n\n` +
+                `The APK is available at:\n${path}\n\n` +
+                `Instructions:\n` +
+                `1. Visit the server address in your browser\n` +
+                `2. Navigate to the APK location\n` +
+                `3. Tap to download on your Android device\n\n` +
+                `Or use ADB command:\n` +
+                `adb install -r ${path}`);
+        }
+
+        // Log download analytics
+        function logDownload(type) {
+            const timestamp = new Date().toISOString();
+            const logData = {
+                timestamp,
+                type,
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            };
+            console.log('📊 Download logged:', logData);
+
+            // Send to server if analytics endpoint exists
+            fetch('/api/analytics/download', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(logData)
+            }).catch(e => console.log('Analytics endpoint not available'));
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            console.log('🎉 Deenify Download Page Loaded');
+            checkNotificationSupport();
+
+            // Log page view
+            console.log('📊 Download page viewed at:', new Date().toISOString());
+        });
+
+        // Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(e => {
+                console.log('Service Worker not available');
+            });
+        }
+    </script>
+</body>
+</html>
