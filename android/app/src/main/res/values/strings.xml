@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Deenify</string>
+    <string name="title_activity_main">Deenify</string>
+    <string name="package_name">com.deenify.app</string>
+    <string name="custom_url_scheme">com.deenify.app</string>
+</resources>

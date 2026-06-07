@@ -38,6 +38,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
 import PDFReader from '@/components/pdf/PDFReader';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 // ─── Inline Admin Sub-Components ────────────────────────────────────────────
 
